@@ -2,7 +2,9 @@ import React from 'react'
 
 const Galeri = () => {
   return (
-    <div>Galeri</div>
+    <div className="w-full min-h-screen">
+        Galeri
+    </div>
   )
 }
 

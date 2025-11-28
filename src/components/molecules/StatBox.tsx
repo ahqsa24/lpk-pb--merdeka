@@ -7,8 +7,8 @@ interface StatBoxProps {
 }
 
 export const StatBox: React.FC<StatBoxProps> = ({ number, label }) => (
-  <div className="flex flex-col items-center justify-center p-4 bg-red-100 rounded-2xl">
-    <Heading level={2} className="text-red-600 text-3xl">{number}</Heading>
-    <span className="text-gray-700">{label}</span>
+  <div className="flex flex-col text-amber-50 items-center justify-center p-2 rounded-2xl">
+    <Heading level={2} className="text-3xl">{number}</Heading>
+    <span className="text-lg">{label}</span>
   </div>
 );

@@ -2,7 +2,9 @@ import React from 'react'
 
 const Program = () => {
   return (
-    <div>Program</div>
+    <div className="w-full min-h-screen">
+      Program
+    </div>
   )
 }
 

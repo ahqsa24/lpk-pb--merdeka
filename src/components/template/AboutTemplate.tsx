@@ -3,8 +3,10 @@ import { AboutSection } from "../organisms/AboutSection";
 import { StatsGrid } from "../organisms/StatsGrid";
 
 export const AboutTemplate = () => (
-  <main className="p-6 max-w-6xl mx-auto">
+  <main className="w-full mx-auto">
     <StatsGrid />
-    <AboutSection />
+    <div className="mx-auto px-48">
+      <AboutSection />
+    </div>
   </main>
 );

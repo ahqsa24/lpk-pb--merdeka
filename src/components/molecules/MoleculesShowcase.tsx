@@ -3,7 +3,7 @@ import { AvatarWithName } from "./AvatarWithName";
 import { CardWithImage } from "./CardWithImage";
 import { FormField } from "./FormField";
 import { StatBox } from "./StatBox";
-import { TabGroup } from "./TabGroup";
+import { TabsHeader } from "./TabsHeader";
 import { Heading } from "../atoms/Heading";
 import { Paragraph } from "../atoms/Paragraph";
 
@@ -78,7 +78,7 @@ export const MoleculesShowcase = () => (
       </div>
     </div>
 
-    {/* TabGroup Section */}
+    {/* TabGroup Section 
     <div className="border rounded-lg p-6 bg-slate-50">
       <Heading level={3} className="text-xl mb-4">TabGroup</Heading>
       <TabGroup
@@ -122,5 +122,6 @@ export const MoleculesShowcase = () => (
         ]}
       />
     </div>
+    */}
   </div>
 );

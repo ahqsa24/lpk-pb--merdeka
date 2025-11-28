@@ -19,9 +19,9 @@ export const HomeTemplate = ({ programs }: HomeTemplateProps) => {
     img: "",
     desc: "",
   }));
-
+  
   return (
-  <main className="space-y-16 w-full">
+  <main className="bg-red-50 mx-auto min-h-screen w-full">
       <HeroSection />
       <ProgramGrid list={programItems} />
   </main>

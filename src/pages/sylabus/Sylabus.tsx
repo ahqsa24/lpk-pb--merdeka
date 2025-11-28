@@ -2,7 +2,9 @@ import React from 'react'
 
 const Sylabus = () => {
   return (
-    <div>Sylabus</div>
+    <div className="w-full min-h-screen">
+      Sylabus
+    </div>
   )
 }
 

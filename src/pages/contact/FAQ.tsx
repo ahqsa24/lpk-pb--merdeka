@@ -2,7 +2,9 @@ import React from 'react'
 
 const FAQ = () => {
   return (
-    <div>FAQ</div>
+    <div className="w-full min-h-screen">
+      FAQ
+    </div>
   )
 }
 

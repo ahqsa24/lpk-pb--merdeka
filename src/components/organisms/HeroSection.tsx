@@ -12,7 +12,7 @@ export const HeroSection = () => (
     <div className="absolute bottom-20 left-0 w-96 h-96 bg-red-300 rounded-full opacity-10 blur-3xl"></div>
 
     {/* Content Container */}
-    <div className="px-32 w-full min-h-screen flex flex-col items-start justify-center gap-6 relative z-10">
+    <div className="px-48 w-full min-h-screen flex flex-col items-start justify-center gap-6 relative z-10">
 
     {/* Logo */}
     <div className="relative z-10 flex items-center gap-3 mb-2">
@@ -28,15 +28,15 @@ export const HeroSection = () => (
     </div>
 
     {/* Content */}
-    <div className="relative z-10 max-w-2xl">
-      <Heading level={6} className="text-7xl md:text-6xl font-bold text-red-600 mb-4">
+    <div className="relative z-10 max-w-4xl">
+      <Heading level={6} className="text-5xl md:text-7xl font-bold text-red-600 mb-4">
         LPK PB Merdeka
       </Heading>
-      <Paragraph className="text-lg text-gray-600 mb-6 leading-relaxed">
+      <Paragraph className="text-xl text-gray-600 mb-6 leading-relaxed">
         Lembaga pelatihan resmi di bidang perdagangan berjangka, mencetak tenaga profesional dengan keterampilan siap kerja dan daya saing global.
       </Paragraph>
-      <TextBackground>Kompetensi Kuat, Masa Depan Hebat</TextBackground>
-      <div className="flex gap-4 flex-wrap">
+      <TextBackground className="text-lg">Kompetensi Kuat, Masa Depan Hebat</TextBackground>
+      <div className="flex py-8 gap-4 text-xl flex-wrap">
         <Button>Daftar Program</Button>
       </div>
     </div>
