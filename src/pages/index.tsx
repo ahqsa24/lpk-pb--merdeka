@@ -1,76 +1,63 @@
-import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Open_Sans, Poppins } from "next/font/google";
+import { Heading } from "../components/atoms";
+import { Navbar } from "../components/organisms/Navbar";
+import { AtomsShowcase } from "../components/atoms/AtomsShowcase";
+import { MoleculesShowcase } from "../components/molecules/MoleculesShowcase";
+import { OrganismsShowcase } from "../components/organisms/OrganismsShowcase";
+import { TemplateShowcase } from "../components/template/TemplateShowcase";
+import Beranda from "./home/Beranda";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const openSans = Open_Sans({
+  variable: "--font-open-sans",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"], // opsional sesuai kebutuhan
 });
 
 export default function Home() {
   return (
     <div
-      className={`${geistSans.className} ${geistMono.className} flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black`}
+      className={`${poppins.className} flex flex-col min-h-screen bg-white font-sans`}
     >
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the index.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs/pages/getting-started?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      {/* Beranda Page */}
+      <div className="relative">
+        <Beranda />
+        {/* Navbar */}
+        <nav className="absolute top-0 left-0 right-0 z-50 bg-white">
+          <Navbar />
+        </nav>
+      </div>
+
+      {/* Main Content */}
+      <main className="flex-1 w-full flex flex-col items-center py-12">
+        <div className="w-full max-w-7xl px-6 md:px-16 space-y-12">
+          <div className="w-full">
+            <Heading level={1} className="text-4xl font-bold mb-2">Component Showcase</Heading>
+          </div>
+
+          {/* Atoms Showcase */}
+          <section className="w-full border-t pt-8">
+            <AtomsShowcase />
+          </section>
+
+          {/* Molecules Showcase */}
+          <section className="w-full border-t pt-8">
+            <MoleculesShowcase />
+          </section>
+
+          {/* Organisms Showcase */}
+          <section className="w-full border-t pt-8">
+            <OrganismsShowcase />
+          </section>
+
+          {/* Templates Showcase */}
+          <section className="w-full border-t pt-8 pb-8">
+            <TemplateShowcase />
+          </section>
         </div>
       </main>
     </div>
