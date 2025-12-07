@@ -25,7 +25,7 @@ const images = [
 
 export default function MasonaryGalery() {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-3 md:grid-cols-4 gap-4">
       {images.map((column, colIndex) => (
         <div key={colIndex} className="grid gap-4">
           {column.map((src, imgIndex) => (

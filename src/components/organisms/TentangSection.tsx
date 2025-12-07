@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 
 export const TentangSection = () => (
-  <section className="px-48 items-start grid grid-cols-1 gap-16 p-8 py-24">
+  <section className="px-12 lg:px-24 xl:px-48 items-start grid grid-cols-1 gap-16 p-8 py-24">
     <div className="grid grid-cols-1 gap-32">
       <TextGroup
         heading="Apa Itu LPK PB Merdeka?"
@@ -19,7 +19,7 @@ export const TentangSection = () => (
       />
     </div>
 
-    <div className="grid grid-cols-2 gap-32 max-w-full">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-32 max-w-full">
       <TextGroup
         heading="Sejuta digital talent untuk Indonesia"
         title="Visi LPK PB Merdeka"
@@ -37,7 +37,7 @@ export const TentangSection = () => (
     <div className="flex flex-col gap-8 mt-16">
       <LineHeading title="Tujuan" />
 
-      <div className="grid grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-2 gap-8">
         <CardWithAvatar
           icon={<BookOpen size={48} className="text-white"/>}
           title="Kurikulum Berdasarkan Kebutuhan Industri"

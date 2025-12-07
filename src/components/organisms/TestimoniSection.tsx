@@ -48,7 +48,7 @@ const testimonialData = [
 ];
 
 export const TestimoniSection = () => (
-  <section className="px-48 items-start py-24">
+  <section className="px-12 lg:px-24 xl:px-48 items-start py-24">
     <LineHeading title="Testimoni" />
 
     <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-8 mt-12">

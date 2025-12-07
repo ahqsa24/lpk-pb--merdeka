@@ -13,13 +13,16 @@ interface NavbarProps {
   navItems: NavItem[];
   onNavClick?: (id: string) => void;
   onLoginClick?: () => void;
+  onRegisterClick?: () => void;
 }
+
 
 export const Navbar: React.FC<NavbarProps> = ({
   logo,
   navItems,
   onNavClick,
   onLoginClick,
+  onRegisterClick,
 }) => {
   const [activeNav, setActiveNav] = useState(navItems[0]?.id);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -72,7 +75,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Desktop buttons on right */}
         <div className="hidden md:flex items-center gap-2">
           <NavBarButton label="Login" variant="secondary" onClick={onLoginClick} />
-          <NavBarButton label="Daftar" variant="secondary" onClick={onLoginClick} />
+          <NavBarButton label="Daftar" variant="secondary" onClick={onRegisterClick} />
         </div>
 
 

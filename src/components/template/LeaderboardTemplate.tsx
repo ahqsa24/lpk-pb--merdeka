@@ -14,7 +14,7 @@ type LeaderboardTemplateProps = {
 };
 
 export const LeaderboardTemplate = ({ data }: LeaderboardTemplateProps) => (
-  <main className="px-48 py-16 mx-auto">
+  <main className="px-12 lg:px-24 xl:px-48 py-16 mx-auto">
     <LeaderboardTable data={data} />
   </main>
 );

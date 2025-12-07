@@ -8,7 +8,7 @@ import Image from "next/image";
 export const HeroSection = () => (
   <section className="w-full flex flex-col items-center justify-center relative overflow-hidden">
     {/* Content Container */}
-    <div className="px-48 w-full min-h-screen flex flex-col items-start justify-center gap-6 relative z-10">
+    <div className="px-12 lg:px-24 xl:px-48 w-full min-h-screen flex flex-col items-start justify-center gap-6 relative z-10">
 
     {/* Logo */}
     <div className="relative z-10 flex items-center gap-3 mb-2">
