@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -25,10 +27,12 @@ body {
   font-family: var(--font-poppins), sans-serif;
   padding-top: 100px;
 }
+
 @keyframes scroll {
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-50%);
   }
@@ -40,11 +44,17 @@ body {
 
 
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-slide-down {
   animation: slideDown 0.25s ease-out forwards;
 }
-

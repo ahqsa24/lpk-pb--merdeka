@@ -48,19 +48,26 @@ const testimonialData = [
 ];
 
 export const TestimoniSection = () => (
-  <section className="px-12 lg:px-24 xl:mx-48 items-start py-20">
-    <LineHeading title="Testimoni" />
+  <section className="py-20 bg-gray-50">
+    <div className="container mx-auto px-6 lg:px-12 xl:px-24">
+      <div className="mb-12 text-center">
+        <LineHeading title="Kata Alumni Kami" />
+        <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
+          Dengar langsung dari mereka yang telah merasakan dampak positif dari program pelatihan kami.
+        </p>
+      </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 mx-auto gap-4 mt-12">
-      {testimonialData.map((item, index) => (
-        <TestimoniBox
-          key={index}
-          src={item.src}
-          comment={item.comment}
-          title={item.title}
-          description={item.description}
-        />
-      ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {testimonialData.map((item, index) => (
+          <TestimoniBox
+            key={index}
+            src={item.src}
+            comment={item.comment}
+            title={item.title}
+            description={item.description}
+          />
+        ))}
+      </div>
     </div>
   </section>
 );

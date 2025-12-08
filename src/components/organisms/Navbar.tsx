@@ -7,31 +7,45 @@ export const Navbar = () => {
   const router = useRouter();
 
   const navItems = [
-    { id: "beranda", label: "Beranda" },
-    { id: "tentang", label: "Tentang" },
-    { id: "silabus", label: "Silabus" },
-    { id: "galeri", label: "Galeri" },
-    { id: "pendaftaran", label: "Pendaftaran" },
-    { id: "bantuan", label: "Bantuan" },
+    { id: "beranda", label: "Beranda", href: "/" },
+    { id: "tentang", label: "Tentang", href: "/about" },
+    { id: "silabus", label: "Silabus", href: "/sylabus" },
+    { id: "galeri", label: "Galeri", href: "/galeri" },
+    { id: "bantuan", label: "Bantuan", href: "/contact" },
   ];
+
+  const handleNavClick = (id: string) => {
+    const item = navItems.find((i) => i.id === id);
+    if (item?.href) {
+      router.push(item.href);
+    }
+  };
+
+  // Determine active item based on current path
+  const activeItem = navItems.find(
+    (item) =>
+      item.href === router.pathname ||
+      (item.href !== "/" && router.pathname.startsWith(item.href || ""))
+  );
 
   return (
     <NavbarMolecule
       logo={
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push("/")}>
           <Image
             src="/assets/LPK-White.png"
             alt="LPK Merdeka Logo"
             width={32}
             height={32}
-            className="object-contain"
+            className="object-contain" // ensure logo doesn't stretch
           />
         </div>
       }
+      activeId={activeItem?.id || "beranda"}
       navItems={navItems}
-      onNavClick={(id) => console.log("Navigate to section:", id)}
-      onLoginClick={() => router.push("api/auth/Login")}
-      onRegisterClick={() => router.push("api/auth/Register")}
+      onNavClick={handleNavClick}
+      onLoginClick={() => router.push("/auth/login")}
+      onRegisterClick={() => router.push("/auth/register")}
     />
   );
 };

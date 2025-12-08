@@ -1,67 +1,92 @@
+import React from "react";
 import { LineHeading } from "../molecules";
-import { TextGroup } from "../molecules";
-import { CardWithAvatar } from "../molecules";
-import {
-  BookOpen,
-  Laptop,
-  GraduationCap,
-  Medal,
-} from "lucide-react";
+import { aboutData } from "./TentangSection.data";
+import Image from "next/image";
+import { FaBullseye, FaRocket } from "react-icons/fa"; // Icons for Vision/Mission
 
-export const TentangSection = () => (
-  <section className="px-12 lg:px-24 xl:px-48 items-start grid grid-cols-1 gap-8 p-8 py-16">
-    <div className="grid grid-cols-1 gap-32">
-      <TextGroup
-        heading="Apa Itu LPK PB Merdeka?"
-        title="Tentang Kami"
-        text="Lembaga Pelatihan Kompetensi Perdagangan Berjangka (LPK PB) adalah lembaga resmi yang bergerak di bidang pendidikan dan pelatihan perdagangan berjangka. Kami berkomitmen membekali peserta dengan keterampilan praktis, sertifikasi kompetensi, dan wawasan industri yang relevan untuk mendukung karier di sektor keuangan berjangka."
-        className="flex flex-col max-w-7xl my-auto"
-      />
-    </div>
+export const TentangSection = () => {
+  const { intro, vision, mission, goals } = aboutData;
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-32 max-w-full">
-      <TextGroup
-        heading="Sejuta digital talent untuk Indonesia"
-        title="Visi LPK PB Merdeka"
-        text="Menjadi lembaga pelatihan terdepan dalam mencetak tenaga kerja profesional, kompeten, dan berdaya saing global di bidang perdagangan berjangka."
-        className="flex flex-col max-w-xl"
-      />
-      <TextGroup
-        heading="To train, certify, and connect youth to jobs"
-        title="Misi LPK PB Merdeka"
-        text="Itulah misi kami. Dengan proses pembelajaran yang menarik dan efektif, siapapun dapat belajar digital skills, mendapatkan sertifikasi, dan tentunya siap kerja!"
-        className="flex flex-col max-w-xl"
-      />
-    </div>
+  return (
+    <section className="py-20 bg-white">
+      <div className="container mx-auto px-6 lg:px-12 xl:px-24 flex flex-col gap-24">
 
-    <div className="flex flex-col gap-8 mt-16">
-      <LineHeading title="Tujuan" />
+        {/* Intro Section - Split Layout */}
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+          <div className="w-full lg:w-1/2 flex flex-col gap-6">
+            <div className="inline-block px-4 py-2 bg-red-50 text-red-600 font-bold rounded-full text-sm w-fit border border-red-100">
+              {intro.title}
+            </div>
+            <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
+              {intro.heading}
+            </h2>
+            <p className="text-lg text-gray-600 leading-relaxed text-justify">
+              {intro.description}
+            </p>
+          </div>
+          <div className="w-full lg:w-1/2 relative">
+            <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+              {/* Placeholder for Intro Image */}
+              <Image
+                src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop"
+                alt="About Us Team"
+                fill
+                className="object-cover"
+              />
+            </div>
+            {/* Decorative elements */}
+            <div className="absolute -z-10 top-10 -right-10 w-full h-full bg-red-100/50 rounded-3xl"></div>
+          </div>
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-2 gap-8">
-        <CardWithAvatar
-          icon={<BookOpen size={48} className="text-white"/>}
-          title="Kurikulum Berdasarkan Kebutuhan Industri"
-          description="Hemat waktu dan biaya! Kurikulum Skilvul dibuat agar lebih mudah dimengerti dan sesuai dengan kebutuhan industri. Hampir 50% peserta berasal dari background non-IT dan 90% lulusan berhasil mendapatkan pekerjaan setelahnya."
-        />
+        {/* Vision & Mission Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Vision Card */}
+          <div className="bg-gradient-to-br from-white to-red-50 p-8 rounded-3xl border border-red-100 shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <div className="w-14 h-14 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mb-6 text-2xl">
+              <FaBullseye />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">{vision.title}</h3>
+            <h4 className="text-lg font-semibold text-red-600 mb-4">{vision.heading}</h4>
+            <p className="text-gray-600 leading-relaxed">{vision.description}</p>
+          </div>
 
-        <CardWithAvatar
-          icon={<Laptop size={48} className="text-white"/>}
-          title="Metode 'Blended-Learning'"
-          description="Proses pembelajaran menggunakan metode 'blended-learning' yaitu secara online dan offline. Kamu dapat mengikuti kelas online dan sekaligus bertanya langsung kepada para mentor. Metode ini akan lebih efektif karena proses mengajar dua arah."
-        />
+          {/* Mission Card */}
+          <div className="bg-gradient-to-br from-white to-blue-50 p-8 rounded-3xl border border-blue-100 shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <div className="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-6 text-2xl">
+              <FaRocket />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">{mission.title}</h3>
+            <h4 className="text-lg font-semibold text-blue-600 mb-4">{mission.heading}</h4>
+            <p className="text-gray-600 leading-relaxed">{mission.description}</p>
+          </div>
+        </div>
 
-        <CardWithAvatar
-          icon={<GraduationCap size={48} className="text-white"/>}
-          title="Personalisasi Proses Pembelajaran"
-          description="Dengan adanya SkilPath, kamu bebas memilih spesialisasi yang diinginkan agar dapat disesuaikan dengan kebutuhan industri saat ini."
-        />
+        {/* Goals Section */}
+        <div className="flex flex-col gap-12">
+          <div className="text-center max-w-2xl mx-auto">
+            <LineHeading title="Tujuan Kami" />
+            <p className="text-gray-600 mt-4">Kami berdedikasi untuk memberikan dampak nyata melalui pendidikan yang berkualitas.</p>
+          </div>
 
-        <CardWithAvatar
-          icon={<Medal size={48} className="text-white"/>}
-          title="Sertifikasi"
-          description="Kamu akan mendapatkan SkilBadge setiap kali berhasil menyelesaikan sebuah kelas. SkilBadge tersebut dapat digunakan sebagai sertifikasi pada saat job hunting lho!."
-        />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {goals.map((goal, index) => (
+              <div key={index} className="flex gap-6 p-6 rounded-2xl border border-gray-100 hover:border-red-200 hover:bg-red-50/30 transition-colors duration-300 group bg-white shadow-sm hover:shadow-md">
+                <div className="flex-shrink-0">
+                  <div className="w-16 h-16 bg-red-600 text-white rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <goal.icon size={32} />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <h4 className="text-xl font-bold text-gray-900">{goal.title}</h4>
+                  <p className="text-gray-600 leading-relaxed text-sm">{goal.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};

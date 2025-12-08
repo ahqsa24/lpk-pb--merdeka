@@ -17,10 +17,14 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   style: ["normal", "italic"],
 });
 
+import { ThemeProvider } from "@/context/ThemeContext";
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <main className={`${plusJakartaSans.className}`}>
-      <Component {...pageProps} />
-    </main>
+    <ThemeProvider>
+      <main className={`${plusJakartaSans.className}`}>
+        <Component {...pageProps} />
+      </main>
+    </ThemeProvider>
   );
 }
