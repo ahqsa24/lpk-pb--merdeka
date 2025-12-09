@@ -111,7 +111,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         )}
 
         {/* Desktop buttons on right */}
-        <div className={`${isAuthenticated ? 'flex' : 'hidden md:flex'} items-center gap-3 flex-shrink-0`}>
+        <div className={`${(isAuthenticated && hideNavigation) ? 'flex' : 'hidden'} md:flex items-center gap-3 flex-shrink-0`}>
 
 
           {isAuthenticated ? (
