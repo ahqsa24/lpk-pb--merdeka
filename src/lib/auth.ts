@@ -11,7 +11,7 @@ export interface AuthenticatedRequest extends NextApiRequest {
     };
 }
 
-export const checkAuth = (handler: (req: AuthenticatedRequest, res: NextApiResponse) => Promise<void>) => {
+export const checkAuth = (handler: (req: AuthenticatedRequest, res: NextApiResponse) => Promise<any>) => {
     return async (req: AuthenticatedRequest, res: NextApiResponse) => {
         try {
             const authHeader = req.headers.authorization;
@@ -34,7 +34,7 @@ export const checkAuth = (handler: (req: AuthenticatedRequest, res: NextApiRespo
     };
 };
 
-export const checkAdmin = (handler: (req: AuthenticatedRequest, res: NextApiResponse) => Promise<void>) => {
+export const checkAdmin = (handler: (req: AuthenticatedRequest, res: NextApiResponse) => Promise<any>) => {
     return async (req: AuthenticatedRequest, res: NextApiResponse) => {
         return checkAuth(async (req, res) => {
             if (req.user?.role !== 'admin') {

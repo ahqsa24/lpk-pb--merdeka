@@ -132,3 +132,78 @@ model users {
   updated_at         DateTime?            @db.Timestamp(0)
   attendance_records attendance_records[]
 }
+
+model cms_hero {
+  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  title     String   @db.VarChar(255)
+  subtitle  String   @db.Text
+  image_url String   @db.VarChar(255)
+  cta_text  String?  @db.VarChar(50)
+  cta_link  String?  @db.VarChar(255)
+  is_active Boolean  @default(true)
+  created_at DateTime? @db.Timestamp(0) @default(now())
+  updated_at DateTime? @db.Timestamp(0) @updatedAt
+}
+
+model cms_programs {
+  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  title       String   @db.VarChar(255)
+  description String   @db.Text
+  image_url   String   @db.VarChar(255)
+  order       Int      @default(0)
+  created_at  DateTime? @db.Timestamp(0) @default(now())
+  updated_at  DateTime? @db.Timestamp(0) @updatedAt
+}
+
+model cms_gallery {
+  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  title     String?  @db.VarChar(255)
+  image_url String   @db.VarChar(255)
+  type      String   @default("image") @db.VarChar(20)
+  category  String?  @db.VarChar(50)
+  created_at DateTime? @db.Timestamp(0) @default(now())
+  updated_at DateTime? @db.Timestamp(0) @updatedAt
+}
+
+model cms_faq {
+  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  question  String   @db.Text
+  answer    String   @db.Text
+  category  String?  @db.VarChar(50)
+  order     Int      @default(0)
+  created_at DateTime? @db.Timestamp(0) @default(now())
+  updated_at DateTime? @db.Timestamp(0) @updatedAt
+}
+
+model cms_settings {
+  key        String   @id @db.VarChar(50)
+  value      String   @db.Text
+  created_at DateTime? @db.Timestamp(0) @default(now())
+  updated_at DateTime? @db.Timestamp(0) @updatedAt
+}
+
+model cms_testimonials {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  name       String    @db.VarChar(100)
+  role       String    @db.VarChar(100)
+  content    String    @db.Text
+  avatar_url String?   @db.VarChar(255)
+  rating     Int       @default(5)
+  created_at DateTime? @db.Timestamp(0) @default(now())
+  updated_at DateTime? @db.Timestamp(0) @updatedAt
+}
+
+model cms_articles {
+  id            BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  title         String    @db.VarChar(255)
+  slug          String    @unique @db.VarChar(255)
+  content       String    @db.LongText
+  excerpt       String?   @db.Text
+  thumbnail_url String?   @db.VarChar(255)
+  author        String?   @db.VarChar(100)
+  is_published  Boolean   @default(false)
+  published_at  DateTime? @db.Timestamp(0)
+  created_at    DateTime? @db.Timestamp(0) @default(now())
+  updated_at    DateTime? @db.Timestamp(0) @updatedAt
+}
+

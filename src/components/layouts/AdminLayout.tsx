@@ -4,7 +4,8 @@ import { useRouter } from 'next/router';
 import { useAuth } from '@/context/AuthContext';
 import {
     FaHome, FaUsers, FaUserShield, FaCalendarCheck,
-    FaBars, FaSignOutAlt, FaSearch
+    FaBars, FaSignOutAlt, FaSearch,
+    FaList, FaImages, FaQuestionCircle, FaCog, FaStar, FaNewspaper
 } from 'react-icons/fa';
 
 interface AdminLayoutProps {
@@ -29,6 +30,18 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => 
             group: 'Home',
             items: [
                 { label: 'Dashboard', href: '/admin/dashboard', icon: <FaHome /> }
+            ]
+        },
+        {
+            group: 'Landing Page',
+            items: [
+                { label: 'Beranda', href: '/admin/cms/home', icon: <FaHome /> },
+                { label: 'Program', href: '/admin/cms/programs', icon: <FaList /> },
+                { label: 'Galeri', href: '/admin/cms/gallery', icon: <FaImages /> },
+                { label: 'Testimoni', href: '/admin/cms/testimonials', icon: <FaStar /> },
+                { label: 'Artikel', href: '/admin/cms/articles', icon: <FaNewspaper /> },
+                { label: 'Bantuan', href: '/admin/cms/faq', icon: <FaQuestionCircle /> },
+                { label: 'Pengaturan', href: '/admin/cms/settings', icon: <FaCog /> }
             ]
         },
         {
@@ -69,8 +82,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => 
                                         key={item.href}
                                         href={item.href}
                                         className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive(item.href)
-                                                ? 'bg-red-50 text-red-600'
-                                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                            ? 'bg-red-50 text-red-600'
+                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                                             }`}
                                     >
                                         <span className="text-lg">{item.icon}</span>
