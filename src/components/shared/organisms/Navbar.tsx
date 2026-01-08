@@ -50,7 +50,7 @@ export const Navbar = ({ hideNavigation = false }: { hideNavigation?: boolean })
       onRegisterClick={() => router.push("/auth/register")}
       isAuthenticated={isAuthenticated}
       user={user}
-      onDashboardClick={() => router.push("/dashboard")}
+      onDashboardClick={() => router.push(user?.role === 'admin' ? "/admin/dashboard" : "/dashboard")}
       onLogoutClick={logout}
       hideNavigation={hideNavigation}
     />

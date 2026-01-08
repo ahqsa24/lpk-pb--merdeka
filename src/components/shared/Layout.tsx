@@ -12,7 +12,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="relative">
                 <Navbar />
 
-                <div> {/* Adjusted padding slightly larger than navbar height */}
+                <div className="pt-24"> {/* Added padding to prevent navbar overlap */}
                     {children}
                 </div>
 

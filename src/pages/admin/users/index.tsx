@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { AdminLayout } from '@/components/layouts/AdminLayout';
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaUser } from 'react-icons/fa';
+import { ConfirmationModal } from '@/components/shared/molecules/ConfirmationModal';
 
 interface User {
     id: string;
@@ -18,6 +19,10 @@ export default function UsersManagement() {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'user', id: '' });
     const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
+
+    // Delete Modal State
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
 
     const getAuthHeaders = () => {
         const token = localStorage.getItem('token');
@@ -52,21 +57,29 @@ export default function UsersManagement() {
         user.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this user?')) return;
+    const handleDeleteClick = (id: string) => {
+        setDeleteTargetId(id);
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!deleteTargetId) return;
 
         try {
-            const res = await fetch(`/api/admin/users/${id}`, {
+            const res = await fetch(`/api/admin/users/${deleteTargetId}`, {
                 method: 'DELETE',
                 headers: getAuthHeaders()
             });
             if (res.ok) {
-                setUsers(users.filter(u => u.id !== id));
+                setUsers(users.filter(u => u.id !== deleteTargetId));
             } else {
                 alert('Failed to delete user');
             }
         } catch (error) {
             alert('Error deleting user');
+        } finally {
+            setIsDeleteModalOpen(false);
+            setDeleteTargetId(null);
         }
     };
 
@@ -176,8 +189,8 @@ export default function UsersManagement() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${user.role === 'admin'
-                                                    ? 'bg-purple-100 text-purple-700'
-                                                    : 'bg-green-100 text-green-700'
+                                                ? 'bg-purple-100 text-purple-700'
+                                                : 'bg-green-100 text-green-700'
                                                 }`}>
                                                 {user.role}
                                             </span>
@@ -194,7 +207,7 @@ export default function UsersManagement() {
                                                     <FaEdit />
                                                 </button>
                                                 <button
-                                                    onClick={() => handleDelete(user.id)}
+                                                    onClick={() => handleDeleteClick(user.id)}
                                                     className="p-2 hover:bg-gray-100 rounded-lg text-red-600 transition"
                                                 >
                                                     <FaTrash />
@@ -282,6 +295,18 @@ export default function UsersManagement() {
                     </div>
                 </div>
             )}
+
+            {/* Confirmation Modal */}
+            <ConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleConfirmDelete}
+                title="Hapus User?"
+                message="Apakah Anda yakin ingin menghapus user ini? Tindakan ini tidak dapat dibatalkan."
+                isDanger={true}
+                confirmText="Hapus"
+                cancelText="Batal"
+            />
         </AdminLayout>
     );
 }

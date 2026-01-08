@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { AdminLayout } from '@/components/layouts/AdminLayout';
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaCalendarCheck, FaToggleOn, FaToggleOff } from 'react-icons/fa';
+import { ConfirmationModal } from '@/components/shared/molecules/ConfirmationModal';
 
 interface Session {
     id: string;
@@ -27,6 +28,10 @@ export default function AttendanceSessionsManagement() {
         id: ''
     });
     const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
+
+    // Delete Modal State
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
 
     const getAuthHeaders = () => {
         const token = localStorage.getItem('token');
@@ -60,21 +65,29 @@ export default function AttendanceSessionsManagement() {
         session.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this session?')) return;
+    const handleDeleteClick = (id: string) => {
+        setDeleteTargetId(id);
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!deleteTargetId) return;
 
         try {
-            const res = await fetch(`/api/admin/attendance-sessions/${id}`, {
+            const res = await fetch(`/api/admin/attendance-sessions/${deleteTargetId}`, {
                 method: 'DELETE',
                 headers: getAuthHeaders()
             });
             if (res.ok) {
-                setSessions(sessions.filter(s => s.id !== id));
+                setSessions(sessions.filter(s => s.id !== deleteTargetId));
             } else {
                 alert('Failed to delete session');
             }
         } catch (error) {
             alert('Error deleting session');
+        } finally {
+            setIsDeleteModalOpen(false);
+            setDeleteTargetId(null);
         }
     };
 
@@ -220,8 +233,8 @@ export default function AttendanceSessionsManagement() {
                                             <button
                                                 onClick={() => toggleStatus(session)}
                                                 className={`flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium transition ${session.is_active
-                                                        ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                                                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                                                    ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                                                    : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
                                                     }`}>
                                                 {session.is_active ? 'Active' : 'Inactive'}
                                             </button>
@@ -235,7 +248,7 @@ export default function AttendanceSessionsManagement() {
                                                     <FaEdit />
                                                 </button>
                                                 <button
-                                                    onClick={() => handleDelete(session.id)}
+                                                    onClick={() => handleDeleteClick(session.id)}
                                                     className="p-2 hover:bg-gray-100 rounded-lg text-red-600 transition"
                                                 >
                                                     <FaTrash />
@@ -336,6 +349,18 @@ export default function AttendanceSessionsManagement() {
                     </div>
                 </div>
             )}
+
+            {/* Confirmation Modal */}
+            <ConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleConfirmDelete}
+                title="Hapus Sesi?"
+                message="Apakah Anda yakin ingin menghapus sesi ini? Tindakan ini tidak dapat dibatalkan."
+                isDanger={true}
+                confirmText="Hapus"
+                cancelText="Batal"
+            />
         </AdminLayout>
     );
 }
