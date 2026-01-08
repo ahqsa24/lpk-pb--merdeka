@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaUser, FaCertificate, FaHistory, FaTrophy, FaBook, FaFileAlt, FaVideo, FaGamepad, FaChevronDown, FaChevronRight } from "react-icons/fa";
+import { FaUser, FaCertificate, FaHistory, FaTrophy, FaBook, FaFileAlt, FaVideo, FaGamepad, FaChevronDown, FaChevronRight, FaCalendarCheck } from "react-icons/fa";
 
 interface SidebarItem {
     id: string;
@@ -23,6 +23,7 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeTab, o
             title: "User Login LPK PB Merdeka",
             items: [
                 { id: "profil", label: "Profil User", icon: <FaUser /> },
+                { id: "absensi", label: "Absensi", icon: <FaCalendarCheck /> },
                 { id: "program", label: "Program yang diikuti", icon: <FaFileAlt /> },
                 { id: "sertifikat", label: "Sertifikat Digital", icon: <FaCertificate /> },
                 { id: "riwayat", label: "Riwayat Kompetisi", icon: <FaHistory /> },
@@ -79,8 +80,8 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeTab, o
                                         key={item.id}
                                         onClick={() => onTabChange(item.id)}
                                         className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${activeTab === item.id
-                                                ? "bg-red-50 text-red-600 shadow-sm"
-                                                : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                                            ? "bg-red-50 text-red-600 shadow-sm"
+                                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                                             }`}
                                     >
                                         <span className={`${activeTab === item.id ? "text-red-600" : "text-gray-400"}`}>

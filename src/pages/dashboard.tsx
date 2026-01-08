@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Navbar } from "../components/shared/organisms";
-import { DashboardSidebar } from "../components/dashboard/organisms/DashboardSidebar";
+import { DashboardSidebar, ProfileForm, AttendanceSessionList } from "../components/dashboard/organisms";
 import Head from "next/head";
 import Image from "next/image";
 
@@ -51,53 +51,12 @@ export default function DashboardPage() {
 
     const renderContent = () => {
         switch (activeTab) {
+            case "absensi":
+                return <AttendanceSessionList />;
             case "profil":
                 return (
                     <div className="space-y-6">
-                        <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-zinc-700 transition-colors">
-                            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Profil Saya</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label className="text-sm text-gray-500 dark:text-gray-400 block mb-1">Nama Lengkap</label>
-                                    <p className="font-medium text-gray-900 dark:text-gray-200 text-lg">{user?.name}</p>
-                                </div>
-                                <div>
-                                    <label className="text-sm text-gray-500 dark:text-gray-400 block mb-1">Email</label>
-                                    <p className="font-medium text-gray-900 dark:text-gray-200 text-lg">{user?.email}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Gamification Stats */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="bg-gradient-to-br from-red-50 to-white p-4 rounded-xl border border-red-100 flex items-center gap-4">
-                                <div className="p-3 bg-red-100 text-red-600 rounded-lg">
-                                    <span className="text-2xl font-bold">🏆</span>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-500">Total Skor</p>
-                                    <p className="text-xl font-bold text-gray-900">1,250</p>
-                                </div>
-                            </div>
-                            <div className="bg-gradient-to-br from-blue-50 to-white p-4 rounded-xl border border-blue-100 flex items-center gap-4">
-                                <div className="p-3 bg-blue-100 text-blue-600 rounded-lg">
-                                    <span className="text-2xl font-bold">🥇</span>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-500">Ranking</p>
-                                    <p className="text-xl font-bold text-gray-900">#42</p>
-                                </div>
-                            </div>
-                            <div className="bg-gradient-to-br from-green-50 to-white p-4 rounded-xl border border-green-100 flex items-center gap-4">
-                                <div className="p-3 bg-green-100 text-green-600 rounded-lg">
-                                    <span className="text-2xl font-bold">🎖️</span>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-500">Badges</p>
-                                    <p className="text-xl font-bold text-gray-900">5</p>
-                                </div>
-                            </div>
-                        </div>
+                        <ProfileForm />
                     </div>
                 );
             case "kompetisi-aktif":
