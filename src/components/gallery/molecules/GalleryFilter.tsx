@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 interface FilterOption {
     id: string;
@@ -13,18 +14,33 @@ interface GalleryFilterProps {
 
 const GalleryFilter: React.FC<GalleryFilterProps> = ({ filters, activeFilter, onFilterChange }) => {
     return (
-        <div className="flex flex-wrap justify-center gap-4 mb-16">
-            {filters.map(filter => (
-                <button
+        <div className="flex flex-wrap justify-center gap-3 mb-12">
+            {filters.map((filter, index) => (
+                <motion.button
                     key={filter.id}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
                     onClick={() => onFilterChange(filter.id)}
-                    className={`px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${activeFilter === filter.id
-                        ? 'bg-red-600 text-white shadow-lg shadow-red-200 scale-105'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                        }`}
+                    className={`
+                        relative px-6 py-2.5 rounded-full text-sm font-semibold 
+                        transition-all duration-300 overflow-hidden
+                        ${activeFilter === filter.id
+                            ? 'bg-red-600 text-white shadow-lg shadow-red-200'
+                            : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                        }
+                    `}
                 >
-                    {filter.label}
-                </button>
+                    {/* Active indicator */}
+                    {activeFilter === filter.id && (
+                        <motion.div
+                            layoutId="activeFilter"
+                            className="absolute inset-0 bg-red-600 -z-10"
+                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                        />
+                    )}
+                    <span className="relative z-10">{filter.label}</span>
+                </motion.button>
             ))}
         </div>
     );

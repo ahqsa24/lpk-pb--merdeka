@@ -8,18 +8,44 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     }
 
     try {
+        // User Statistics
         const totalUsers = await prisma.users.count();
         const totalAdmins = await prisma.users.count({
-            where: { role: 'admin' }
+            where: {
+                OR: [
+                    { role: 'admin' },
+                    { role: 'superAdmin' }
+                ]
+            }
         });
+
+        // Attendance Statistics
         const activeSessions = await prisma.attendance_sessions.count({
             where: { is_active: true }
         });
+        const totalAttendanceRecords = await prisma.attendance_records.count();
+
+        // CMS Statistics
+        const totalGallery = await prisma.cms_gallery.count();
+        const totalFAQ = await prisma.cms_faq.count();
+        const totalTestimonials = await prisma.cms_testimonials.count();
+        const totalArticles = await prisma.cms_articles.count();
 
         return res.status(200).json({
-            totalUsers,
-            totalAdmins,
-            activeSessions
+            users: {
+                total: totalUsers,
+                admins: totalAdmins
+            },
+            attendance: {
+                activeSessions,
+                totalRecords: totalAttendanceRecords
+            },
+            cms: {
+                gallery: totalGallery,
+                faq: totalFAQ,
+                testimonials: totalTestimonials,
+                articles: totalArticles
+            }
         });
     } catch (error) {
         console.error('Stats error:', error);

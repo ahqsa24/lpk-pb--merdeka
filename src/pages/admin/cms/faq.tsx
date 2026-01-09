@@ -22,6 +22,7 @@ export default function CMSFAQ() {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formData, setFormData] = useState({ question: '', answer: '', category: 'General', order: 0, id: '' });
     const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Delete Modal State
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -104,6 +105,10 @@ export default function CMSFAQ() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (isSubmitting) return; // Prevent multiple submissions
+
+        setIsSubmitting(true);
         const url = formMode === 'create' ? '/api/admin/cms/faq' : `/api/admin/cms/faq/${formData.id}`;
         const method = formMode === 'create' ? 'POST' : 'PUT';
 
@@ -124,6 +129,8 @@ export default function CMSFAQ() {
             }
         } catch (error) {
             setToast({ isOpen: true, message: 'Error submitting form', type: 'error' });
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -285,15 +292,27 @@ export default function CMSFAQ() {
                                 <button
                                     type="button"
                                     onClick={() => setIsFormOpen(false)}
-                                    className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg font-medium"
+                                    disabled={isSubmitting}
+                                    className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg font-medium transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700"
+                                    disabled={isSubmitting}
+                                    className="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                                 >
-                                    Save
+                                    {isSubmitting ? (
+                                        <>
+                                            <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            Saving...
+                                        </>
+                                    ) : (
+                                        'Save Changes'
+                                    )}
                                 </button>
                             </div>
                         </form>

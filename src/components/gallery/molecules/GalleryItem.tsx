@@ -1,6 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
-import { FaPlay, FaCamera } from 'react-icons/fa';
+import { FaPlay, FaImage } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 
 export type GalleryType = 'photo' | 'video';
 export type GalleryCategory = 'activity' | 'ceremony' | 'training' | 'culture';
@@ -15,46 +16,81 @@ export interface GalleryItemProps {
 }
 
 const GalleryItem: React.FC<GalleryItemProps> = ({ type, category, title, date, image }) => {
+    const categoryLabels: Record<GalleryCategory, string> = {
+        activity: 'Aktivitas',
+        ceremony: 'Upacara',
+        training: 'Pelatihan',
+        culture: 'Budaya'
+    };
+
     return (
-        <div className="relative group break-inside-avoid rounded-2xl overflow-hidden bg-gray-100 shadow-md hover:shadow-2xl transition-all duration-500 cursor-pointer">
-            {/* Image */}
-            <div className="relative w-full">
-                <Image
-                    src={image}
-                    alt={title}
-                    width={800}
-                    height={600}
-                    className="w-full h-auto object-cover transform group-hover:scale-110 transition-transform duration-700"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="group relative break-inside-avoid mb-6"
+        >
+            <div className="relative overflow-hidden rounded-2xl bg-gray-100 shadow-lg hover:shadow-2xl transition-all duration-500">
+                {/* Image Container */}
+                <div className="relative aspect-[4/3] overflow-hidden">
+                    <Image
+                        src={image}
+                        alt={title}
+                        fill
+                        className="object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
 
-                {/* Overlay Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                {/* Type Icon (Top Right) */}
-                <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-md p-2 rounded-full text-white border border-white/30">
-                    {type === 'video' ? <FaPlay size={12} className="ml-0.5" /> : <FaCamera size={14} />}
-                </div>
-
-                {/* Content (Bottom) */}
-                <div className="absolute bottom-0 left-0 w-full p-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                    <span className="inline-block px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-lg mb-2">
-                        {category.toUpperCase()}
-                    </span>
-                    <h3 className="text-white font-bold text-lg leading-tight mb-1">
-                        {title}
-                    </h3>
-                    <p className="text-gray-300 text-sm">{date}</p>
-                </div>
-
-                {/* Centered Play Button for Video */}
-                {type === 'video' && (
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center text-white border-2 border-white group-hover:scale-110 transition-transform duration-300">
-                        <FaPlay size={24} className="ml-1" />
+                    {/* Type Badge */}
+                    <div className="absolute top-4 right-4 z-10">
+                        <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg flex items-center gap-2">
+                            {type === 'video' ? (
+                                <>
+                                    <FaPlay className="text-red-600 text-xs" />
+                                    <span className="text-xs font-semibold text-gray-800">Video</span>
+                                </>
+                            ) : (
+                                <>
+                                    <FaImage className="text-red-600 text-xs" />
+                                    <span className="text-xs font-semibold text-gray-800">Foto</span>
+                                </>
+                            )}
+                        </div>
                     </div>
-                )}
+
+                    {/* Video Play Button */}
+                    {type === 'video' && (
+                        <div className="absolute inset-0 flex items-center justify-center z-10">
+                            <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border-2 border-white/50 group-hover:scale-110 group-hover:bg-red-600/80 transition-all duration-300">
+                                <FaPlay className="text-white text-xl ml-1" />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Content Overlay */}
+                    <div className="absolute bottom-0 left-0 right-0 p-5 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                        {/* Category Badge */}
+                        <span className="inline-block px-3 py-1 bg-red-600 text-white text-xs font-bold rounded-lg mb-2 shadow-lg">
+                            {categoryLabels[category]}
+                        </span>
+
+                        {/* Title & Date */}
+                        <h3 className="text-white font-bold text-base md:text-lg leading-tight mb-1 line-clamp-2">
+                            {title}
+                        </h3>
+                        <p className="text-gray-200 text-sm flex items-center gap-1">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            {date}
+                        </p>
+                    </div>
+                </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 

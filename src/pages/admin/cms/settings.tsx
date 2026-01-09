@@ -2,11 +2,15 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { AdminLayout } from '@/components/layouts/AdminLayout';
 import { FaSave, FaCog, FaSpinner } from 'react-icons/fa';
+import { Toast } from '@/components/shared/molecules/Toast';
 
 export default function CMSSettings() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [settings, setSettings] = useState<any>({});
+
+    // Toast State
+    const [toast, setToast] = useState({ isOpen: false, message: '', type: 'info' as 'success' | 'error' | 'info' | 'warning' });
 
     const getAuthHeaders = () => {
         const token = localStorage.getItem('token');
@@ -48,12 +52,13 @@ export default function CMSSettings() {
             });
 
             if (res.ok) {
-                alert('Settings saved successfully');
+                setToast({ isOpen: true, message: 'Settings saved successfully!', type: 'success' });
             } else {
-                alert('Failed to save settings');
+                const data = await res.json();
+                setToast({ isOpen: true, message: data.message || 'Failed to save settings', type: 'error' });
             }
         } catch (error) {
-            alert('Error saving settings');
+            setToast({ isOpen: true, message: 'Error saving settings', type: 'error' });
         } finally {
             setSaving(false);
         }
@@ -196,6 +201,13 @@ export default function CMSSettings() {
                     )}
                 </div>
             </div>
+
+            <Toast
+                isOpen={toast.isOpen}
+                message={toast.message}
+                type={toast.type}
+                onClose={() => setToast({ ...toast, isOpen: false })}
+            />
         </AdminLayout>
     );
 }
