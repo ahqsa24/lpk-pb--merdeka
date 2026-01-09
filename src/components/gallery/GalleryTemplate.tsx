@@ -17,10 +17,10 @@ const GalleryTemplate = () => {
                                 Galeri Kami
                             </span>
                         </div>
-                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
+                        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">
                             Galeri Kegiatan
                         </h1>
-                        <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
+                        <p className="text-lg text-gray-600">
                             Dokumentasi momen berharga dari berbagai kegiatan pelatihan, seminar, dan aktivitas komunitas kami
                         </p>
                     </ScrollReveal>

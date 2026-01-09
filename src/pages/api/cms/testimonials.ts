@@ -14,23 +14,13 @@ const serializeBigInt = (obj: any) => {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'GET') {
         try {
-            const { category } = req.query;
-
-            // Build where clause based on category filter
-            const whereClause: any = {};
-            if (category && typeof category === 'string') {
-                whereClause.category = category;
-            }
-
-            const faqs = await prisma.cms_faq.findMany({
-                where: whereClause,
-                orderBy: { order: 'asc' }
+            const testimonials = await prisma.cms_testimonials.findMany({
+                orderBy: { created_at: 'desc' }
             });
-
-            return res.json(serializeBigInt(faqs));
+            return res.json(serializeBigInt(testimonials));
         } catch (error) {
             console.error(error);
-            return res.status(500).json({ message: 'Error fetching faqs' });
+            return res.status(500).json({ message: 'Error fetching testimonials' });
         }
     }
     res.status(405).end();

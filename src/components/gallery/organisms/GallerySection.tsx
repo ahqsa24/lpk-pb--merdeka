@@ -1,75 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GalleryFilter from "../molecules/GalleryFilter";
 import GalleryGrid from './GalleryGrid';
 import { GalleryItemProps } from "../molecules/GalleryItem";
-
-// Move data to a separate file or keep here if static. Keeping here for now as per original.
-const galleryItems: GalleryItemProps[] = [
-    {
-        id: 1,
-        type: 'photo',
-        category: 'training',
-        title: "Pelatihan Analisis Teknikal Lanjutan",
-        date: "12 Okt 2023",
-        image: "https://images.unsplash.com/photo-1611974765270-ca12586343bb?q=80&w=1600&auto=format&fit=crop",
-    },
-    {
-        id: 2,
-        type: 'video',
-        category: 'activity',
-        title: "Kunjungan ke Bursa Berjangka Jakarta",
-        date: "15 Okt 2023",
-        image: "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=1600&auto=format&fit=crop",
-    },
-    {
-        id: 3,
-        type: 'photo',
-        category: 'ceremony',
-        title: "Wisuda Angkatan 5 Broker Muda",
-        date: "20 Okt 2023",
-        image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1600&auto=format&fit=crop",
-    },
-    {
-        id: 4,
-        type: 'photo',
-        category: 'culture',
-        title: "Gathering Komunitas Trader",
-        date: "25 Okt 2023",
-        image: "https://images.unsplash.com/photo-1528605205643-26409612d350?q=80&w=1600&auto=format&fit=crop",
-    },
-    {
-        id: 5,
-        type: 'video',
-        category: 'training',
-        title: "Simulasi Live Trading NFP",
-        date: "01 Nov 2023",
-        image: "https://images.unsplash.com/photo-1642543492481-44e81e3914a7?q=80&w=1600&auto=format&fit=crop",
-    },
-    {
-        id: 6,
-        type: 'photo',
-        category: 'activity',
-        title: "Seminar Outlook Ekonomi 2024",
-        date: "05 Nov 2023",
-        image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1600&auto=format&fit=crop",
-    },
-    {
-        id: 7,
-        type: 'photo',
-        category: 'training',
-        title: "Kelas Manajemen Risiko",
-        date: "10 Nov 2023",
-        image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1600&auto=format&fit=crop",
-    },
-    {
-        id: 8,
-        type: 'video',
-        category: 'culture',
-        title: "Networking Dinner dengan Pakar Industri",
-        date: "15 Nov 2023",
-        image: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=1600&auto=format&fit=crop",
-    }
-];
 
 const categories = [
     { id: 'all', label: 'Semua' },
@@ -79,12 +11,62 @@ const categories = [
 
 const GallerySection = () => {
     const [activeFilter, setActiveFilter] = useState('all');
+    const [galleryItems, setGalleryItems] = useState<GalleryItemProps[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchGallery = async () => {
+            try {
+                const res = await fetch('/api/cms/gallery');
+                if (res.ok) {
+                    const data = await res.json();
+                    // Transform API data to match GalleryItemProps
+                    const transformedData: GalleryItemProps[] = data.map((item: any) => ({
+                        id: parseInt(item.id),
+                        type: item.type === 'video' ? 'video' : 'photo',
+                        category: (item.category || 'activity') as any,
+                        title: item.title || 'Untitled',
+                        date: new Date(item.created_at).toLocaleDateString('id-ID', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric'
+                        }),
+                        image: item.image_url
+                    }));
+                    setGalleryItems(transformedData);
+                }
+            } catch (error) {
+                console.error('Failed to fetch gallery', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchGallery();
+    }, []);
 
     const filteredItems = galleryItems.filter(item => {
         if (activeFilter === 'all') return true;
         if (activeFilter === 'photo' || activeFilter === 'video') return item.type === activeFilter;
         return item.category === activeFilter;
     });
+
+    if (loading) {
+        return (
+            <div className="space-y-8">
+                <GalleryFilter
+                    filters={categories}
+                    activeFilter={activeFilter}
+                    onFilterChange={setActiveFilter}
+                />
+                <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                        <div key={i} className="animate-pulse bg-gray-200 h-64 rounded-2xl mb-6"></div>
+                    ))}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-8">

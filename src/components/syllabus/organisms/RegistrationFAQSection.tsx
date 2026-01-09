@@ -1,32 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import { LineHeading } from "../../shared/molecules";
 
+interface FAQ {
+    id: string;
+    question: string;
+    answer: string;
+    category: string;
+    order: number;
+}
+
 const RegistrationFAQSection = () => {
     const [activeIndex, setActiveIndex] = useState<number | null>(0);
+    const [faqs, setFaqs] = useState<FAQ[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const faqs = [
-        {
-            question: "Apa saja dokumen yang harus disiapkan untuk pendaftaran?",
-            answer: "Calon peserta wajib menyiapkan scan KTP, Ijazah Terakhir (dijamin legalisir), Transkrip Nilai, Pas Foto terbaru 4x6, dan CV (Curriculum Vitae) terbaru."
-        },
-        {
-            question: "Apakah biaya pelatihan bisa dicicil?",
-            answer: "Ya, kami menyediakan fasilitas cicilan 2x bayar. Pembayaran pertama sebesar 50% saat registrasi ulang, dan pelunasan dilakukan maksimal sebelum Ujian Tengah Pelatihan."
-        },
-        {
-            question: "Bagaimana alur seleksi masuk LPK PB Merdeka?",
-            answer: "Setelah mendaftar online, peserta akan mengikuti Tes Potensi Akademik (Online), Psikotes, dan wawancara user. Hasil seleksi akan diumumkan maksimal 3 hari kerja setelah wawancara."
-        },
-        {
-            question: "Apakah ada jaminan penyaluran kerja?",
-            answer: "LPK PB Merdeka bekerja sama dengan lebih dari 20 Pialang Berjangka resmi di Indonesia. Lulusan dengan predikat 'Memuaskan' akan mendapatkan rekomendasi prioritas untuk penempatan kerja."
-        }
-    ];
+    useEffect(() => {
+        const fetchFAQs = async () => {
+            try {
+                const res = await fetch('/api/cms/faq?category=Registration');
+                if (res.ok) {
+                    const data = await res.json();
+                    setFaqs(data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch FAQs', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchFAQs();
+    }, []);
 
     const toggleFAQ = (index: number) => {
         setActiveIndex(activeIndex === index ? null : index);
     };
+
+    if (loading) {
+        return (
+            <section className="py-12">
+                <div className="text-center mb-10">
+                    <LineHeading title="FAQ Pendaftaran" />
+                    <p className="text-gray-600 mt-4">
+                        Pertanyaan umum seputar proses registrasi dan administrasi.
+                    </p>
+                </div>
+                <div className="max-w-3xl mx-auto space-y-4">
+                    {[1, 2, 3, 4].map((i) => (
+                        <div key={i} className="animate-pulse bg-gray-100 h-20 rounded-2xl"></div>
+                    ))}
+                </div>
+            </section>
+        );
+    }
+
+    if (faqs.length === 0) {
+        return (
+            <section className="py-12">
+                <div className="text-center mb-10">
+                    <LineHeading title="FAQ Pendaftaran" />
+                    <p className="text-gray-600 mt-4">
+                        Pertanyaan umum seputar proses registrasi dan administrasi.
+                    </p>
+                </div>
+                <div className="max-w-3xl mx-auto text-center py-12 text-gray-500">
+                    <p>Belum ada FAQ pendaftaran yang tersedia.</p>
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section className="py-12">
@@ -40,7 +83,7 @@ const RegistrationFAQSection = () => {
             <div className="max-w-3xl mx-auto space-y-4">
                 {faqs.map((faq, index) => (
                     <div
-                        key={index}
+                        key={faq.id}
                         className={`border rounded-2xl overflow-hidden transition-all duration-300 ${activeIndex === index ? 'border-red-200 bg-red-50 shadow-md' : 'border-gray-200 bg-white hover:border-red-100'
                             }`}
                     >
@@ -57,7 +100,7 @@ const RegistrationFAQSection = () => {
                         </button>
 
                         <div
-                            className={`transition-all duration-300 ease-in-out overflow-hidden ${activeIndex === index ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
+                            className={`transition-all duration-300 ease-in-out overflow-hidden ${activeIndex === index ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                                 }`}
                         >
                             <div className="p-5 pt-0 text-gray-600 leading-relaxed border-t border-red-100/50">

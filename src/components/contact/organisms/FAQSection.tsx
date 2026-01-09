@@ -1,36 +1,71 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AccordionItem from "../molecules/AccordionItem";
 import { Heading } from "../../shared/atoms";
 
+interface FAQ {
+    id: string;
+    question: string;
+    answer: string;
+    category: string;
+    order: number;
+}
+
 const FAQSection = () => {
     const [openIndex, setOpenIndex] = useState<number | null>(0);
+    const [faqs, setFaqs] = useState<FAQ[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const faqs = [
-        {
-            title: 'Apa syarat untuk mendaftar program ini?',
-            content: 'Minimal lulusan SMA/Sederajat, memiliki ketertarikan di bidang keuangan dan investasi, serta bersedia mengikuti seluruh rangkaian pelatihan secara penuh.'
-        },
-        {
-            title: 'Berapa lama durasi pelatihannya?',
-            content: 'Program pelatihan reguler berlangsung selama 3 bulan, tediri dari 1 bulan materi intensif di kelas dan 2 bulan praktik simulasi serta magang.'
-        },
-        {
-            title: 'Apakah ada biaya pendaftaran?',
-            content: 'Untuk informasi detail mengenai biaya investasi pendidikan dan opsi cicilan atau beasiswa, silakan hubungi tim admisi kami melalui formulir kontak.'
-        },
-        {
-            title: 'Apakah lulusan dijamin kerja?',
-            content: 'Kami memiliki kemitraan dengan berbagai perusahaan pialang berjangka terkemuka. Lulusan terbaik akan mendapatkan rekomendasi penempatan kerja prioritas.'
-        },
-        {
-            title: 'Apakah sertifikatnya diakui secara nasional?',
-            content: 'Ya, LPK PB Merdeka terakreditasi dan sertifikat kompetensi yang kami keluarkan diakui oleh Bappebti dan asosiasi terkait.'
-        }
-    ];
+    useEffect(() => {
+        const fetchFAQs = async () => {
+            try {
+                const res = await fetch('/api/cms/faq?category=General');
+                if (res.ok) {
+                    const data = await res.json();
+                    setFaqs(data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch FAQs', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchFAQs();
+    }, []);
 
     const handleToggle = (index: number) => {
         setOpenIndex(openIndex === index ? null : index);
     };
+
+    if (loading) {
+        return (
+            <div className="w-full">
+                <div className="mb-8">
+                    <Heading className="text-2xl mb-2">Frequently Asked Questions (FAQ)</Heading>
+                    <p className="text-gray-500 text-sm">Jawaban cepat untuk pertanyaan umum seputar program kami.</p>
+                </div>
+                <div className="space-y-4">
+                    {[1, 2, 3].map((i) => (
+                        <div key={i} className="animate-pulse bg-gray-100 h-16 rounded-lg"></div>
+                    ))}
+                </div>
+            </div>
+        );
+    }
+
+    if (faqs.length === 0) {
+        return (
+            <div className="w-full">
+                <div className="mb-8">
+                    <Heading className="text-2xl mb-2">Frequently Asked Questions (FAQ)</Heading>
+                    <p className="text-gray-500 text-sm">Jawaban cepat untuk pertanyaan umum seputar program kami.</p>
+                </div>
+                <div className="text-center py-12 text-gray-500">
+                    <p>Belum ada FAQ yang tersedia.</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full">
@@ -42,9 +77,9 @@ const FAQSection = () => {
             <div className="space-y-1">
                 {faqs.map((faq, index) => (
                     <AccordionItem
-                        key={index}
-                        title={faq.title}
-                        content={faq.content}
+                        key={faq.id}
+                        title={faq.question}
+                        content={faq.answer}
                         isOpen={openIndex === index}
                         onClick={() => handleToggle(index)}
                     />

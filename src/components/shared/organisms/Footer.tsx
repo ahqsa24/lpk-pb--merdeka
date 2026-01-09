@@ -1,9 +1,42 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { FaInstagram, FaFacebookF, FaLinkedinIn, FaTiktok, FaWhatsapp, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import { FaInstagram, FaFacebookF, FaLinkedinIn, FaYoutube, FaWhatsapp, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+
+interface Settings {
+    contact_email?: string;
+    contact_phone?: string;
+    contact_whatsapp?: string;
+    contact_address?: string;
+    social_instagram?: string;
+    social_facebook?: string;
+    social_linkedin?: string;
+    social_youtube?: string;
+    map_embed_url?: string;
+}
 
 export const Footer = () => {
+    const [settings, setSettings] = useState<Settings>({});
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const res = await fetch('/api/cms/settings');
+                if (res.ok) {
+                    const data = await res.json();
+                    setSettings(data);
+                }
+            } catch (error) {
+                console.error('Failed to fetch settings', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSettings();
+    }, []);
+
     return (
         <footer className="bg-red-600 text-red-50 pt-16 pb-8">
             <div className="container mx-auto px-6 lg:px-12 xl:px-24">
@@ -42,46 +75,105 @@ export const Footer = () => {
                     {/* Contact Info */}
                     <div>
                         <h3 className="text-white font-bold text-lg mb-6">Hubungi Kami</h3>
-                        <ul className="flex flex-col gap-4">
-                            <li className="flex items-start gap-3">
-                                <FaMapMarkerAlt className="mt-1 text-white flex-shrink-0" />
-                                <span className="text-sm">Jl. Jend. Sudirman No. 123, Jakarta Pusat, DKI Jakarta 10220</span>
-                            </li>
-                            <li className="flex items-center gap-3">
-                                <FaEnvelope className="text-white flex-shrink-0" />
-                                <span className="text-sm">info@lpkpbmerdeka.id</span>
-                            </li>
-                            <li className="flex items-center gap-3">
-                                <FaWhatsapp className="text-white flex-shrink-0" />
-                                <span className="text-sm">+62 812-3456-7890</span>
-                            </li>
-                        </ul>
+                        {loading ? (
+                            <div className="space-y-4">
+                                <div className="animate-pulse bg-white/10 h-4 rounded w-3/4"></div>
+                                <div className="animate-pulse bg-white/10 h-4 rounded w-1/2"></div>
+                                <div className="animate-pulse bg-white/10 h-4 rounded w-2/3"></div>
+                            </div>
+                        ) : (
+                            <ul className="flex flex-col gap-4">
+                                {settings.contact_address && (
+                                    <li className="flex items-start gap-3">
+                                        <FaMapMarkerAlt className="mt-1 text-white flex-shrink-0" />
+                                        <span className="text-sm">{settings.contact_address}</span>
+                                    </li>
+                                )}
+                                {settings.contact_email && (
+                                    <li className="flex items-center gap-3">
+                                        <FaEnvelope className="text-white flex-shrink-0" />
+                                        <a href={`mailto:${settings.contact_email}`} className="text-sm hover:text-white transition-colors">
+                                            {settings.contact_email}
+                                        </a>
+                                    </li>
+                                )}
+                                {settings.contact_whatsapp && (
+                                    <li className="flex items-center gap-3">
+                                        <FaWhatsapp className="text-white flex-shrink-0" />
+                                        <a
+                                            href={`https://wa.me/${settings.contact_whatsapp.replace(/[^0-9]/g, '')}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-sm hover:text-white transition-colors"
+                                        >
+                                            {settings.contact_whatsapp}
+                                        </a>
+                                    </li>
+                                )}
+                            </ul>
+                        )}
                     </div>
 
                     {/* Social Media */}
                     <div>
                         <h3 className="text-white font-bold text-lg mb-6">Ikuti Kami</h3>
                         <p className="text-red-100 text-sm mb-6">Dapatkan update terbaru seputar program dan kegiatan kami.</p>
-                        <div className="flex gap-4">
-                            <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-red-600 transition-colors border border-white/20 hover:border-white">
-                                <FaInstagram />
-                            </a>
-                            <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-red-600 transition-colors border border-white/20 hover:border-white">
-                                <FaFacebookF />
-                            </a>
-                            <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-red-600 transition-colors border border-white/20 hover:border-white">
-                                <FaLinkedinIn />
-                            </a>
-                            <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-red-600 transition-colors border border-white/20 hover:border-white">
-                                <FaTiktok />
-                            </a>
-                        </div>
+                        {loading ? (
+                            <div className="flex gap-4">
+                                {[1, 2, 3, 4].map((i) => (
+                                    <div key={i} className="animate-pulse w-10 h-10 rounded-full bg-white/10"></div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="flex gap-4">
+                                {settings.social_instagram && (
+                                    <a
+                                        href={settings.social_instagram}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-red-600 transition-colors border border-white/20 hover:border-white"
+                                    >
+                                        <FaInstagram />
+                                    </a>
+                                )}
+                                {settings.social_facebook && (
+                                    <a
+                                        href={settings.social_facebook}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-red-600 transition-colors border border-white/20 hover:border-white"
+                                    >
+                                        <FaFacebookF />
+                                    </a>
+                                )}
+                                {settings.social_linkedin && (
+                                    <a
+                                        href={settings.social_linkedin}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-red-600 transition-colors border border-white/20 hover:border-white"
+                                    >
+                                        <FaLinkedinIn />
+                                    </a>
+                                )}
+                                {settings.social_youtube && (
+                                    <a
+                                        href={settings.social_youtube}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-red-600 transition-colors border border-white/20 hover:border-white"
+                                    >
+                                        <FaYoutube />
+                                    </a>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
 
                 <div className="border-t border-red-500 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-red-100">
                     <p className="text-sm text-center md:text-left">
-                        &copy; 2025 LPK PB Merdeka. All rights reserved.
+                        &copy; {new Date().getFullYear()} LPK PB Merdeka. All rights reserved.
                     </p>
                     <div className="flex gap-6 text-sm">
                         <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
