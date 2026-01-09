@@ -40,10 +40,26 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!isAuthenticated) {
+        const token = localStorage.getItem('token');
+        if (!token) {
             router.push('/auth/login');
-        } else if (user && user.role !== 'admin' && user.role !== 'superAdmin') {
-            router.push('/dashboard');
+            return;
+        }
+
+        if (isAuthenticated) {
+            if (user && user.role !== 'admin' && user.role !== 'superAdmin') {
+                router.push('/dashboard');
+            }
+        } else {
+            // Wait for auth check to complete
+            const checkInterval = setInterval(() => {
+                const currentToken = localStorage.getItem('token');
+                if (!currentToken && !isAuthenticated) {
+                    router.push('/auth/login');
+                    clearInterval(checkInterval);
+                }
+            }, 100);
+            return () => clearInterval(checkInterval);
         }
     }, [isAuthenticated, user, router]);
 
@@ -73,9 +89,7 @@ export default function AdminDashboard() {
         }
     }, [isAuthenticated, user]);
 
-    if (!isAuthenticated || (user && user.role !== 'admin' && user.role !== 'superAdmin')) {
-        return null;
-    }
+
 
     const statCards = stats ? [
         { label: 'Total Users', value: stats.users.total, icon: <FaUsers />, color: 'bg-blue-500' },

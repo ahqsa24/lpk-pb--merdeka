@@ -141,9 +141,7 @@ export default function ArticleDetailPage() {
 
                 {/* Footer / Navigation suggestion */}
                 <div className="mt-8 text-center">
-                    <Link href="/dashboard" className="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-full shadow-sm hover:shadow-md transition-all text-gray-600 dark:text-gray-300 font-medium">
-                        <FaArrowLeft /> Kembali ke Dashboard
-                    </Link>
+                    {/* Button redundant, removed as per request */}
                 </div>
             </main>
         </div>

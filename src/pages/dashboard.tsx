@@ -32,17 +32,35 @@ export default function DashboardPage() {
 
 
     useEffect(() => {
-        // Simple auth check delay or logic if needed, 
-        // but useAuth handles state mostly.
-        const timer = setTimeout(() => setLoading(false), 500);
-        return () => clearTimeout(timer);
-    }, []);
-
-    useEffect(() => {
-        if (!loading && !isAuthenticated) {
-            router.push("/auth/login");
+        // Initial check
+        const token = localStorage.getItem('token');
+        if (!token) {
+            router.push('/auth/login');
+            setLoading(false);
+            return;
         }
-    }, [loading, isAuthenticated, router]);
+
+        // If we have a token but not authenticated yet, wait.
+        // If authenticated, stop loading.
+        if (isAuthenticated) {
+            setLoading(false);
+        } else {
+            // Check if token was removed by AuthContext (invalid)
+            // But AuthContext updates asynchronously. 
+            // We can rely on the fact that if isAuthenticated is false and token is gone, we redirect.
+            // If token is still there, we are verifying.
+            const checkInterval = setInterval(() => {
+                const currentToken = localStorage.getItem('token');
+                if (!currentToken && !isAuthenticated) {
+                    router.push('/auth/login');
+                    clearInterval(checkInterval);
+                    setLoading(false);
+                }
+            }, 100);
+
+            return () => clearInterval(checkInterval);
+        }
+    }, [isAuthenticated, router]);
 
     if (loading) {
         return (
