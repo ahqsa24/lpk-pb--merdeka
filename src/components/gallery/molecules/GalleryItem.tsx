@@ -23,22 +23,59 @@ const GalleryItem: React.FC<GalleryItemProps> = ({ type, category, title, date, 
         culture: 'Budaya'
     };
 
+    // Extract YouTube ID
+    const getYouTubeId = (url: string) => {
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
+    };
+
+    // Determine display image
+    let displayImage = image;
+    if (type === 'video') {
+        const youtubeId = getYouTubeId(image);
+        if (youtubeId) {
+            displayImage = `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`;
+        } else if (image.includes('drive.google.com')) {
+            // Fallback for Drive - usually need a manual cover or API
+            // Using a high-quality placeholder or the default image if it happens to be valid
+            // For now, we unfortunately can't auto-fetch Drive thumbs easily without API key.
+            // We'll use a placeholder if the image string is obviously a drive URL
+            displayImage = '/assets/video-placeholder.jpg'; // Ensure this exists or use a colorful div
+        }
+    }
+
+    // Handler for video click
+    const handleClick = () => {
+        if (type === 'video') {
+            window.open(image, '_blank');
+        }
+    };
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="group relative break-inside-avoid mb-6"
+            className="group relative break-inside-avoid mb-6 cursor-pointer"
+            onClick={handleClick}
         >
             <div className="relative overflow-hidden rounded-2xl bg-gray-100 shadow-lg hover:shadow-2xl transition-all duration-500">
                 {/* Image Container */}
-                <div className="relative aspect-[4/3] overflow-hidden">
+                <div className="relative aspect-[4/3] overflow-hidden bg-gray-900">
                     <Image
-                        src={image}
+                        src={displayImage}
                         alt={title}
                         fill
-                        className="object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                        className={`object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out ${type === 'video' && displayImage === image ? 'opacity-50' : ''}`} // Dim if raw video url
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        onError={(e) => {
+                            // Fallback if maxresdefault doesn't exist (some videos only have hqdefault)
+                            if (displayImage.includes('maxresdefault')) {
+                                const target = e.target as HTMLImageElement;
+                                target.src = displayImage.replace('maxresdefault', 'hqdefault');
+                            }
+                        }}
                     />
 
                     {/* Gradient Overlay */}

@@ -163,11 +163,31 @@ export default function CMSGallery() {
                         <div key={item.id} className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden group hover:shadow-md transition">
                             <div className="aspect-video bg-gray-100 relative overflow-hidden">
                                 {item.type === 'video' ? (
-                                    <video src={item.image_url} className="w-full h-full object-cover" controls />
+                                    (() => {
+                                        const getYouTubeId = (url: string) => {
+                                            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                                            const match = url.match(regExp);
+                                            return (match && match[2].length === 11) ? match[2] : null;
+                                        };
+                                        const youtubeId = getYouTubeId(item.image_url);
+
+                                        if (youtubeId) {
+                                            return (
+                                                <iframe
+                                                    src={`https://www.youtube.com/embed/${youtubeId}`}
+                                                    title={item.title || 'Video'}
+                                                    className="w-full h-full border-0"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                    allowFullScreen
+                                                />
+                                            );
+                                        }
+                                        return <video src={item.image_url} className="w-full h-full object-cover" controls />;
+                                    })()
                                 ) : (
                                     <img src={item.image_url} alt={item.title} className="w-full h-full object-cover" />
                                 )}
-                                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-3">
+                                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-3 pointer-events-none group-hover:pointer-events-auto">
                                     <button onClick={() => handleEdit(item)} className="p-2 bg-white text-blue-600 rounded-full hover:bg-gray-100"><FaEdit /></button>
                                     <button onClick={() => handleDeleteClick(item.id)} className="p-2 bg-white text-red-600 rounded-full hover:bg-gray-100"><FaTrash /></button>
                                 </div>
