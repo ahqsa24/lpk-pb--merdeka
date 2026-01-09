@@ -4,6 +4,7 @@ import { AdminLayout } from '@/components/layouts/AdminLayout';
 import { FaEdit, FaTrash, FaPlus, FaNewspaper, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { ConfirmationModal } from '@/components/shared/molecules/ConfirmationModal';
 import { Toast } from '@/components/shared/molecules/Toast';
+import { useSearch } from '@/context/SearchContext';
 
 interface Article {
     id: string;
@@ -20,6 +21,7 @@ interface Article {
 
 export default function CMSArticles() {
     const [articles, setArticles] = useState<Article[]>([]);
+    const { searchQuery } = useSearch();
     const [loading, setLoading] = useState(true);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formData, setFormData] = useState({
@@ -145,6 +147,12 @@ export default function CMSArticles() {
         }
     };
 
+    const filteredArticles = articles.filter(article =>
+        article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (article.author && article.author.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (article.content && article.content.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+
     return (
         <AdminLayout title="CMS: Articles">
             <Head>
@@ -180,12 +188,14 @@ export default function CMSArticles() {
                                 <tr>
                                     <td colSpan={5} className="px-6 py-4 text-center text-gray-500">Loading...</td>
                                 </tr>
-                            ) : articles.length === 0 ? (
+                            ) : filteredArticles.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="px-6 py-4 text-center text-gray-500">No articles found.</td>
+                                    <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
+                                        {searchQuery ? `No articles found matching "${searchQuery}"` : 'No articles found.'}
+                                    </td>
                                 </tr>
                             ) : (
-                                articles.map((article) => (
+                                filteredArticles.map((article) => (
                                     <tr key={article.id} className="hover:bg-gray-50 transition">
                                         <td className="px-6 py-4 font-medium text-gray-900 max-w-sm truncate">{article.title}</td>
                                         <td className="px-6 py-4 text-sm text-gray-500">{article.author || '-'}</td>

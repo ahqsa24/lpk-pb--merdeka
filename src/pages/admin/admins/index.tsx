@@ -4,6 +4,7 @@ import { AdminLayout } from '@/components/layouts/AdminLayout';
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaUserShield, FaCrown } from 'react-icons/fa';
 import { ConfirmationModal } from '@/components/shared/molecules/ConfirmationModal';
 import { useAuth } from '@/context/AuthContext';
+import { useSearch } from '@/context/SearchContext';
 
 interface Admin {
     id: string;
@@ -19,7 +20,7 @@ export default function AdminsManagement() {
 
     const [admins, setAdmins] = useState<Admin[]>([]);
     const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
+    const { searchQuery } = useSearch();
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
@@ -62,8 +63,8 @@ export default function AdminsManagement() {
     }, []);
 
     const filteredAdmins = admins.filter(admin =>
-        admin.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        admin.email.toLowerCase().includes(searchTerm.toLowerCase())
+        admin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        admin.email.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const handleDeleteClick = (id: string, role: string) => {
@@ -162,15 +163,8 @@ export default function AdminsManagement() {
 
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="p-4 border-b border-gray-100 flex flex-col md:flex-row justify-between gap-4 items-center">
-                    <div className="relative w-full md:w-64">
-                        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                        <input
-                            type="text"
-                            placeholder="Search admins..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-red-500"
-                        />
+                    <div className="relative w-full md:w-64 hidden">
+                        {/* Search input managed globally in AdminLayout */}
                     </div>
                     {isSuperAdmin && (
                         <button
@@ -202,7 +196,9 @@ export default function AdminsManagement() {
                                 </tr>
                             ) : filteredAdmins.length === 0 ? (
                                 <tr>
-                                    <td colSpan={isSuperAdmin ? 5 : 4} className="px-6 py-4 text-center text-gray-500">No admins found.</td>
+                                    <td colSpan={isSuperAdmin ? 5 : 4} className="px-6 py-4 text-center text-gray-500">
+                                        {searchQuery ? `No admins found matching "${searchQuery}"` : "No admins found."}
+                                    </td>
                                 </tr>
                             ) : (
                                 filteredAdmins.map((admin) => (

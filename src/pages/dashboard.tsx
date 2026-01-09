@@ -1,18 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { DashboardSidebar, ProfileForm, AttendanceSessionList } from "../components/dashboard/organisms";
 import { useAuth } from "@/context/AuthContext";
+import { useSearch } from '@/context/SearchContext';
 import { FaBars, FaCog, FaSignOutAlt, FaSearch } from "react-icons/fa";
 import Link from "next/link";
 
 export default function DashboardPage() {
     const router = useRouter();
     const { user, isAuthenticated, logout } = useAuth();
+    const { searchQuery, setSearchQuery } = useSearch();
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("absensi");
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsProfileOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
 
 
@@ -105,11 +120,13 @@ export default function DashboardPage() {
                                 <input
                                     type="text"
                                     placeholder="Search..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
                                     className="bg-transparent border-none text-sm focus:outline-none w-48 text-gray-900 dark:text-white"
                                 />
                             </div>
 
-                            <div className="relative">
+                            <div className="relative" ref={dropdownRef}>
                                 <button
                                     onClick={() => setIsProfileOpen(!isProfileOpen)}
                                     className="flex items-center gap-4 focus:outline-none pl-4 border-l border-gray-200 dark:border-zinc-800"

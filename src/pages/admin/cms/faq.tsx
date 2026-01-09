@@ -4,6 +4,7 @@ import { AdminLayout } from '@/components/layouts/AdminLayout';
 import { FaEdit, FaTrash, FaPlus, FaQuestionCircle } from 'react-icons/fa';
 import { ConfirmationModal } from '@/components/shared/molecules/ConfirmationModal';
 import { Toast } from '@/components/shared/molecules/Toast';
+import { useSearch } from '@/context/SearchContext';
 
 interface FAQ {
     id: string; // BigInt serialized
@@ -17,6 +18,7 @@ type CategoryType = 'General' | 'Registration';
 
 export default function CMSFAQ() {
     const [activeCategory, setActiveCategory] = useState<CategoryType>('General');
+    const { searchQuery } = useSearch();
     const [faqs, setFaqs] = useState<FAQ[]>([]);
     const [loading, setLoading] = useState(true);
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -138,6 +140,11 @@ export default function CMSFAQ() {
         return category === 'General' ? 'FAQ Umum (Bantuan)' : 'FAQ Pendaftaran (Program)';
     };
 
+    const filteredFaqs = faqs.filter(faq =>
+        faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <AdminLayout title="CMS: FAQ">
             <Head>
@@ -168,7 +175,7 @@ export default function CMSFAQ() {
                                 : 'text-gray-600 hover:bg-gray-50'
                                 }`}
                         >
-                            FAQ Umum (Bantuan)
+                            FAQ Bantuan
                         </button>
                         <button
                             onClick={() => setActiveCategory('Registration')}
@@ -177,7 +184,7 @@ export default function CMSFAQ() {
                                 : 'text-gray-600 hover:bg-gray-50'
                                 }`}
                         >
-                            FAQ Pendaftaran (Program)
+                            FAQ Pendaftaran
                         </button>
                     </div>
                 </div>
@@ -198,14 +205,14 @@ export default function CMSFAQ() {
                                 <tr>
                                     <td colSpan={4} className="px-6 py-4 text-center text-gray-500">Loading...</td>
                                 </tr>
-                            ) : faqs.length === 0 ? (
+                            ) : filteredFaqs.length === 0 ? (
                                 <tr>
                                     <td colSpan={4} className="px-6 py-4 text-center text-gray-500">
-                                        No FAQs found for {getCategoryLabel(activeCategory)}.
+                                        {searchQuery ? `No FAQs found matching "${searchQuery}"` : `No FAQs found for ${getCategoryLabel(activeCategory)}.`}
                                     </td>
                                 </tr>
                             ) : (
-                                faqs.map((faq) => (
+                                filteredFaqs.map((faq) => (
                                     <tr key={faq.id} className="hover:bg-gray-50 transition">
                                         <td className="px-6 py-4 font-medium text-gray-900 max-w-xs">{faq.question}</td>
                                         <td className="px-6 py-4 text-sm text-gray-500 max-w-sm truncate">{faq.answer}</td>

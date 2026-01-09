@@ -4,6 +4,7 @@ import { AdminLayout } from '@/components/layouts/AdminLayout';
 import { FaEdit, FaTrash, FaPlus, FaImages, FaImage, FaVideo } from 'react-icons/fa';
 import { ConfirmationModal } from '@/components/shared/molecules/ConfirmationModal';
 import { Toast } from '@/components/shared/molecules/Toast';
+import { useSearch } from '@/context/SearchContext';
 
 interface GalleryItem {
     id: string;
@@ -15,6 +16,7 @@ interface GalleryItem {
 
 export default function CMSGallery() {
     const [items, setItems] = useState<GalleryItem[]>([]);
+    const { searchQuery } = useSearch();
     const [loading, setLoading] = useState(true);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formData, setFormData] = useState({ title: '', image_url: '', type: 'image', category: 'activity', id: '' });
@@ -123,6 +125,11 @@ export default function CMSGallery() {
         }
     };
 
+    const filteredItems = items.filter(item =>
+        (item.title && item.title.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (item.category && item.category.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+
     return (
         <AdminLayout title="CMS: Gallery">
             <Head>
@@ -146,11 +153,13 @@ export default function CMSGallery() {
             {/* Grid Layout */}
             {loading ? (
                 <div className="text-center py-10 text-gray-500">Loading...</div>
-            ) : items.length === 0 ? (
-                <div className="text-center py-10 text-gray-500 bg-white rounded-xl">No images found.</div>
+            ) : filteredItems.length === 0 ? (
+                <div className="text-center py-10 text-gray-500 bg-white rounded-xl">
+                    {searchQuery ? `No items found matching "${searchQuery}"` : "No images found."}
+                </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {items.map((item) => (
+                    {filteredItems.map((item) => (
                         <div key={item.id} className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden group hover:shadow-md transition">
                             <div className="aspect-video bg-gray-100 relative overflow-hidden">
                                 {item.type === 'video' ? (

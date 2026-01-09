@@ -4,6 +4,7 @@ import { AdminLayout } from '@/components/layouts/AdminLayout';
 import { FaEdit, FaTrash, FaPlus, FaStar, FaUser } from 'react-icons/fa';
 import { ConfirmationModal } from '@/components/shared/molecules/ConfirmationModal';
 import { Toast } from '@/components/shared/molecules/Toast';
+import { useSearch } from '@/context/SearchContext';
 
 interface Testimonial {
     id: string;
@@ -16,6 +17,7 @@ interface Testimonial {
 
 export default function CMSTestimonials() {
     const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+    const { searchQuery } = useSearch();
     const [loading, setLoading] = useState(true);
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formData, setFormData] = useState({ name: '', role: '', content: '', avatar_url: '', rating: 5, id: '' });
@@ -131,6 +133,12 @@ export default function CMSTestimonials() {
         }
     };
 
+    const filteredTestimonials = testimonials.filter(t =>
+        t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        t.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        t.content.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <AdminLayout title="CMS: Testimonials">
             <Head>
@@ -166,12 +174,14 @@ export default function CMSTestimonials() {
                                 <tr>
                                     <td colSpan={5} className="px-6 py-4 text-center text-gray-500">Loading...</td>
                                 </tr>
-                            ) : testimonials.length === 0 ? (
+                            ) : filteredTestimonials.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="px-6 py-4 text-center text-gray-500">No testimonials found.</td>
+                                    <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
+                                        {searchQuery ? `No testimonials found matching "${searchQuery}"` : "No testimonials found."}
+                                    </td>
                                 </tr>
                             ) : (
-                                testimonials.map((testimonial) => (
+                                filteredTestimonials.map((testimonial) => (
                                     <tr key={testimonial.id} className="hover:bg-gray-50 transition">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">

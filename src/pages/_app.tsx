@@ -21,15 +21,18 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 import { ThemeProvider } from "@/context/ThemeContext";
 import { AuthProvider } from "@/context/AuthContext";
 import SplashScreen from "@/components/shared/organisms/SplashScreen";
+import { SearchProvider } from "@/context/SearchContext";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <main className={`${plusJakartaSans.className} `}>
-          <SplashScreen />
-          <Component {...pageProps} />
-        </main>
+        <SearchProvider>
+          <main className={`${plusJakartaSans.className} `}>
+            <SplashScreen />
+            <Component {...pageProps} />
+          </main>
+        </SearchProvider>
       </AuthProvider>
     </ThemeProvider>
   );

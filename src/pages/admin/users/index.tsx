@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { AdminLayout } from '@/components/layouts/AdminLayout';
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaUser } from 'react-icons/fa';
 import { ConfirmationModal } from '@/components/shared/molecules/ConfirmationModal';
+import { useSearch } from '@/context/SearchContext';
 
 interface User {
     id: string;
@@ -15,7 +16,7 @@ interface User {
 export default function UsersManagement() {
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
+    const { searchQuery } = useSearch();
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'user', id: '' });
     const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
@@ -53,8 +54,8 @@ export default function UsersManagement() {
     }, []);
 
     const filteredUsers = users.filter(user =>
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const handleDeleteClick = (id: string) => {
@@ -135,15 +136,8 @@ export default function UsersManagement() {
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
                 {/* Toolbar */}
                 <div className="p-4 border-b border-gray-100 flex flex-col md:flex-row justify-between gap-4 items-center">
-                    <div className="relative w-full md:w-64">
-                        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                        <input
-                            type="text"
-                            placeholder="Search users..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-red-500"
-                        />
+                    <div className="relative w-full md:w-64 hidden">
+                        {/* Search input managed globally in AdminLayout */}
                     </div>
                     <button
                         onClick={handleCreate}
@@ -171,7 +165,9 @@ export default function UsersManagement() {
                                 </tr>
                             ) : filteredUsers.length === 0 ? (
                                 <tr>
-                                    <td colSpan={4} className="px-6 py-4 text-center text-gray-500">No users found.</td>
+                                    <td colSpan={4} className="px-6 py-4 text-center text-gray-500">
+                                        {searchQuery ? `No users found matching "${searchQuery}"` : "No users found."}
+                                    </td>
                                 </tr>
                             ) : (
                                 filteredUsers.map((user) => (

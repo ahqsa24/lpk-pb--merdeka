@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { AdminLayout } from '@/components/layouts/AdminLayout';
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaCalendarCheck, FaUsers, FaCheckCircle } from 'react-icons/fa';
 import { ConfirmationModal } from '@/components/shared/molecules/ConfirmationModal';
+import { useSearch } from '@/context/SearchContext';
 
 interface Session {
     id: string;
@@ -27,7 +28,7 @@ interface AttendanceRecord {
 export default function AttendanceSessionsManagement() {
     const [sessions, setSessions] = useState<Session[]>([]);
     const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
+    const { searchQuery } = useSearch();
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [formData, setFormData] = useState({
         title: '',
@@ -81,7 +82,7 @@ export default function AttendanceSessionsManagement() {
     }, []);
 
     const filteredSessions = sessions.filter(session =>
-        session.title.toLowerCase().includes(searchTerm.toLowerCase())
+        session.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const handleDeleteClick = (id: string) => {
@@ -234,15 +235,8 @@ export default function AttendanceSessionsManagement() {
 
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="p-4 border-b border-gray-100 flex flex-col md:flex-row justify-between gap-4 items-center">
-                    <div className="relative w-full md:w-64">
-                        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                        <input
-                            type="text"
-                            placeholder="Search sessions..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-red-500"
-                        />
+                    <div className="relative w-full md:w-64 hidden">
+                        {/* Search input managed globally in AdminLayout */}
                     </div>
                     <button
                         onClick={handleCreate}
@@ -270,7 +264,9 @@ export default function AttendanceSessionsManagement() {
                                 </tr>
                             ) : filteredSessions.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="px-6 py-4 text-center text-gray-500">No sessions found.</td>
+                                    <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
+                                        {searchQuery ? `No sessions found matching "${searchQuery}"` : "No sessions found."}
+                                    </td>
                                 </tr>
                             ) : (
                                 filteredSessions.map((session) => (
