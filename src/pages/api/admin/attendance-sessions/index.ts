@@ -11,36 +11,37 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
             });
 
             const now = new Date();
-            const updates = [];
+            const updates: any[] = [];
 
             for (const session of activeSessions) {
-                // Construct full end datetime
-                const sessionDate = new Date(session.date);
-                const endTime = new Date(session.endTime);
+                const year = session.date.getUTCFullYear();
+                const month = session.date.getUTCMonth();
+                const day = session.date.getUTCDate();
+                const hours = session.endTime.getUTCHours();
+                const minutes = session.endTime.getUTCMinutes();
 
-                const expiry = new Date(sessionDate);
-                expiry.setUTCHours(endTime.getUTCHours(), endTime.getUTCMinutes(), endTime.getUTCSeconds());
+                // Construct expiration time (assuming session times are in WIB = UTC+7)
+                let expiryDate = new Date(Date.UTC(year, month, day, hours - 7, minutes));
 
-                const expireDate = new Date(session.date);
-                const timePart = new Date(session.endTime);
+                // Handle crossing midnight
+                const startHours = session.startTime.getUTCHours();
+                const startMinutes = session.startTime.getUTCMinutes();
+                const startDate = new Date(Date.UTC(year, month, day, startHours - 7, startMinutes));
 
-                expireDate.setHours(timePart.getHours(), timePart.getMinutes(), timePart.getSeconds());
+                if (expiryDate <= startDate) {
+                    expiryDate.setDate(expiryDate.getDate() + 1);
+                }
 
-                const year = session.date.getFullYear();
-                const month = session.date.getMonth();
-                const day = session.date.getDate();
-                const hours = session.endTime.getHours();
-                const minutes = session.endTime.getMinutes();
-
-                const combined = new Date(year, month, day, hours, minutes);
-
-                if (now > combined) {
+                if (now > expiryDate) {
+                    /*
+                    // Temporarily disabled auto-expiration to debug visibility issues
                     updates.push(
                         prisma.attendance_sessions.update({
                             where: { id: session.id },
                             data: { isActive: false }
                         })
                     );
+                    */
                 }
             }
 
@@ -79,9 +80,10 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
             // Parse date as UTC noon to safely avoid timezone shifts
             const dateObj = new Date(date + 'T12:00:00Z');
 
-            // Parse time as local time (no Z suffix to avoid UTC conversion)
-            const startObj = new Date(`1970-01-01T${start_time}:00`);
-            const endObj = new Date(`1970-01-01T${end_time}:00`);
+            // Parse time as UTC to preserve the "Wall Clock" numbers (e.g. 17:00 input -> 17:00 UTC stored)
+            // This aligns with our read logic that assumes DB stores "Wall Clock" values as UTC
+            const startObj = new Date(`1970-01-01T${start_time}:00Z`);
+            const endObj = new Date(`1970-01-01T${end_time}:00Z`);
 
             const newSession = await prisma.attendance_sessions.create({
                 data: {

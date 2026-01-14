@@ -21,13 +21,13 @@ export const AttendanceSessionList: React.FC = () => {
 
     const fetchActiveSessions = async () => {
         try {
-            const token = localStorage.getItem('token');
-            if (!token) return;
+            // Removed token check to allow cookie-based auth
+            // const token = localStorage.getItem('token');
+            // if (!token) return;
 
             const response = await fetch(`/api/attendance-sessions`, {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 },
@@ -38,6 +38,7 @@ export const AttendanceSessionList: React.FC = () => {
             }
 
             const data = await response.json();
+            console.log("Sessions data:", data); // Debug log to check is_active and is_checked_in
             setSessions(data);
         } catch (error) {
             console.error('Error:', error);
@@ -55,13 +56,13 @@ export const AttendanceSessionList: React.FC = () => {
         setCheckingIn(sessionId);
         setMessage(null);
         try {
-            const token = localStorage.getItem('token');
-            if (!token) throw new Error("Anda belum login");
+            // Removed manual token check
+            // const token = localStorage.getItem('token');
+            // if (!token) throw new Error("Anda belum login");
 
             const response = await fetch(`/api/attendance-sessions/${sessionId}/check-in`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 },
@@ -91,7 +92,13 @@ export const AttendanceSessionList: React.FC = () => {
     const formatTime = (dateString: string) => {
         if (!dateString) return '-';
         const date = new Date(dateString);
-        return new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit' }).format(date);
+        // Using 'Asia/Jakarta' to ensure WIB display regardless of user's local system time
+        return new Intl.DateTimeFormat('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+            timeZone: 'Asia/Jakarta'
+        }).format(date).replace('.', ':'); // id-ID often uses dot separator, replacing with colon for standard look if preferred
     };
 
     const formatDate = (dateString: string) => {

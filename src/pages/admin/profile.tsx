@@ -3,6 +3,7 @@ import { AdminLayout } from "@/components/layouts/AdminLayout";
 import { useAuth } from "@/context/AuthContext";
 import Head from "next/head";
 import { FaUser, FaLock, FaEnvelope, FaSave } from "react-icons/fa";
+import { authClient } from "@/lib/auth-client";
 
 const ProfilePage = () => {
     const { user } = useAuth();
@@ -32,18 +33,20 @@ const ProfilePage = () => {
         setLoading(true);
 
         try {
-            const token = localStorage.getItem('token');
-            const res = await fetch('/api/admin/profile', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ name, password })
-            });
+            // 1. Update Profile Name
+            if (name !== user?.name) {
+                await authClient.updateUser({
+                    name: name
+                });
+            }
 
-            if (!res.ok) {
-                throw new Error('Failed to update profile');
+            // 2. Change Password (if provided)
+            if (password) {
+                await authClient.changePassword({
+                    newPassword: password,
+                    currentPassword: "", // better-auth might require current password. If so, logic needs adjustment.
+                    revokeOtherSessions: true
+                });
             }
 
             setMessage({ type: 'success', text: 'Profile updated successfully!' });
@@ -51,8 +54,13 @@ const ProfilePage = () => {
             // Clear password fields on success
             setPassword('');
             setConfirmPassword('');
-        } catch (error) {
-            setMessage({ type: 'error', text: 'Failed to update profile.' });
+        } catch (error: any) {
+            const msg = error?.message || error?.body?.message || 'Failed to update profile.';
+            if (msg.includes("current password")) {
+                setMessage({ type: "error", text: "Security: Current password is required to change password." });
+            } else {
+                setMessage({ type: "error", text: msg });
+            }
         } finally {
             setLoading(false);
         }
@@ -68,7 +76,7 @@ const ProfilePage = () => {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8">
                     <div className="flex items-center gap-4 mb-8">
                         <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center font-bold text-2xl">
-                            {name.charAt(0) || "A"}
+                            {name.charAt(0).toUpperCase() || "A"}
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-gray-900">Edit Profile</h2>

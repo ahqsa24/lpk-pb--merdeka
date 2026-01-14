@@ -11,6 +11,7 @@ interface Article {
     thumbnail_url: string | null;
     author: string | null;
     published_at: string;
+    slug: string;
 }
 
 export default function ArticleDetailPage() {
@@ -60,7 +61,7 @@ export default function ArticleDetailPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-zinc-950">
+        <div className="min-h-screen dark:bg-zinc-950">
             <Head>
                 <title>{article.title} | LPK Merdeka</title>
             </Head>
@@ -139,11 +140,77 @@ export default function ArticleDetailPage() {
                     </div>
                 </article>
 
-                {/* Footer / Navigation suggestion */}
                 <div className="mt-8 text-center">
-                    {/* Button redundant, removed as per request */}
+                    {/* (Optional) Bottom back button or share links could go here */}
                 </div>
             </main>
+
+            {/* Other News Section */}
+            <div className="bg-white dark:bg-zinc-900 border-t border-gray-100 dark:border-zinc-800 py-16">
+                <div className="max-w-7xl mx-auto px-4 md:px-8">
+                    <div className="flex items-center justify-between mb-8">
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white border-l-4 border-red-600 pl-4">Berita Lainnya</h2>
+                        <Link href="/dashboard" className="text-red-600 hover:text-red-700 text-sm font-medium flex items-center gap-1">
+                            Lihat Semua <FaArrowLeft className="rotate-180" size={12} />
+                        </Link>
+                    </div>
+
+                    <OtherNewsList currentArticleId={article.id} />
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function OtherNewsList({ currentArticleId }: { currentArticleId: string }) {
+    const [articles, setArticles] = useState<Article[]>([]);
+
+    useEffect(() => {
+        const fetchArticles = async () => {
+            try {
+                const res = await fetch('/api/cms/articles');
+                if (res.ok) {
+                    const data = await res.json();
+                    // Filter out current article and limit to 3
+                    const others = data
+                        .filter((a: Article) => a.id !== currentArticleId)
+                        .slice(0, 3);
+                    setArticles(others);
+                }
+            } catch (error) {
+                console.error("Failed to fetch other articles");
+            }
+        };
+        fetchArticles();
+    }, [currentArticleId]);
+
+    if (articles.length === 0) return null;
+
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {articles.map((item) => (
+                <Link key={item.id} href={`/dashboard/articles/${item.slug}`} className="group block bg-gray-50 dark:bg-zinc-950 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-100 dark:border-zinc-800">
+                    <div className="relative h-48 w-full overflow-hidden">
+                        {item.thumbnail_url ? (
+                            <img
+                                src={item.thumbnail_url}
+                                alt={item.title}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                        ) : (
+                            <div className="w-full h-full bg-gray-200 dark:bg-zinc-800 flex items-center justify-center text-4xl">📰</div>
+                        )}
+                    </div>
+                    <div className="p-5">
+                        <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
+                            <span className="flex items-center gap-1"><FaCalendarAlt className="text-red-500" /> {new Date(item.published_at).toLocaleDateString()}</span>
+                        </div>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-red-600 transition-colors">
+                            {item.title}
+                        </h3>
+                    </div>
+                </Link>
+            ))}
         </div>
     );
 }
