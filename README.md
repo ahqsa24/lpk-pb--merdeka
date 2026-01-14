@@ -31,7 +31,9 @@ LPK Merdeka is a comprehensive web platform for Job Training Institutions (Lemba
 ### Authentication System
 - User login and registration
 - Role-based access control (SuperAdmin, Admin, User)
-- Session management with NextAuth.js
+- Session management with Better Auth
+- Google OAuth Integration
+- Password Reset functionality via Email
 
 ## 🛠 Tech Stack
 
@@ -44,13 +46,14 @@ This project is built using the following technologies:
 - **[Framer Motion](https://www.framer.com/motion/)**: Library for smooth and interactive animations
 - **[Prisma](https://www.prisma.io/)**: Modern ORM for database management
 - **[MySQL](https://www.mysql.com/)**: Relational database
-- **[NextAuth.js](https://next-auth.js.org/)**: Authentication for Next.js
+- **[Better Auth](https://better-auth.com/)**: Authentication for Next.js
 - **Icons**: Using `lucide-react`, `react-icons`, and `@fortawesome`
 
 ## 📂 Project Structure
 
 The source code is organized using a **section-based component structure** for better maintainability and scalability:
 
+```bash
 src/
 ├── components/
 │   ├── shared/          # Reusable components across all sections
@@ -69,12 +72,12 @@ src/
 │   └── dashboard/       # User dashboard components
 ├── pages/               # Next.js page routing
 │   ├── api/             # API Routes
-│   │   ├── auth/        # Authentication API
+│   │   ├── auth/        # Authentication API (Better Auth)
 │   │   ├── admin/       # Admin API endpoints
 │   │   ├── cms/         # Public CMS API endpoints
 │   │   ├── attendance-sessions/ # Attendance API
 │   │   └── user.ts      # User profile API
-│   ├── auth/            # Login/Register pages
+│   ├── auth/            # Login/Register/Forgot Password pages
 │   ├── admin/           # Admin Dashboard pages
 │   ├── dashboard.tsx    # User Dashboard page
 │   └── ...              # Other pages (about, program, etc.)
@@ -100,8 +103,8 @@ Follow these steps to run the project on your local machine:
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/ahqsa24/lpk-merdeka.git
-cd lpk-merdeka
+git clone https://github.com/bizdevsg/LPK-Merdeka.git
+cd LPK-Merdeka
 ```
 
 ### 2. Install Dependencies
@@ -122,9 +125,20 @@ Create a `.env` file in the project root and configure the following:
 # Database
 DATABASE_URL="mysql://username:password@localhost:3306/lpk_backpanel"
 
-# NextAuth
-NEXTAUTH_SECRET="your-secret-key-here"
-NEXTAUTH_URL="http://localhost:3000"
+# Better Auth & General
+BETTER_AUTH_SECRET="your-secret-key-here"
+BETTER_AUTH_URL="http://localhost:3000"
+
+# Google OAuth
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+
+# SMTP (Email Service)
+SMTP_HOST="smtp-relay.brevo.com"
+SMTP_PORT=587
+SMTP_USER="your-smtp-user"
+SMTP_PASS="your-smtp-password"
+SMTP_FROM="noreply@example.com"
 ```
 
 ### 4. Setup Database
@@ -270,11 +284,3 @@ To contribute to this project:
 ## 📝 License
 
 This project is developed for internal use by LPK Merdeka.
-
-## 👥 Team
-
-Developed by the LPK Merdeka IT Team.
-
----
-
-For questions or issues, please contact the LPK Merdeka IT Team.
