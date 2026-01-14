@@ -1,71 +1,74 @@
+"use client";
+
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { useAuth } from "@/context/AuthContext";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { signIn } from "@/lib/auth-client";
+import { Input } from "@/components/shared/atoms/Input";
+import { Label } from "@/components/shared/atoms/Label";
 
-export default function LoginPage() {
+export default function SignIn() {
     const router = useRouter();
-    const { login } = useAuth();
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
-    const [showPassword, setShowPassword] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string>("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
+    const [error, setError] = useState("");
 
-    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSignIn = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
         setError("");
 
-        // Default to localhost if env not set (failsafe)
-        try {
-            const response = await fetch('/api/auth/login', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
+        await signIn.email(
+            {
+                email,
+                password,
+                rememberMe,
+            },
+            {
+                onRequest: () => {
+                    setLoading(true);
                 },
-                body: JSON.stringify({ email, password }),
-            });
-
-            let data;
-            const responseText = await response.text();
-
-            try {
-                data = JSON.parse(responseText);
-            } catch (e) {
-                console.error("API Error (Non-JSON):", responseText);
-                throw new Error(`Sistem error (Status: ${response.status}). Cek konsol browser.`);
+                onResponse: () => {
+                    setLoading(false);
+                },
+                onSuccess: async (ctx) => {
+                    // Check user role and redirect accordingly
+                    const session = ctx.data;
+                    if (session?.user?.role === 'superAdmin' || session?.user?.role === 'admin') {
+                        router.push("/admin/dashboard");
+                    } else {
+                        router.push("/dashboard");
+                    }
+                },
+                onError: (ctx) => {
+                    setError(ctx.error.message || "Login gagal, periksa email dan password.");
+                },
             }
+        );
+    };
 
-            if (!response.ok) {
-                throw new Error(data.message || "Login gagal, periksa email dan password.");
+    const handleGoogleSignIn = async () => {
+        await signIn.social(
+            {
+                provider: "google",
+                callbackURL: "/dashboard",
+            },
+            {
+                onRequest: () => {
+                    setLoading(true);
+                },
+                onResponse: () => {
+                    setLoading(false);
+                },
+                onError: (ctx) => {
+                    setError(ctx.error.message || "Login dengan Google gagal.");
+                },
             }
-
-            // Save token and user info via context
-            if (data.token && data.user) {
-                login(data.token, data.user);
-                console.log("Login berhasil");
-
-                if (data.user.role === 'superAdmin' || data.user.role === 'admin') {
-                    router.push("/admin/dashboard");
-                } else {
-                    router.push("/dashboard");
-                }
-            } else {
-                throw new Error("Format respons tidak valid dari server");
-            }
-        } catch (err: unknown) {
-            if (err instanceof Error) {
-                setError(err.message);
-            } else {
-                setError(String(err));
-            }
-        } finally {
-            setLoading(false);
-        }
+        );
     };
 
     return (
@@ -99,29 +102,39 @@ export default function LoginPage() {
                             </div>
                         )}
 
-                        <form onSubmit={handleLogin} className="space-y-6">
+                        <form onSubmit={handleSignIn} className="space-y-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Email</label>
-                                <input
+                                <Label htmlFor="email">Email</Label>
+                                <Input
+                                    id="email"
                                     type="email"
                                     placeholder="nama@email.com"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     required
-                                    className="w-full px-4 py-3 border border-gray-200 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all bg-white dark:bg-zinc-800 dark:text-white"
+                                    className="dark:bg-zinc-800 dark:text-white dark:border-zinc-700"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Password</label>
+                                <div className="flex items-center justify-between mb-1.5">
+                                    <Label htmlFor="password">Password</Label>
+                                    <Link
+                                        href="/auth/forgot-password"
+                                        className="text-sm text-red-600 hover:text-red-700 transition-colors"
+                                    >
+                                        Lupa password?
+                                    </Link>
+                                </div>
                                 <div className="relative">
-                                    <input
+                                    <Input
+                                        id="password"
                                         type={showPassword ? "text" : "password"}
                                         placeholder="••••••••"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         required
-                                        className="w-full px-4 py-3 border border-gray-200 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all bg-white dark:bg-zinc-800 dark:text-white"
+                                        className="dark:bg-zinc-800 dark:text-white dark:border-zinc-700 pr-12"
                                     />
                                     <button
                                         type="button"
@@ -131,6 +144,17 @@ export default function LoginPage() {
                                         {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
                                     </button>
                                 </div>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    id="remember"
+                                    checked={rememberMe}
+                                    onChange={(e) => setRememberMe(e.target.checked)}
+                                    className="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
+                                />
+                                <Label htmlFor="remember">Ingat saya</Label>
                             </div>
 
                             <button
@@ -147,6 +171,30 @@ export default function LoginPage() {
                                         Memproses...
                                     </span>
                                 ) : "Masuk Sekarang"}
+                            </button>
+
+                            <div className="relative">
+                                <div className="absolute inset-0 flex items-center">
+                                    <div className="w-full border-t border-gray-300"></div>
+                                </div>
+                                <div className="relative flex justify-center text-sm">
+                                    <span className="px-2 bg-gray-50 dark:bg-zinc-950 text-gray-500">Atau masuk dengan</span>
+                                </div>
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={handleGoogleSignIn}
+                                disabled={loading}
+                                className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-3 rounded-lg transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 262">
+                                    <path fill="#4285F4" d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622l38.755 30.023l2.685.268c24.659-22.774 38.875-56.282 38.875-96.027"></path>
+                                    <path fill="#34A853" d="M130.55 261.1c35.248 0 64.839-11.605 86.453-31.622l-41.196-31.913c-11.024 7.688-25.82 13.055-45.257 13.055c-34.523 0-63.824-22.773-74.269-54.25l-1.531.13l-40.298 31.187l-.527 1.465C35.393 231.798 79.49 261.1 130.55 261.1"></path>
+                                    <path fill="#FBBC05" d="M56.281 156.37c-2.756-8.123-4.351-16.827-4.351-25.82c0-8.994 1.595-17.697 4.206-25.82l-.073-1.73L15.26 71.312l-1.335.635C5.077 89.644 0 109.517 0 130.55s5.077 40.905 13.925 58.602z"></path>
+                                    <path fill="#EB4335" d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0C79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251"></path>
+                                </svg>
+                                Masuk dengan Google
                             </button>
                         </form>
 

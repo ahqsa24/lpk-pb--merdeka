@@ -1,57 +1,72 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import jwt from 'jsonwebtoken';
+import { betterAuth } from 'better-auth';
+import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { PrismaClient } from '@prisma/client';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'lpk-merdeka-secret-key-123';
+const prisma = new PrismaClient();
+
+export const auth = betterAuth({
+    baseURL: process.env.BETTER_AUTH_URL || 'http://localhost:3000',
+    database: prismaAdapter(prisma, {
+        provider: 'mysql',
+    }),
+    emailAndPassword: {
+        enabled: true,
+        minPasswordLength: 6,
+    },
+    user: {
+        additionalFields: {
+            role: {
+                type: 'string',
+                defaultValue: 'user',
+                required: false,
+            }
+        }
+    },
+    socialProviders: {
+        google: {
+            clientId: process.env.GOOGLE_CLIENT_ID || '',
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET || ''
+        }
+    }
+});
+
+export type Session = typeof auth.$Infer.Session;
+
+import { fromNodeHeaders } from "better-auth/node";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 export interface AuthenticatedRequest extends NextApiRequest {
-    user?: {
-        userId: string;
-        email: string;
-        role: string;
-    };
+    user?: typeof auth.$Infer.Session.user;
+    session?: typeof auth.$Infer.Session.session;
 }
 
-export const checkAuth = (handler: (req: AuthenticatedRequest, res: NextApiResponse) => Promise<any>) => {
-    return async (req: AuthenticatedRequest, res: NextApiResponse) => {
-        try {
-            const authHeader = req.headers.authorization;
-            if (!authHeader) {
-                return res.status(401).json({ message: 'Authentication required' });
-            }
+export const checkAuth = (handler: (req: AuthenticatedRequest, res: NextApiResponse) => Promise<any>) => async (req: AuthenticatedRequest, res: NextApiResponse) => {
+    const session = await auth.api.getSession({
+        headers: fromNodeHeaders(req.headers)
+    });
 
-            const token = authHeader.split(' ')[1];
-            if (!token) {
-                return res.status(401).json({ message: 'Invalid token format' });
-            }
+    if (!session) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
 
-            const decoded = jwt.verify(token, JWT_SECRET) as any;
-            req.user = decoded;
+    req.user = session.user;
+    req.session = session.session;
 
-            return handler(req, res);
-        } catch (error) {
-            return res.status(401).json({ message: 'Invalid or expired token' });
-        }
-    };
+    return handler(req, res);
 };
 
-export const checkAdmin = (handler: (req: AuthenticatedRequest, res: NextApiResponse) => Promise<any>) => {
-    return async (req: AuthenticatedRequest, res: NextApiResponse) => {
-        return checkAuth(async (req, res) => {
-            if (req.user?.role !== 'admin' && req.user?.role !== 'superAdmin') {
-                return res.status(403).json({ message: 'Access denied: Admins only' });
-            }
-            return handler(req, res);
-        })(req, res);
-    };
-};
+export const checkAdmin = (handler: (req: AuthenticatedRequest, res: NextApiResponse) => Promise<any>) => async (req: AuthenticatedRequest, res: NextApiResponse) => {
+    const session = await auth.api.getSession({
+        headers: fromNodeHeaders(req.headers)
+    });
 
-export const checkSuperAdmin = (handler: (req: AuthenticatedRequest, res: NextApiResponse) => Promise<any>) => {
-    return async (req: AuthenticatedRequest, res: NextApiResponse) => {
-        return checkAuth(async (req, res) => {
-            if (req.user?.role !== 'superAdmin') {
-                return res.status(403).json({ message: 'Access denied: Super Admins only' });
-            }
-            return handler(req, res);
-        })(req, res);
-    };
+    // @ts-ignore - role is added via additionalFields but TS might not pick it up on the session type immediately
+    if (!session || (session.user.role !== 'admin' && session.user.role !== 'superAdmin')) {
+        return res.status(403).json({ message: "Forbidden" });
+    }
+
+    req.user = session.user;
+    req.session = session.session;
+
+    return handler(req, res);
 };

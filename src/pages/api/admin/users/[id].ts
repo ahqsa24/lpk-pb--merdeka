@@ -14,7 +14,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
     if (req.method === 'GET') {
         try {
-            const user = await prisma.users.findUnique({
+            const user = await prisma.user.findUnique({
                 where: { id: userId }
             });
 
@@ -45,7 +45,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
                 updateData.password = await bcrypt.hash(password, 10);
             }
 
-            const user = await prisma.users.update({
+            const user = await prisma.user.update({
                 where: { id: userId },
                 data: updateData
             });
@@ -62,7 +62,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
     if (req.method === 'DELETE') {
         try {
-            await prisma.users.delete({
+            await prisma.user.delete({
                 where: { id: userId }
             });
             return res.status(200).json({ message: 'User deleted successfully' });

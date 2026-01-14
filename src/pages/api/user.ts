@@ -5,10 +5,10 @@ import { checkAuth, AuthenticatedRequest } from '@/lib/auth';
 async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     if (req.method === 'GET') {
         try {
-            const userId = BigInt(req.user!.userId);
+            const userId = req.user!.id;
 
-            const user = await prisma.users.findUnique({
-                where: { id: userId },
+            const user = await prisma.user.findUnique({
+                where: { id: userId as any },
                 select: {
                     id: true,
                     name: true,
@@ -21,10 +21,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
                 return res.status(404).json({ message: 'User not found' });
             }
 
-            return res.status(200).json({
-                ...user,
-                id: user.id.toString()
-            });
+            return res.status(200).json(user);
         } catch (error) {
             return res.status(500).json({ message: 'Internal server error' });
         }
@@ -32,18 +29,18 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
     if (req.method === 'PUT') {
         try {
-            const userId = BigInt(req.user!.userId);
+            const userId = req.user!.id;
             const { name, email, password } = req.body;
 
             const updateData: any = { name, email };
 
             // Check if email is already taken by another user
             if (email) {
-                const existingUser = await prisma.users.findFirst({
+                const existingUser = await prisma.user.findFirst({
                     where: {
                         email: email,
                         NOT: {
-                            id: userId
+                            id: userId as any
                         }
                     }
                 });
@@ -57,8 +54,8 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
                 updateData.password = await bcrypt.hash(password, 10);
             }
 
-            const updatedUser = await prisma.users.update({
-                where: { id: userId },
+            const updatedUser = await prisma.user.update({
+                where: { id: userId as any },
                 data: updateData,
                 select: {
                     id: true,
@@ -70,10 +67,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
             return res.status(200).json({
                 message: 'Profile updated successfully',
-                user: {
-                    ...updatedUser,
-                    id: updatedUser.id.toString()
-                }
+                user: updatedUser
             });
 
         } catch (error) {

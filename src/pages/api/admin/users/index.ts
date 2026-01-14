@@ -6,7 +6,7 @@ import { checkAdmin, AuthenticatedRequest } from '@/lib/auth';
 async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     if (req.method === 'GET') {
         try {
-            const users = await prisma.users.findMany({
+            const users = await prisma.user.findMany({
                 where: { role: 'user' },
                 orderBy: { created_at: 'desc' },
                 select: {
@@ -40,7 +40,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
         try {
             const hashedPassword = await bcrypt.hash(password, 10);
-            const newUser = await prisma.users.create({
+            const newUser = await prisma.user.create({
                 data: {
                     name,
                     email,

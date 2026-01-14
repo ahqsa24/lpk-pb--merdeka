@@ -20,7 +20,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     }
 
     // Get target user
-    const targetUser = await prisma.users.findUnique({
+    const targetUser = await prisma.user.findUnique({
         where: { id: BigInt(id) },
         select: { role: true }
     });
@@ -52,7 +52,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
                 });
             }
 
-            const updated = await prisma.users.update({
+            const updated = await prisma.user.update({
                 where: { id: BigInt(id) },
                 data: {
                     name,
@@ -84,7 +84,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
                 });
             }
 
-            await prisma.users.delete({ where: { id: BigInt(id) } });
+            await prisma.user.delete({ where: { id: BigInt(id) } });
             return res.json({ success: true });
         } catch (error) {
             console.error(error);

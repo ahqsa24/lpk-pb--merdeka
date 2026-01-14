@@ -1,3 +1,6 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,124 +10,89 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model attendance_records {
-  id                    BigInt              @id @default(autoincrement()) @db.UnsignedBigInt
-  user_id               BigInt              @db.UnsignedBigInt
-  attendance_session_id BigInt              @db.UnsignedBigInt
-  check_in_time         DateTime            @db.Timestamp(0)
-  created_at            DateTime?           @db.Timestamp(0)
-  updated_at            DateTime?           @db.Timestamp(0)
-  attendance_sessions   attendance_sessions @relation(fields: [attendance_session_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "attendance_records_attendance_session_id_foreign")
-  users                 users               @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "attendance_records_user_id_foreign")
+model User {
+  id            String    @id @db.VarChar(255)
+  name          String    @db.VarChar(255)
+  email         String    @unique @db.VarChar(255)
+  emailVerified Boolean   @default(false) @map("email_verified")
+  image         String?   @db.Text
+  role          String    @default("user") @db.VarChar(255)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
 
-  @@index([attendance_session_id], map: "attendance_records_attendance_session_id_foreign")
-  @@index([user_id], map: "attendance_records_user_id_foreign")
+  sessions           Session[]
+  accounts           Account[]
+  attendance_records attendance_records[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @db.VarChar(255)
+  expiresAt DateTime @map("expires_at")
+  token     String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  ipAddress String?  @db.Text
+  userAgent String?  @db.Text
+  userId    String   @db.VarChar(255)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Account {
+  id                    String    @id @db.VarChar(255)
+  accountId             String    @db.Text
+  providerId            String    @db.Text
+  userId                String    @db.VarChar(255)
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?   @db.Text
+  refreshToken          String?   @db.Text
+  idToken               String?   @db.Text
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at")
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at")
+  scope                 String?   @db.Text
+  password              String?   @db.Text
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+
+  @@map("accounts")
+}
+
+model Verification {
+  id         String    @id @db.VarChar(255)
+  identifier String    @db.Text
+  value      String    @db.Text
+  expiresAt  DateTime  @map("expires_at")
+  createdAt  DateTime? @default(now()) @map("created_at")
+  updatedAt  DateTime? @updatedAt @map("updated_at")
+
+  @@map("verifications")
+}
+
+model attendance_records {
+  id                  BigInt              @id @default(autoincrement()) @db.UnsignedBigInt
+  userId              String              @map("user_id") @db.VarChar(255)
+  attendanceSessionId BigInt              @map("attendance_session_id") @db.UnsignedBigInt
+  checkInTime         DateTime            @map("check_in_time") @db.Timestamp(0)
+  createdAt           DateTime?           @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt           DateTime?           @updatedAt @map("updated_at") @db.Timestamp(0)
+  user                User                @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  attendance_sessions attendance_sessions @relation(fields: [attendanceSessionId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([attendanceSessionId])
+  @@index([userId])
 }
 
 model attendance_sessions {
-  id                 BigInt               @id @default(autoincrement()) @db.UnsignedBigInt
-  title              String               @db.VarChar(255)
-  date               DateTime             @db.Date
-  start_time         DateTime             @db.Time(0)
-  end_time           DateTime             @db.Time(0)
-  is_active          Boolean              @default(true)
-  created_at         DateTime?            @db.Timestamp(0)
-  updated_at         DateTime?            @db.Timestamp(0)
+  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  title     String   @db.VarChar(255)
+  date      DateTime @db.Date
+  startTime DateTime @map("start_time") @db.Time(0)
+  endTime   DateTime @map("end_time") @db.Time(0)
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamp(0)
   attendance_records attendance_records[]
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-model sessions {
-  id            String  @id @db.VarChar(255)
-  user_id       BigInt? @db.UnsignedBigInt
-  ip_address    String? @db.VarChar(45)
-  user_agent    String? @db.Text
-  payload       String  @db.LongText
-  last_activity Int
-
-  @@index([last_activity], map: "sessions_last_activity_index")
-  @@index([user_id], map: "sessions_user_id_index")
-}
-
-model users {
-  id                 BigInt               @id @default(autoincrement()) @db.UnsignedBigInt
-  name               String               @db.VarChar(255)
-  email              String               @unique(map: "users_email_unique") @db.VarChar(255)
-  email_verified_at  DateTime?            @db.Timestamp(0)
-  role               String               @default("user") @db.VarChar(255)
-  password           String               @db.VarChar(255)
-  remember_token     String?              @db.VarChar(100)
-  created_at         DateTime?            @db.Timestamp(0)
-  updated_at         DateTime?            @db.Timestamp(0)
-  attendance_records attendance_records[]
-}
-
-
-
-
-
-model cms_gallery {
-  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  title     String?  @db.VarChar(255)
-  image_url String   @db.VarChar(255)
-  type      String   @default("image") @db.VarChar(20)
-  category  String?  @db.VarChar(50)
-  created_at DateTime? @db.Timestamp(0) @default(now())
-  updated_at DateTime? @db.Timestamp(0) @updatedAt
-}
-
-model cms_faq {
-  id        BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
-  question  String   @db.Text
-  answer    String   @db.Text
-  category  String?  @db.VarChar(50)
-  order     Int      @default(0)
-  created_at DateTime? @db.Timestamp(0) @default(now())
-  updated_at DateTime? @db.Timestamp(0) @updatedAt
-}
-
-model cms_settings {
-  key        String   @id @db.VarChar(50)
-  value      String   @db.Text
-  created_at DateTime? @db.Timestamp(0) @default(now())
-  updated_at DateTime? @db.Timestamp(0) @updatedAt
-}
-
-model cms_testimonials {
-  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
-  name       String    @db.VarChar(100)
-  role       String    @db.VarChar(100)
-  content    String    @db.Text
-  avatar_url String?   @db.VarChar(255)
-  rating     Int       @default(5)
-  created_at DateTime? @db.Timestamp(0) @default(now())
-  updated_at DateTime? @db.Timestamp(0) @updatedAt
-}
-
-model cms_articles {
-  id            BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
-  title         String    @db.VarChar(255)
-  slug          String    @unique @db.VarChar(255)
-  content       String    @db.LongText
-  excerpt       String?   @db.Text
-  thumbnail_url String?   @db.VarChar(255)
-  author        String?   @db.VarChar(100)
-  is_published  Boolean   @default(false)
-  published_at  DateTime? @db.Timestamp(0)
-  created_at    DateTime? @db.Timestamp(0) @default(now())
-  updated_at    DateTime? @db.Timestamp(0) @updatedAt
-}
-

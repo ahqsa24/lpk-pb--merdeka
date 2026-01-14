@@ -16,7 +16,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     if (req.method === 'GET') {
         try {
             // Show all admins and superAdmins to any authenticated admin
-            const admins = await prisma.users.findMany({
+            const admins = await prisma.user.findMany({
                 where: {
                     role: { in: ['admin', 'superAdmin'] }
                 },

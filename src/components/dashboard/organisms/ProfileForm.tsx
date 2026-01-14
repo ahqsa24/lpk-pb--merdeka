@@ -3,7 +3,7 @@ import { FaEye, FaEyeSlash, FaSave } from "react-icons/fa";
 import { useAuth } from "@/context/AuthContext";
 
 export const ProfileForm = () => {
-    const { user, login } = useAuth();
+    const { user } = useAuth();
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -70,14 +70,11 @@ export const ProfileForm = () => {
             // Update local user context if API returns new user data
             // Usually PUT /user should return the updated user object
             if (data.user || data.data) {
-                const updatedUser = data.user || data.data;
-                // We preserve the token
-                login(token, updatedUser);
+                // const updatedUser = data.user || data.data;
+                // Session update handled by re-fetch or reload
             } else {
-                // Fallback: update context manually with form data
-                // Note: id and role might be missing if we just construct it from form
-                // so better to rely on API response or re-fetch
-                login(token, { ...user, name, email });
+                // Fallback: update context manually
+                // Session update handled by re-fetch or reload
             }
 
             setMessage({ type: "success", text: "Profil berhasil diperbarui!" });

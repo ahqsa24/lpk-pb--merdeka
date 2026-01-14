@@ -1,120 +1,117 @@
 "use client";
 
-import React, { useState } from "react";
-import Link from "next/link";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import Head from "next/head";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { signUp } from "@/lib/auth-client";
 import { Input } from "@/components/shared/atoms/Input";
 import { Label } from "@/components/shared/atoms/Label";
 
-export default function SignUp() {
+export default function ResetPassword() {
     const router = useRouter();
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
+    const { token } = router.query;
     const [password, setPassword] = useState("");
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState(false);
 
-    const handleSignUp = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (password !== passwordConfirmation) {
-            setError("Password dan Konfirmasi Password tidak cocok");
+            setError("Password dan konfirmasi password tidak cocok");
             return;
         }
 
         setError("");
+        setLoading(true);
 
-        await signUp.email(
-            {
-                email,
-                password,
-                name,
-            },
-            {
-                onRequest: () => {
-                    setLoading(true);
+        try {
+            const response = await fetch("/api/auth/reset-password", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
                 },
-                onResponse: () => {
-                    setLoading(false);
-                },
-                onSuccess: async () => {
-                    // Redirect to login after successful registration
-                    router.push("/auth/login?registered=true");
-                },
-                onError: (ctx) => {
-                    setError(ctx.error.message || "Pendaftaran gagal, coba lagi.");
-                },
+                body: JSON.stringify({ token, password }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Gagal reset password");
             }
-        );
+
+            setSuccess(true);
+            setTimeout(() => {
+                router.push("/auth/login");
+            }, 3000);
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
     };
+
+    if (!token) {
+        return (
+            <div className="h-screen flex items-center justify-center bg-gray-50">
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Token Tidak Valid</h2>
+                    <p className="text-gray-600 mb-4">Link reset password tidak valid atau sudah kadaluarsa.</p>
+                    <Link href="/auth/forgot-password" className="text-red-600 font-semibold hover:text-red-700">
+                        Minta Link Baru
+                    </Link>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <>
             <Head>
-                <title>Daftar Akun | LPK PB Merdeka</title>
+                <title>Reset Password | LPK PB Merdeka</title>
             </Head>
             <div className="h-screen w-screen overflow-hidden flex bg-white">
                 {/* Left Side - Image/Branding */}
                 <div className="hidden lg:flex w-1/2 bg-red-600 items-center justify-center relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center mix-blend-multiply"></div>
+                    <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center mix-blend-multiply"></div>
                     <div className="z-10 text-center p-12">
-                        <h2 className="text-4xl font-bold text-white mb-4">Bergabung Bersama Kami</h2>
+                        <h2 className="text-4xl font-bold text-white mb-4">Buat Password Baru</h2>
                         <p className="text-red-100 text-lg max-w-md mx-auto">
-                            Tingkatkan kompetensi digital Anda dan raih peluang karir global.
+                            Pastikan password baru Anda kuat dan mudah diingat.
                         </p>
                     </div>
                 </div>
 
                 {/* Right Side - Form */}
                 <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-50 dark:bg-zinc-950">
-                    <div className="w-full max-w-md h-full overflow-y-auto [&::-webkit-scrollbar]:hidden">
-                        <div className="flex flex-col justify-center min-h-full py-6">
-                            <div className="text-center lg:text-left mb-8">
-                                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Buat Akun Baru</h1>
-                                <p className="text-gray-500 mt-2">Lengkapi data diri Anda untuk mendaftar</p>
+                    <div className="w-full max-w-md space-y-8">
+                        <div className="text-center lg:text-left">
+                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Reset Password</h1>
+                            <p className="text-gray-500 mt-2">Masukkan password baru Anda</p>
+                        </div>
+
+                        {error && (
+                            <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-md animate-in fade-in">
+                                <p className="text-red-700 text-sm font-medium">{error}</p>
                             </div>
+                        )}
 
-                            {error && (
-                                <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-md animate-in fade-in">
-                                    <p className="text-red-700 text-sm font-medium">{error}</p>
-                                </div>
-                            )}
-
-                            <form onSubmit={handleSignUp} className="space-y-5">
+                        {success ? (
+                            <div className="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-md">
+                                <h3 className="text-green-800 font-semibold mb-2">Password Berhasil Direset!</h3>
+                                <p className="text-green-700 text-sm mb-4">
+                                    Password Anda telah berhasil diubah. Anda akan dialihkan ke halaman login...
+                                </p>
+                            </div>
+                        ) : (
+                            <form onSubmit={handleSubmit} className="space-y-6">
                                 <div>
-                                    <Label htmlFor="name">Nama Lengkap</Label>
-                                    <Input
-                                        id="name"
-                                        type="text"
-                                        placeholder="Nama Lengkap"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                        required
-                                        className="dark:bg-zinc-800 dark:text-white dark:border-zinc-700"
-                                    />
-                                </div>
-
-                                <div>
-                                    <Label htmlFor="email">Email</Label>
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        placeholder="nama@email.com"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        required
-                                        className="dark:bg-zinc-800 dark:text-white dark:border-zinc-700"
-                                    />
-                                </div>
-
-                                <div>
-                                    <Label htmlFor="password">Password</Label>
+                                    <Label htmlFor="password">Password Baru</Label>
                                     <div className="relative">
                                         <Input
                                             id="password"
@@ -123,6 +120,7 @@ export default function SignUp() {
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
                                             required
+                                            minLength={8}
                                             className="dark:bg-zinc-800 dark:text-white dark:border-zinc-700 pr-12"
                                         />
                                         <button
@@ -133,10 +131,11 @@ export default function SignUp() {
                                             {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
                                         </button>
                                     </div>
+                                    <p className="text-xs text-gray-500 mt-1">Minimal 8 karakter</p>
                                 </div>
 
                                 <div>
-                                    <Label htmlFor="password_confirmation">Konfirmasi Password</Label>
+                                    <Label htmlFor="password_confirmation">Konfirmasi Password Baru</Label>
                                     <div className="relative">
                                         <Input
                                             id="password_confirmation"
@@ -145,6 +144,7 @@ export default function SignUp() {
                                             value={passwordConfirmation}
                                             onChange={(e) => setPasswordConfirmation(e.target.value)}
                                             required
+                                            minLength={8}
                                             className="dark:bg-zinc-800 dark:text-white dark:border-zinc-700 pr-12"
                                         />
                                         <button
@@ -160,7 +160,7 @@ export default function SignUp() {
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full mt-4 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-red-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:shadow-none"
+                                    className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg transition-all transform active:scale-[0.98] shadow-lg shadow-red-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:shadow-none"
                                 >
                                     {loading ? (
                                         <span className="flex items-center justify-center gap-2">
@@ -170,17 +170,16 @@ export default function SignUp() {
                                             </svg>
                                             Memproses...
                                         </span>
-                                    ) : "Daftar Sekarang"}
+                                    ) : "Reset Password"}
                                 </button>
-                            </form>
 
-                            <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-6">
-                                Sudah punya akun?{" "}
-                                <Link href="/auth/login" className="text-red-600 font-semibold hover:text-red-700 transition-colors">
-                                    Masuk
-                                </Link>
-                            </p>
-                        </div>
+                                <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+                                    <Link href="/auth/login" className="text-red-600 font-semibold hover:text-red-700 transition-colors">
+                                        ← Kembali ke Login
+                                    </Link>
+                                </p>
+                            </form>
+                        )}
                     </div>
                 </div>
             </div>
