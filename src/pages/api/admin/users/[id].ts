@@ -10,11 +10,11 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         return res.status(400).json({ message: 'Invalid ID' });
     }
 
-    const userId = BigInt(id);
+    const userId = id;
 
     if (req.method === 'GET') {
         try {
-            const user = await prisma.users.findUnique({
+            const user = await prisma.user.findUnique({
                 where: { id: userId }
             });
 
@@ -23,7 +23,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
             return res.status(200).json({
                 ...user,
                 id: user.id.toString(),
-                created_at: user.created_at?.toISOString()
+                created_at: user.createdAt.toISOString()
             });
         } catch (error) {
             return res.status(500).json({ message: 'Error fetching user' });
@@ -38,14 +38,14 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
                 name,
                 email,
                 role,
-                updated_at: new Date()
+                updatedAt: new Date()
             };
 
             if (password) {
                 updateData.password = await bcrypt.hash(password, 10);
             }
 
-            const user = await prisma.users.update({
+            const user = await prisma.user.update({
                 where: { id: userId },
                 data: updateData
             });
@@ -62,7 +62,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
     if (req.method === 'DELETE') {
         try {
-            await prisma.users.delete({
+            await prisma.user.delete({
                 where: { id: userId }
             });
             return res.status(200).json({ message: 'User deleted successfully' });

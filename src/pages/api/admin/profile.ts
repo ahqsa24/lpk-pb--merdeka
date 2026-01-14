@@ -9,7 +9,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     }
 
     const { name, password } = req.body;
-    const userId = req.user?.userId; // Assuming checkAdmin middleware populates this
+    const userId = req.user?.id; // Assuming checkAdmin middleware populates this
 
     // Fallback if req.user is string or different shape, currently checkAdmin sets req.user to payload
     // The payload usually contains userId.
@@ -26,8 +26,8 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
             updateData.password = hashedPassword;
         }
 
-        await prisma.users.update({
-            where: { id: BigInt(userId) },
+        await prisma.user.update({
+            where: { id: userId },
             data: updateData,
         });
 

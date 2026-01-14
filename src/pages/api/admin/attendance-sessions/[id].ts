@@ -23,8 +23,8 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
                 ...session,
                 id: session.id.toString(),
                 date: session.date.toISOString(),
-                start_time: session.start_time.toISOString(),
-                end_time: session.end_time.toISOString(),
+                start_time: session.startTime.toISOString(),
+                end_time: session.endTime.toISOString(),
             });
         } catch (error) {
             return res.status(500).json({ message: 'Error fetching session' });
@@ -36,14 +36,14 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
         try {
             const updateData: any = {
-                updated_at: new Date()
+                updatedAt: new Date()
             };
 
             if (title) updateData.title = title;
             if (date) updateData.date = new Date(date + 'T00:00:00');
-            if (start_time) updateData.start_time = new Date(`1970-01-01T${start_time}:00`);
-            if (end_time) updateData.end_time = new Date(`1970-01-01T${end_time}:00`);
-            if (is_active !== undefined) updateData.is_active = is_active;
+            if (start_time) updateData.startTime = new Date(`1970-01-01T${start_time}:00`);
+            if (end_time) updateData.endTime = new Date(`1970-01-01T${end_time}:00`);
+            if (is_active !== undefined) updateData.isActive = is_active;
 
             const session = await prisma.attendance_sessions.update({
                 where: { id: sessionId },

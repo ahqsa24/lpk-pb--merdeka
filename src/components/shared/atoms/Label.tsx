@@ -3,8 +3,9 @@ import React from "react";
 interface LabelProps {
   htmlFor?: string;
   children: React.ReactNode;
+  className?: string;
 }
 
-export const Label: React.FC<LabelProps> = ({ htmlFor, children }) => {
-  return <label htmlFor={htmlFor} className="block mb-1.5 text-sm font-medium text-gray-700">{children}</label>;
+export const Label: React.FC<LabelProps> = ({ htmlFor, children, className = "" }) => {
+  return <label htmlFor={htmlFor} className={`block mb-1.5 text-sm font-medium text-gray-700 ${className}`}>{children}</label>;
 };

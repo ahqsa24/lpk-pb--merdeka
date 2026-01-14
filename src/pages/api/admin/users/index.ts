@@ -6,22 +6,22 @@ import { checkAdmin, AuthenticatedRequest } from '@/lib/auth';
 async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     if (req.method === 'GET') {
         try {
-            const users = await prisma.users.findMany({
+            const users = await prisma.user.findMany({
                 where: { role: 'user' },
-                orderBy: { created_at: 'desc' },
+                orderBy: { createdAt: 'desc' },
                 select: {
                     id: true,
                     name: true,
                     email: true,
                     role: true,
-                    created_at: true
+                    createdAt: true
                 }
             });
 
             const serializedUsers = users.map(u => ({
                 ...u,
                 id: u.id.toString(),
-                created_at: u.created_at?.toISOString()
+                created_at: u.createdAt.toISOString()
             }));
 
             return res.status(200).json(serializedUsers);
@@ -40,14 +40,15 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
         try {
             const hashedPassword = await bcrypt.hash(password, 10);
-            const newUser = await prisma.users.create({
+            const newUser = await prisma.user.create({
                 data: {
+                    id: crypto.randomUUID(),
                     name,
                     email,
                     password: hashedPassword,
                     role: role || 'user',
-                    created_at: new Date(),
-                    updated_at: new Date()
+                    createdAt: new Date(),
+                    updatedAt: new Date()
                 }
             });
 

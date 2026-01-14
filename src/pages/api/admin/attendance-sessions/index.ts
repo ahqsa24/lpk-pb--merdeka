@@ -7,7 +7,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         try {
             // Lazy Expiration Check: Deactivate sessions where end_time has passed
             const activeSessions = await prisma.attendance_sessions.findMany({
-                where: { is_active: true }
+                where: { isActive: true }
             });
 
             const now = new Date();
@@ -16,21 +16,21 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
             for (const session of activeSessions) {
                 // Construct full end datetime
                 const sessionDate = new Date(session.date);
-                const endTime = new Date(session.end_time);
+                const endTime = new Date(session.endTime);
 
                 const expiry = new Date(sessionDate);
                 expiry.setUTCHours(endTime.getUTCHours(), endTime.getUTCMinutes(), endTime.getUTCSeconds());
 
                 const expireDate = new Date(session.date);
-                const timePart = new Date(session.end_time);
+                const timePart = new Date(session.endTime);
 
                 expireDate.setHours(timePart.getHours(), timePart.getMinutes(), timePart.getSeconds());
 
                 const year = session.date.getFullYear();
                 const month = session.date.getMonth();
                 const day = session.date.getDate();
-                const hours = session.end_time.getHours();
-                const minutes = session.end_time.getMinutes();
+                const hours = session.endTime.getHours();
+                const minutes = session.endTime.getMinutes();
 
                 const combined = new Date(year, month, day, hours, minutes);
 
@@ -38,7 +38,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
                     updates.push(
                         prisma.attendance_sessions.update({
                             where: { id: session.id },
-                            data: { is_active: false }
+                            data: { isActive: false }
                         })
                     );
                 }
@@ -56,9 +56,9 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
                 ...s,
                 id: s.id.toString(),
                 date: s.date.toISOString(),
-                start_time: s.start_time.toISOString(),
-                end_time: s.end_time.toISOString(),
-                created_at: s.created_at?.toISOString()
+                start_time: s.startTime.toISOString(),
+                end_time: s.endTime.toISOString(),
+                created_at: s.createdAt?.toISOString()
             }));
 
             return res.status(200).json(serialized);
@@ -87,11 +87,11 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
                 data: {
                     title,
                     date: dateObj,
-                    start_time: startObj,
-                    end_time: endObj,
-                    is_active: is_active ?? true,
-                    created_at: new Date(),
-                    updated_at: new Date()
+                    startTime: startObj,
+                    endTime: endObj,
+                    isActive: is_active ?? true,
+                    createdAt: new Date(),
+                    updatedAt: new Date()
                 }
             });
 

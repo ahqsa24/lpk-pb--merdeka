@@ -26,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET) as any;
-        userId = BigInt(decoded.userId);
+        userId = decoded.userId; // Now a String UUID
     } catch (e) {
         return res.status(401).json({ message: 'Invalid token' });
     }
@@ -36,15 +36,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const session = await prisma.attendance_sessions.findUnique({
             where: { id: sessionId }
         });
-        if (!session || !session.is_active) {
+        if (!session || !session.isActive) {
             return res.status(400).json({ message: 'Sesi tidak tersedia' });
         }
 
         // 3. Check duplicate
         const existing = await prisma.attendance_records.findFirst({
             where: {
-                user_id: userId,
-                attendance_session_id: sessionId
+                userId: userId,
+                attendanceSessionId: sessionId
             }
         });
 
@@ -55,17 +55,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // 4. Create Record
         const record = await prisma.attendance_records.create({
             data: {
-                user_id: userId,
-                attendance_session_id: sessionId,
-                check_in_time: new Date(),
-                created_at: new Date(),
-                updated_at: new Date()
+                userId: userId,
+                attendanceSessionId: sessionId,
+                checkInTime: new Date(),
+                createdAt: new Date(),
+                updatedAt: new Date()
             }
         });
 
         return res.status(200).json({
             message: 'Berhasil Check-in!',
-            check_in_time: record.check_in_time.toISOString() // Client expects "check_in_time" field
+            check_in_time: record.checkInTime.toISOString() // Client expects "check_in_time" field
         });
 
     } catch (error) {

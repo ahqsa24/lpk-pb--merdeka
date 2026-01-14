@@ -9,8 +9,8 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
     try {
         // User Statistics
-        const totalUsers = await prisma.users.count();
-        const totalAdmins = await prisma.users.count({
+        const totalUsers = await prisma.user.count();
+        const totalAdmins = await prisma.user.count({
             where: {
                 OR: [
                     { role: 'admin' },
@@ -21,7 +21,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
         // Attendance Statistics
         const activeSessions = await prisma.attendance_sessions.count({
-            where: { is_active: true }
+            where: { isActive: true }
         });
         const totalAttendanceRecords = await prisma.attendance_records.count();
 

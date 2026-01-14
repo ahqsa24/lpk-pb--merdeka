@@ -32,35 +32,15 @@ export default function DashboardPage() {
 
 
     useEffect(() => {
-        // Initial check
-        const token = localStorage.getItem('token');
-        if (!token) {
+        // If query param 'registered' is present, we might want to show a toast (handled elsewhere)
+
+        // Auth check relies on useAuth() which is cookie-based via better-auth
+        if (!loading && !isAuthenticated) {
             router.push('/auth/login');
+        } else if (isAuthenticated) {
             setLoading(false);
-            return;
         }
-
-        // If we have a token but not authenticated yet, wait.
-        // If authenticated, stop loading.
-        if (isAuthenticated) {
-            setLoading(false);
-        } else {
-            // Check if token was removed by AuthContext (invalid)
-            // But AuthContext updates asynchronously. 
-            // We can rely on the fact that if isAuthenticated is false and token is gone, we redirect.
-            // If token is still there, we are verifying.
-            const checkInterval = setInterval(() => {
-                const currentToken = localStorage.getItem('token');
-                if (!currentToken && !isAuthenticated) {
-                    router.push('/auth/login');
-                    clearInterval(checkInterval);
-                    setLoading(false);
-                }
-            }, 100);
-
-            return () => clearInterval(checkInterval);
-        }
-    }, [isAuthenticated, router]);
+    }, [isAuthenticated, loading, router]);
 
     if (loading) {
         return (

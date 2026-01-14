@@ -6,7 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
             // Lazy Expiration Check
             const activeSessions = await prisma.attendance_sessions.findMany({
-                where: { is_active: true }
+                where: { isActive: true }
             });
 
             const now = new Date();
@@ -16,8 +16,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const year = session.date.getFullYear();
                 const month = session.date.getMonth();
                 const day = session.date.getDate();
-                const hours = session.end_time.getHours();
-                const minutes = session.end_time.getMinutes();
+                const hours = session.endTime.getHours();
+                const minutes = session.endTime.getMinutes();
 
                 const combined = new Date(year, month, day, hours, minutes);
 
@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     updates.push(
                         prisma.attendance_sessions.update({
                             where: { id: session.id },
-                            data: { is_active: false }
+                            data: { isActive: false }
                         })
                     );
                 }
@@ -38,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             // Fetch active sessions again (after updates)
             const sessions = await prisma.attendance_sessions.findMany({
                 where: {
-                    is_active: true,
+                    isActive: true,
                 },
                 orderBy: { date: 'desc' },
             });
@@ -47,9 +47,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 ...s,
                 id: s.id.toString(),
                 date: s.date.toISOString(),
-                start_time: s.start_time.toISOString(), // Contains dummy date part
-                end_time: s.end_time.toISOString(),
-                created_at: s.created_at?.toISOString()
+                start_time: s.startTime.toISOString(),
+                end_time: s.endTime.toISOString(),
+                created_at: s.createdAt?.toISOString()
             }));
 
             return res.status(200).json(serialized);

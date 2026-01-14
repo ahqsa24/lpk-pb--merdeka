@@ -1,16 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { checkAdmin, AuthenticatedRequest } from '@/lib/auth';
-
-const prisma = new PrismaClient() as any;
-
-const serializeBigInt = (obj: any) => {
-    return JSON.parse(JSON.stringify(obj, (key, value) =>
-        typeof value === 'bigint'
-            ? value.toString()
-            : value
-    ));
-}
 
 async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     const { id } = req.query;
@@ -23,9 +13,9 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         try {
             // Get attendance records for this session with user details
             const records = await prisma.attendance_records.findMany({
-                where: { attendance_session_id: BigInt(id) },
+                where: { attendanceSessionId: BigInt(id) },
                 include: {
-                    users: {
+                    user: {
                         select: {
                             id: true,
                             name: true,
@@ -33,17 +23,19 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
                         }
                     }
                 },
-                orderBy: { check_in_time: 'asc' }
+                orderBy: { checkInTime: 'asc' }
             });
 
             // Remap for frontend consistency
             const mappedRecords = records.map((r: any) => ({
                 ...r,
-                checked_in_at: r.check_in_time, // Alias for frontend
-                user: r.users // Map users relation to user field expected by frontend
+                id: r.id.toString(),
+                attendanceSessionId: r.attendanceSessionId.toString(),
+                checked_in_at: r.checkInTime, // Alias for frontend
+                user: r.user // Map users relation to user field expected by frontend
             }));
 
-            return res.json(serializeBigInt(mappedRecords));
+            return res.json(mappedRecords);
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Error fetching attendance records' });

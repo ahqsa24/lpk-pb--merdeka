@@ -1,87 +1,44 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext } from "react";
 import { useRouter } from "next/router";
+import { useSession, signOut as betterAuthSignOut } from "@/lib/auth-client";
 
 interface User {
-    id?: number;
+    id?: string;
     name?: string;
     email?: string;
     role?: string;
-    avatar?: string;
+    image?: string | null;
 }
 
 interface AuthContextType {
     isAuthenticated: boolean;
     user: User | null;
-    login: (token: string, userData: User) => void;
     logout: () => void;
-    checkAuth: () => void;
+    isPending: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [user, setUser] = useState<User | null>(null);
     const router = useRouter();
+    const { data: session, isPending } = useSession();
 
-    const checkAuth = async () => {
-        const token = localStorage.getItem("token");
+    const isAuthenticated = !!session?.user;
+    const user = session?.user ? {
+        id: session.user.id,
+        name: session.user.name,
+        email: session.user.email,
+        role: (session.user as any).role || 'user',
+        image: session.user.image,
+    } : null;
 
-        if (!token) {
-            setIsAuthenticated(false);
-            setUser(null);
-            return;
-        }
-
-        try {
-            const response = await fetch('/api/user', {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Accept": "application/json"
-                }
-            });
-
-            if (response.ok) {
-                const userData = await response.json();
-                setIsAuthenticated(true);
-                setUser(userData);
-                localStorage.setItem("user", JSON.stringify(userData));
-            } else {
-                // Token invalid or expired
-                localStorage.removeItem("token");
-                localStorage.removeItem("user");
-                setIsAuthenticated(false);
-                setUser(null);
-            }
-        } catch (error) {
-            console.error("Auth check failed", error);
-            setIsAuthenticated(false);
-            setUser(null);
-        }
-    };
-
-    useEffect(() => {
-        checkAuth();
-    }, []);
-
-    const login = (token: string, userData: User) => {
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(userData));
-        setIsAuthenticated(true);
-        setUser(userData);
-    };
-
-    const logout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        setIsAuthenticated(false);
-        setUser(null);
+    const logout = async () => {
+        await betterAuthSignOut();
         router.push("/auth/login");
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, user, login, logout, checkAuth }}>
+        <AuthContext.Provider value={{ isAuthenticated, user, logout, isPending }}>
             {children}
         </AuthContext.Provider>
     );

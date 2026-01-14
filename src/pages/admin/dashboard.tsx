@@ -40,38 +40,21 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (!token) {
+        if (!loading && !isAuthenticated) {
             router.push('/auth/login');
-            return;
-        }
-
-        if (isAuthenticated) {
-            if (user && user.role !== 'admin' && user.role !== 'superAdmin') {
+        } else if (isAuthenticated && user) {
+            if (user.role !== 'admin' && user.role !== 'superAdmin') {
                 router.push('/dashboard');
+            } else {
+                setLoading(false);
             }
-        } else {
-            // Wait for auth check to complete
-            const checkInterval = setInterval(() => {
-                const currentToken = localStorage.getItem('token');
-                if (!currentToken && !isAuthenticated) {
-                    router.push('/auth/login');
-                    clearInterval(checkInterval);
-                }
-            }, 100);
-            return () => clearInterval(checkInterval);
         }
-    }, [isAuthenticated, user, router]);
+    }, [isAuthenticated, user, loading, router]);
 
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const token = localStorage.getItem('token');
-                const res = await fetch('/api/admin/stats', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
+                const res = await fetch('/api/admin/stats');
 
                 if (res.ok) {
                     const data = await res.json();

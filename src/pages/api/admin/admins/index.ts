@@ -1,22 +1,12 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { checkAdmin, AuthenticatedRequest } from '@/lib/auth';
-
-const prisma = new PrismaClient() as any;
-
-const serializeBigInt = (obj: any) => {
-    return JSON.parse(JSON.stringify(obj, (key, value) =>
-        typeof value === 'bigint'
-            ? value.toString()
-            : value
-    ));
-}
 
 async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     if (req.method === 'GET') {
         try {
             // Show all admins and superAdmins to any authenticated admin
-            const admins = await prisma.users.findMany({
+            const admins = await prisma.user.findMany({
                 where: {
                     role: { in: ['admin', 'superAdmin'] }
                 },
@@ -25,12 +15,17 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
                     name: true,
                     email: true,
                     role: true,
-                    created_at: true
+                    createdAt: true
                 },
-                orderBy: { created_at: 'desc' }
+                orderBy: { createdAt: 'desc' }
             });
 
-            return res.json(serializeBigInt(admins));
+            const serializedAdmins = admins.map(admin => ({
+                ...admin,
+                createdAt: admin.createdAt.toISOString()
+            }));
+
+            return res.json(serializedAdmins);
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Error fetching admins' });
