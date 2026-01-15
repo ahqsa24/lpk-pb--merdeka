@@ -125,6 +125,15 @@ export default function CMSSettings() {
                                             className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none"
                                         />
                                     </div>
+                                    <div className="md:col-span-2">
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Jam Operasional</label>
+                                        <input
+                                            type="text"
+                                            value={settings.contact_hours || ''}
+                                            onChange={e => handleChange('contact_hours', e.target.value)}
+                                            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none"
+                                        />
+                                    </div>
                                 </div>
                             </section>
 
@@ -174,16 +183,28 @@ export default function CMSSettings() {
                             {/* Maps */}
                             <section className="space-y-4">
                                 <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider border-b border-gray-100 pb-2">Location</h3>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Google Maps Embed URL</label>
-                                    <input
-                                        type="text"
-                                        value={settings.map_embed_url || ''}
-                                        onChange={e => handleChange('map_embed_url', e.target.value)}
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none"
-                                        placeholder="https://www.google.com/maps/embed?..."
-                                    />
-                                    <p className="text-xs text-gray-500 mt-1">Paste the &apos;src&apos; link from Google Maps &apos;Share &gt; Embed a map&apos;.</p>
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Google Maps Embed URL (untuk iframe)</label>
+                                        <input
+                                            type="text"
+                                            value={settings.map_embed_url || ''}
+                                            onChange={e => handleChange('map_embed_url', e.target.value)}
+                                            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none"
+                                            placeholder="https://www.google.com/maps/embed?pb=..."
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">Google Maps Share Link (untuk tombol &quot;Buka Maps&quot;)</label>
+                                        <input
+                                            type="text"
+                                            value={settings.map_share_url || ''}
+                                            onChange={e => handleChange('map_share_url', e.target.value)}
+                                            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none"
+                                            placeholder="https://maps.app.goo.gl/... atau https://goo.gl/maps/..."
+                                        />
+                                        <p className="text-xs text-gray-500 mt-1">Link pendek dari tombol &quot;Share&quot; → &quot;Copy link&quot; di Google Maps.</p>
+                                    </div>
                                 </div>
                             </section>
 

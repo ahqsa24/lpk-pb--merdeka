@@ -103,6 +103,17 @@ export default function SignIn() {
 
                 {/* Right Side - Form */}
                 <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-24 relative">
+                    {/* Back to Home Button */}
+                    <Link
+                        href="/"
+                        className="absolute top-6 left-6 flex items-center gap-2 text-sm text-gray-500 hover:text-red-600 transition-colors group"
+                    >
+                        <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        <span>Kembali ke Beranda</span>
+                    </Link>
+
                     <div className="w-full max-w-[440px] space-y-8">
                         <div className="space-y-2 text-center lg:text-left">
                             <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Masuk Akun</h1>

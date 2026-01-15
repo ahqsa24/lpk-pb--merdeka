@@ -4,7 +4,7 @@ import Head from "next/head";
 import { DashboardSidebar, ProfileForm, AttendanceSessionList, ArticleList } from "../components/dashboard/organisms";
 import { useAuth } from "@/context/AuthContext";
 import { useSearch } from '@/context/SearchContext';
-import { FaBars, FaCog, FaSignOutAlt, FaSearch } from "react-icons/fa";
+import { FaBars, FaCog, FaSignOutAlt, FaSearch, FaHome } from "react-icons/fa";
 import Link from "next/link";
 
 export default function DashboardPage() {
@@ -145,6 +145,13 @@ export default function DashboardPage() {
 
                                 {isProfileOpen && (
                                     <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-zinc-900 rounded-lg shadow-lg py-1 border border-gray-100 dark:border-zinc-800 z-50">
+                                        <Link
+                                            href="/"
+                                            className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-zinc-800 flex items-center gap-2 transition-colors"
+                                        >
+                                            <FaHome className="text-gray-400" />
+                                            Beranda
+                                        </Link>
                                         <button
                                             onClick={() => setActiveTab('profil')} // Or link to profile page
                                             className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-zinc-800 flex items-center gap-2 transition-colors"
