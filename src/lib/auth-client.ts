@@ -2,12 +2,17 @@ import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
     baseURL: "http://localhost:3000" // the base url of your auth server
-})
+});
+
 export const {
     signIn,
     signOut,
     signUp,
     useSession,
-    forgetPassword,
-    resetPassword
+    resetPassword,
+    changePassword
 } = authClient as any;
+
+// For password reset request - correct function name in better-auth 1.4+
+export const forgetPassword = (authClient as any).requestPasswordReset;
+export const requestPasswordReset = (authClient as any).requestPasswordReset;

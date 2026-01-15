@@ -24,7 +24,7 @@ export default function SignUp() {
         e.preventDefault();
 
         if (password !== passwordConfirmation) {
-            setError("Password dan Konfirmasi Password tidak cocok");
+            setError("Password and confirmation do not match");
             return;
         }
 
@@ -48,7 +48,7 @@ export default function SignUp() {
                     router.push("/auth/login?registered=true");
                 },
                 onError: (ctx: any) => {
-                    setError(ctx.error.message || "Pendaftaran gagal, coba lagi.");
+                    setError(ctx.error.message || "Registration failed. Please try again.");
                 },
             }
         );
@@ -57,7 +57,7 @@ export default function SignUp() {
     return (
         <>
             <Head>
-                <title>Daftar Akun | LPK PB Merdeka</title>
+                <title>Register | LPK PB Merdeka</title>
             </Head>
             <div className="min-h-screen w-full flex bg-gray-50 dark:bg-zinc-950">
                 {/* Left Side - Image/Branding */}
@@ -70,9 +70,9 @@ export default function SignUp() {
                             <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
                         </div>
                         <div className="space-y-4 max-w-lg">
-                            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white drop-shadow-sm">Bergabung Bersama Kami</h2>
+                            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white drop-shadow-sm">Join Us Today</h2>
                             <p className="text-lg text-red-50 leading-relaxed font-medium">
-                                Tingkatkan kompetensi digital Anda dan raih peluang karir global bersama ribuan talenta lainnya.
+                                Enhance your digital skills and unlock global career opportunities with thousands of talents.
                             </p>
                         </div>
 
@@ -92,13 +92,13 @@ export default function SignUp() {
                         <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
-                        <span>Kembali ke Beranda</span>
+                        <span>Back to Home</span>
                     </Link>
 
                     <div className="w-full max-w-[440px] h-full flex flex-col justify-center py-6">
                         <div className="space-y-2 text-center lg:text-left mb-8">
-                            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Buat Akun Baru</h1>
-                            <p className="text-gray-500 dark:text-gray-400">Lengkapi data diri Anda untuk mendaftar</p>
+                            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Create Account</h1>
+                            <p className="text-gray-500 dark:text-gray-400">Fill in your details to get started</p>
                         </div>
 
                         {error && (
@@ -112,7 +112,7 @@ export default function SignUp() {
 
                         <form onSubmit={handleSignUp} className="space-y-5">
                             <div className="space-y-2">
-                                <Label htmlFor="name">Nama Lengkap</Label>
+                                <Label htmlFor="name">Full Name</Label>
                                 <div className="relative group">
                                     <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-red-600">
                                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
@@ -120,7 +120,7 @@ export default function SignUp() {
                                     <Input
                                         id="name"
                                         type="text"
-                                        placeholder="Nama Lengkap"
+                                        placeholder="Full Name"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
                                         required
@@ -174,7 +174,7 @@ export default function SignUp() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="password_confirmation">Konfirmasi</Label>
+                                    <Label htmlFor="password_confirmation">Confirm</Label>
                                     <div className="relative group">
                                         <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-red-600">
                                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -210,16 +210,16 @@ export default function SignUp() {
                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                         </svg>
-                                        Memproses...
+                                        Processing...
                                     </span>
-                                ) : "Daftar Sekarang"}
+                                ) : "Register Now"}
                             </button>
                         </form>
 
                         <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-6 md:mt-8">
-                            Sudah punya akun?{" "}
+                            Already have an account?{" "}
                             <Link href="/auth/login" className="text-red-600 font-semibold hover:text-red-700 transition-colors hover:underline">
-                                Masuk
+                                Sign In
                             </Link>
                         </p>
                     </div>

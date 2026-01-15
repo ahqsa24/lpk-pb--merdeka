@@ -17,21 +17,25 @@ export default function ForgotPassword() {
         setError('');
         setSuccess(false);
 
-        await forgetPassword({
-            email,
-            redirectTo: "/auth/reset-password", // Redirect URL after clicking email link
-        }, {
-            onRequest: () => setLoading(true),
-            onResponse: () => setLoading(false),
-            onSuccess: () => setSuccess(true),
-            onError: (ctx: any) => setError(ctx.error.message),
-        });
+        try {
+            await forgetPassword({
+                email,
+                redirectTo: "/auth/reset-password",
+            });
+            // Always show success for security (don't reveal if email exists)
+            setSuccess(true);
+        } catch (err: any) {
+            // Only show error for technical issues, not user not found
+            setError('An error occurred. Please try again later.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <>
             <Head>
-                <title>Lupa Password | LPK PB Merdeka</title>
+                <title>Forgot Password | LPK PB Merdeka</title>
             </Head>
             <div className="min-h-screen w-full flex bg-gray-50 dark:bg-zinc-950">
                 {/* Left Side (Same as Login/Register) */}
@@ -44,9 +48,9 @@ export default function ForgotPassword() {
                             <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
                         </div>
                         <div className="space-y-4 max-w-lg">
-                            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white drop-shadow-sm">Pulihkan Akun</h2>
+                            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white drop-shadow-sm">Account Recovery</h2>
                             <p className="text-lg text-red-50 leading-relaxed font-medium">
-                                Kami akan membantu Anda mendapatkan kembali akses ke akun Anda dengan aman.
+                                We'll help you regain access to your account safely and securely.
                             </p>
                         </div>
 
@@ -66,13 +70,13 @@ export default function ForgotPassword() {
                         <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
-                        <span>Kembali ke Beranda</span>
+                        <span>Back to Home</span>
                     </Link>
 
                     <div className="w-full max-w-[440px] space-y-8">
                         <div className="space-y-2 text-center lg:text-left">
-                            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Lupa Password?</h1>
-                            <p className="text-gray-500 dark:text-gray-400">Masukkan email Anda untuk kami kirimkan link reset password</p>
+                            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Forgot Password?</h1>
+                            <p className="text-gray-500 dark:text-gray-400">Enter your email address and we'll send you a reset link</p>
                         </div>
 
                         {success && (
@@ -81,7 +85,7 @@ export default function ForgotPassword() {
                                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                                 </div>
                                 <p className="text-sm font-medium text-green-700 dark:text-green-300">
-                                    Email reset password telah dikirim. Silakan cek inbox atau spam Anda.
+                                    If an account with this email exists, you will receive a password reset link shortly. Please check your inbox or spam folder.
                                 </p>
                             </div>
                         )}
@@ -125,16 +129,16 @@ export default function ForgotPassword() {
                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                         </svg>
-                                        Memproses...
+                                        Processing...
                                     </span>
-                                ) : "Kirim Link Reset"}
+                                ) : "Send Reset Link"}
                             </button>
                         </form>
 
                         <p className="text-center text-sm text-gray-600 dark:text-gray-400">
-                            Kembali ke{" "}
+                            Back to{" "}
                             <Link href="/auth/login" className="text-red-600 hover:text-red-700 font-semibold transition-colors hover:underline">
-                                Halaman Login
+                                Login Page
                             </Link>
                         </p>
                     </div>

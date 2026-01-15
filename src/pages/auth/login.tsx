@@ -45,7 +45,7 @@ export default function SignIn() {
                     }
                 },
                 onError: (ctx: any) => {
-                    setError(ctx.error.message || "Login gagal, periksa email dan password.");
+                    setError(ctx.error.message || "Login failed. Please check your email and password.");
                 },
             }
         );
@@ -65,7 +65,7 @@ export default function SignIn() {
                     setLoading(false);
                 },
                 onError: (ctx: any) => {
-                    setError(ctx.error.message || "Login dengan Google gagal.");
+                    setError(ctx.error.message || "Google login failed.");
                 },
             }
         );
@@ -74,7 +74,7 @@ export default function SignIn() {
     return (
         <>
             <Head>
-                <title>Masuk | LPK PB Merdeka</title>
+                <title>Sign In | LPK PB Merdeka</title>
             </Head>
             <div className="min-h-screen w-full flex bg-gray-50 dark:bg-zinc-950">
                 {/* Left Side - Image/Branding */}
@@ -89,9 +89,9 @@ export default function SignIn() {
                         </div>
 
                         <div className="space-y-4 max-w-lg">
-                            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white drop-shadow-sm">Selamat Datang Kembali</h2>
+                            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white drop-shadow-sm">Welcome Back</h2>
                             <p className="text-lg text-red-50 leading-relaxed font-medium">
-                                Platform pelatihan kerja profesional terpadu untuk membangun masa depan karir yang cemerlang.
+                                Professional job training platform to help build your brilliant career future.
                             </p>
                         </div>
 
@@ -111,13 +111,13 @@ export default function SignIn() {
                         <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
-                        <span>Kembali ke Beranda</span>
+                        <span>Back to Home</span>
                     </Link>
 
                     <div className="w-full max-w-[440px] space-y-8">
                         <div className="space-y-2 text-center lg:text-left">
-                            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Masuk Akun</h1>
-                            <p className="text-gray-500 dark:text-gray-400">Silakan masukkan detail akun Anda untuk melanjutkan</p>
+                            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Sign In</h1>
+                            <p className="text-gray-500 dark:text-gray-400">Please enter your account details to continue</p>
                         </div>
 
                         {error && (
@@ -156,7 +156,7 @@ export default function SignIn() {
                                             href="/auth/forgot-password"
                                             className="text-sm font-medium text-red-600 hover:text-red-700 transition-colors"
                                         >
-                                            Lupa password?
+                                            Forgot password?
                                         </Link>
                                     </div>
                                     <div className="relative group">
@@ -191,7 +191,7 @@ export default function SignIn() {
                                     onChange={(e) => setRememberMe(e.target.checked)}
                                     className="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500 focus:ring-offset-0 cursor-pointer"
                                 />
-                                <Label htmlFor="remember" className="cursor-pointer text-gray-600 dark:text-gray-400 font-normal select-none">Ingat saya</Label>
+                                <Label htmlFor="remember" className="cursor-pointer text-gray-600 dark:text-gray-400 font-normal select-none">Remember me</Label>
                             </div>
 
                             <button
@@ -205,9 +205,9 @@ export default function SignIn() {
                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                         </svg>
-                                        Memproses...
+                                        Processing...
                                     </span>
-                                ) : "Masuk Sekarang"}
+                                ) : "Sign In"}
                             </button>
 
                             <div className="relative my-8">
@@ -215,7 +215,7 @@ export default function SignIn() {
                                     <div className="w-full border-t border-gray-200 dark:border-zinc-800"></div>
                                 </div>
                                 <div className="relative flex justify-center text-sm">
-                                    <span className="px-4 bg-gray-50 dark:bg-zinc-950 text-gray-500 font-medium tracking-wide text-xs uppercase">Atau lanjutkan dengan</span>
+                                    <span className="px-4 bg-gray-50 dark:bg-zinc-950 text-gray-500 font-medium tracking-wide text-xs uppercase">Or continue with</span>
                                 </div>
                             </div>
 
@@ -236,9 +236,9 @@ export default function SignIn() {
                         </form>
 
                         <p className="text-center text-sm text-gray-600 dark:text-gray-400">
-                            Belum memiliki akun?{" "}
+                            Don't have an account?{" "}
                             <Link href="/auth/register" className="text-red-600 hover:text-red-700 font-semibold transition-colors hover:underline">
-                                Daftar Sekarang
+                                Register Now
                             </Link>
                         </p>
                     </div>
