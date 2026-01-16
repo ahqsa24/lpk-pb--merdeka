@@ -6,8 +6,10 @@ import { useSearch } from '@/context/SearchContext';
 import {
     FaHome, FaUsers, FaUserShield, FaCalendarCheck,
     FaBars, FaSignOutAlt, FaSearch,
-    FaList, FaImages, FaQuestionCircle, FaCog, FaStar, FaNewspaper, FaBook, FaMoneyBillWave, FaVideo, FaClipboardList
+    FaList, FaImages, FaQuestionCircle, FaCog, FaStar, FaNewspaper, FaBook, FaMoneyBillWave, FaVideo, FaClipboardList,
+    FaChevronLeft, FaChevronRight, FaChevronDown
 } from 'react-icons/fa';
+import Image from 'next/image';
 
 interface AdminLayoutProps {
     children: ReactNode;
@@ -20,6 +22,8 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => 
     const { searchQuery, setSearchQuery } = useSearch();
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(false);
+    const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -37,6 +41,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => 
     const handleLogout = () => {
         logout();
         router.push('/auth/login');
+    };
+
+    const toggleGroup = (group: string) => {
+        setCollapsedGroups(prev => ({ ...prev, [group]: !prev[group] }));
     };
 
     const isActive = (path: string) => router.pathname === path || router.pathname.startsWith(`${path}/`);
@@ -91,38 +99,64 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => 
         <div className="min-h-screen bg-gray-50 flex font-sans">
             {/* Sidebar */}
             <aside className={`
-                fixed inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out
+                fixed inset-y-0 left-0 z-30 bg-white border-r border-gray-200 transform transition-all duration-300 ease-in-out
                 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+                ${isCollapsed ? 'w-20' : 'w-64'}
             `}>
-                <div className="h-16 flex items-center px-6 border-b border-gray-100">
-                    <span className="text-xl font-bold text-red-600">Admin Panel</span>
+                {/* Collapse Toggle */}
+                <button
+                    onClick={() => setIsCollapsed(!isCollapsed)}
+                    className="hidden md:flex absolute -right-3 top-20 w-6 h-6 bg-white border border-gray-200 rounded-full items-center justify-center text-gray-500 hover:text-red-600 shadow-sm z-50 transition-colors"
+                >
+                    {isCollapsed ? <FaChevronRight size={10} /> : <FaChevronLeft size={10} />}
+                </button>
+
+                <div className={`h-16 flex items-center border-b border-gray-100 transition-all ${isCollapsed ? 'justify-center px-0' : 'px-6'}`}>
+                    {/* Logo Icon Placeholder if no image */}
+                    <span className={`text-xl font-bold text-red-600 whitespace-nowrap overflow-hidden transition-all duration-300 ${isCollapsed ? 'text-2xl' : ''}`}>
+                        {isCollapsed ? 'A' : 'Admin Panel'}
+                    </span>
                 </div>
 
-                <div className="p-4 space-y-6 overflow-y-auto h-[calc(100vh-64px)]">
+                <div className="p-3 space-y-6 overflow-y-auto h-[calc(100vh-64px)] overflow-x-hidden">
                     {menuItems.map((group, idx) => (
                         <div key={idx}>
-                            <h3 className="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-                                {group.group}
-                            </h3>
-                            <div className="space-y-1">
+                            {!isCollapsed ? (
+                                <div
+                                    className="flex items-center justify-between px-3 mb-2 cursor-pointer group/header"
+                                    onClick={() => toggleGroup(group.group)}
+                                >
+                                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider select-none">
+                                        {group.group}
+                                    </h3>
+                                    <FaChevronDown
+                                        className={`text-[10px] text-gray-400 transition-transform duration-200 ${collapsedGroups[group.group] ? '-rotate-90' : ''}`}
+                                    />
+                                </div>
+                            ) : (
+                                <div className="h-px bg-gray-100 mx-2 my-2" />
+                            )}
+
+                            <div className={`space-y-1 transition-all duration-300 overflow-hidden ${(!isCollapsed && collapsedGroups[group.group]) ? 'max-h-0 opacity-0' : 'max-h-[500px] opacity-100'}`}>
                                 {group.items.map((item) => (
                                     <Link
                                         key={item.href}
                                         href={item.href}
-                                        className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive(item.href)
+                                        title={isCollapsed ? item.label : undefined}
+                                        className={`flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-3 gap-3'} py-2 rounded-lg text-sm font-medium transition-colors ${isActive(item.href)
                                             ? 'bg-red-50 text-red-600'
                                             : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                                             }`}
                                     >
-                                        <span className="text-lg">{item.icon}</span>
-                                        {item.label}
+                                        <span className="text-lg flex-shrink-0">{item.icon}</span>
+                                        <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0 opacity-0 hidden' : 'w-auto opacity-100'}`}>
+                                            {item.label}
+                                        </span>
                                     </Link>
                                 ))}
                             </div>
                         </div>
                     ))}
-
-
                 </div>
             </aside>
 
@@ -135,7 +169,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => 
             )}
 
             {/* Main Content */}
-            <div className="flex-1 md:ml-64 flex flex-col min-h-screen">
+            <div className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${isCollapsed ? 'md:ml-20' : 'md:ml-64'}`}>
                 {/* Top Header */}
                 <header className="sticky top-0 z-20 bg-white border-b border-gray-100 h-16 px-4 md:px-8 flex items-center justify-between">
                     <div className="flex items-center gap-4">

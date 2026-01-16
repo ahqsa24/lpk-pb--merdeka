@@ -4,7 +4,7 @@ import {
     FaUser, FaCertificate, FaHistory, FaTrophy,
     FaBook, FaFileAlt, FaVideo, FaGamepad, FaPuzzlePiece,
     FaChevronDown, FaChevronRight, FaCalendarCheck,
-    FaSignOutAlt, FaInfoCircle, FaHome
+    FaSignOutAlt, FaInfoCircle, FaHome, FaChevronLeft
 } from "react-icons/fa";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/router";
@@ -25,9 +25,18 @@ interface DashboardSidebarProps {
     onTabChange: (tabId: string) => void;
     isOpen?: boolean;
     onClose?: () => void;
+    isCollapsed?: boolean;
+    onToggleCollapse?: () => void;
 }
 
-export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeTab, onTabChange, isOpen, onClose }) => {
+export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({
+    activeTab,
+    onTabChange,
+    isOpen,
+    onClose,
+    isCollapsed = false,
+    onToggleCollapse
+}) => {
     const { logout } = useAuth();
     const router = useRouter();
 
@@ -38,13 +47,11 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeTab, o
                 { id: "overview", label: "Overview", icon: <FaHome /> },
                 { id: "profil", label: "Profil Saya", icon: <FaUser /> },
                 { id: "absensi", label: "Absensi", icon: <FaCalendarCheck /> },
-                //{ id: "program", label: "Program Saya", icon: <FaFileAlt /> },
             ],
         },
         {
             title: "Akademik",
             items: [
-                //{ id: "kompetisi-aktif", label: "Kompetisi", icon: <FaTrophy /> },
                 { id: "panduan-gamifikasi", label: "Panduan Gamifikasi", icon: <FaInfoCircle /> },
                 { id: "leaderboard", label: "Leaderboard", icon: <FaPuzzlePiece /> },
                 { id: "riwayat", label: "Riwayat", icon: <FaHistory /> },
@@ -68,11 +75,6 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeTab, o
         setCollapsedGroups(prev => ({ ...prev, [title]: !prev[title] }));
     };
 
-    const handleLogout = () => {
-        logout();
-        router.push("/auth/login");
-    };
-
     return (
         <>
             {/* Backdrop for mobile */}
@@ -84,14 +86,22 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeTab, o
             )}
 
             <aside className={`
-                fixed top-0 left-0 z-30 h-full w-64 bg-white dark:bg-zinc-900 border-r border-gray-100 dark:border-zinc-800
-                transform transition-transform duration-300 ease-in-out
+                fixed top-0 left-0 z-30 h-full bg-white dark:bg-zinc-900 border-r border-gray-100 dark:border-zinc-800
+                transform transition-all duration-300 ease-in-out
                 ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+                ${isCollapsed ? "w-20" : "w-64"}
             `}>
+                {/* Collapse Toggle Button (Desktop Only) */}
+                <button
+                    onClick={onToggleCollapse}
+                    className="hidden md:flex absolute -right-3 top-8 w-6 h-6 bg-white dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 rounded-full items-center justify-center text-gray-500 hover:text-red-600 shadow-sm z-50 transition-colors"
+                >
+                    {isCollapsed ? <FaChevronRight size={10} /> : <FaChevronLeft size={10} />}
+                </button>
+
                 {/* Logo Area */}
-                {/* Logo Area */}
-                <div className="h-20 flex items-center gap-3 px-6 border-b border-gray-100 dark:border-zinc-800">
-                    <div className="relative w-8 h-8">
+                <div className={`h-20 flex items-center gap-3 border-b border-gray-100 dark:border-zinc-800 transition-all duration-300 ${isCollapsed ? 'justify-center px-0' : 'px-6'}`}>
+                    <div className="relative w-8 h-8 flex-shrink-0">
                         <Image
                             src="/assets/Logo-Tab.png"
                             alt="Logo LPK"
@@ -99,17 +109,33 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeTab, o
                             className="object-contain"
                         />
                     </div>
-                    <span className="font-bold text-lg text-gray-900 dark:text-white">LPK Merdeka</span>
+                    <span className={`font-bold text-lg text-gray-900 dark:text-white whitespace-nowrap overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}>
+                        LPK Merdeka
+                    </span>
                 </div>
 
                 {/* Menu Area */}
-                <div className="flex-1 overflow-y-auto py-6 px-4 space-y-8">
+                <div className="flex-1 overflow-y-auto overflow-x-hidden py-6 px-3 space-y-6">
                     {menuGroups.map((group) => (
                         <div key={group.title}>
-                            <h3 className="px-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                                {group.title}
-                            </h3>
-                            <div className="space-y-1">
+                            {!isCollapsed ? (
+                                <div
+                                    className="flex items-center justify-between px-3 mb-2 cursor-pointer group/header"
+                                    onClick={() => toggleGroup(group.title)}
+                                >
+                                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider select-none">
+                                        {group.title}
+                                    </h3>
+                                    <FaChevronDown
+                                        className={`text-[10px] text-gray-400 transition-transform duration-200 ${collapsedGroups[group.title] ? '-rotate-90' : ''}`}
+                                    />
+                                </div>
+                            ) : (
+                                // Divider for collapsed state
+                                <div className="h-px bg-gray-100 dark:bg-zinc-800 mx-2 my-2" />
+                            )}
+
+                            <div className={`space-y-1 transition-all duration-300 overflow-hidden ${(!isCollapsed && collapsedGroups[group.title]) ? 'max-h-0 opacity-0' : 'max-h-[500px] opacity-100'}`}>
                                 {group.items.map((item) => (
                                     <button
                                         key={item.id}
@@ -117,24 +143,24 @@ export const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeTab, o
                                             onTabChange(item.id);
                                             if (window.innerWidth < 768 && onClose) onClose();
                                         }}
-                                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${activeTab === item.id
+                                        title={isCollapsed ? item.label : undefined}
+                                        className={`w-full flex items-center ${isCollapsed ? 'justify-center px-0' : 'px-3 gap-3'} py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${activeTab === item.id
                                             ? "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
                                             : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-zinc-800 hover:text-gray-900 dark:hover:text-white"
                                             }`}
                                     >
-                                        <span className={`text-lg ${activeTab === item.id ? "text-red-600 dark:text-red-400" : "text-gray-400 group-hover:text-gray-600"}`}>
+                                        <span className={`text-lg transition-colors duration-200 flex-shrink-0 ${activeTab === item.id ? "text-red-600 dark:text-red-400" : "text-gray-400 group-hover:text-gray-600"}`}>
                                             {item.icon}
                                         </span>
-                                        {item.label}
+                                        <span className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${isCollapsed ? 'w-0 opacity-0 hidden' : 'w-auto opacity-100'}`}>
+                                            {item.label}
+                                        </span>
                                     </button>
                                 ))}
                             </div>
                         </div>
                     ))}
                 </div>
-
-                {/* Footer Area */}
-
             </aside>
         </>
     );

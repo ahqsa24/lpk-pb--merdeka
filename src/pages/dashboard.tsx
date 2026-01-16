@@ -14,6 +14,7 @@ export default function DashboardPage() {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("overview");
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -95,8 +96,7 @@ export default function DashboardPage() {
             case "profil":
                 return <ProfileForm />;
             case "kompetisi-aktif":
-                // Placeholder for now, or existing code if I had it. 
-                // I'll put a simple placeholder card.
+                // Placeholder
                 return (
                     <div className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-700 rounded-xl p-6">
                         <h2 className="text-xl font-bold mb-4">Kompetisi Aktif</h2>
@@ -129,10 +129,12 @@ export default function DashboardPage() {
                     onTabChange={handleTabChange}
                     isOpen={sidebarOpen}
                     onClose={() => setSidebarOpen(false)}
+                    isCollapsed={isSidebarCollapsed}
+                    onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
                 />
 
                 {/* Main Content Area */}
-                <div className="md:ml-64 min-h-screen transition-all duration-300">
+                <div className={`min-h-screen transition-all duration-300 ${isSidebarCollapsed ? 'md:ml-20' : 'md:ml-64'}`}>
                     {/* Top Header */}
                     <header className="sticky top-0 z-20 md:static bg-white md:bg-transparent border-b md:border-none border-gray-100 dark:border-zinc-800 h-16 px-4 md:px-8 flex items-center justify-between">
                         <div className="flex items-center gap-4">
