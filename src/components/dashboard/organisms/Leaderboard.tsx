@@ -1,0 +1,109 @@
+import React, { useEffect, useState } from 'react';
+import { FaCrown, FaMedal, FaUserCircle } from 'react-icons/fa';
+
+interface LeaderboardEntry {
+    rank: number;
+    name: string;
+    image: string | null;
+    points: number;
+    level: number;
+}
+
+export const Leaderboard: React.FC = () => {
+    const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchLeaderboard = async () => {
+            try {
+                const res = await fetch('/api/user/leaderboard');
+                if (res.ok) {
+                    const data = await res.json();
+                    setLeaderboard(data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch leaderboard", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchLeaderboard();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="bg-white dark:bg-zinc-900 rounded-xl p-6 border border-gray-100 dark:border-zinc-800 animate-pulse space-y-4">
+                {[1, 2, 3, 4, 5].map(n => (
+                    <div key={n} className="h-16 bg-gray-100 dark:bg-zinc-800 rounded-lg"></div>
+                ))}
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-6">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <FaCrown className="text-yellow-500" /> Leaderboard
+            </h2>
+
+            <div className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-100 dark:border-zinc-800 overflow-hidden shadow-sm">
+                <div className="overflow-x-auto">
+                    <table className="w-full">
+                        <thead className="bg-gray-50 dark:bg-zinc-800/50">
+                            <tr>
+                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Rank</th>
+                                <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">User</th>
+                                <th className="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Level</th>
+                                <th className="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">XP Points</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100 dark:divide-zinc-800">
+                            {leaderboard.map((entry) => (
+                                <tr key={entry.rank} className={`hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors ${entry.rank <= 3 ? 'bg-yellow-50/30' : ''}`}>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div className="flex items-center justify-center w-8 h-8 font-bold rounded-full">
+                                            {entry.rank === 1 && <span className="text-2xl">🥇</span>}
+                                            {entry.rank === 2 && <span className="text-2xl">🥈</span>}
+                                            {entry.rank === 3 && <span className="text-2xl">🥉</span>}
+                                            {entry.rank > 3 && <span className="text-gray-500 text-lg">#{entry.rank}</span>}
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-zinc-700 overflow-hidden">
+                                                {entry.image ? (
+                                                    <img src={entry.image} alt={entry.name} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                                        <FaUserCircle size={24} />
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <span className="font-semibold text-gray-900 dark:text-white">{entry.name}</span>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                                            Lvl {entry.level}
+                                        </span>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-right font-bold text-gray-900 dark:text-white">
+                                        {entry.points.toLocaleString()} <span className="text-xs font-normal text-gray-500">XP</span>
+                                    </td>
+                                </tr>
+                            ))}
+                            {leaderboard.length === 0 && (
+                                <tr>
+                                    <td colSpan={4} className="px-6 py-12 text-center text-gray-500">
+                                        Belum ada data leaderboard. Mulailah berlomba!
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    );
+};

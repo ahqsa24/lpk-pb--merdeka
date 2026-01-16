@@ -18,12 +18,22 @@ model User {
   image         String?   @db.Text
   role          String    @default("user") @db.VarChar(255)
   password      String?   @db.Text
+  gender        String?   @db.VarChar(20)
+  birthDate     DateTime? @map("birth_date") @db.Date
+  birthPlace    String?   @map("birth_place") @db.VarChar(100)
+  address       String?   @db.Text
+  phoneNumber   String?   @map("phone_number") @db.VarChar(20)
+  photo_url     String?   @db.Text
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
 
   sessions           Session[]
   accounts           Account[]
   attendance_records attendance_records[]
+  quiz_attempts      quiz_attempts[]
+  gamification       gamification_profile?
+  gamification_logs  gamification_logs[]
+  certificates       certificates[]
 
   @@map("users")
 }
@@ -149,4 +159,176 @@ model cms_articles {
   published_at  DateTime? @db.Timestamp(0)
   created_at    DateTime? @db.Timestamp(0) @default(now())
   updated_at    DateTime? @db.Timestamp(0) @updatedAt
+}
+
+model content_folders {
+  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  name        String   @db.VarChar(255)
+  type        String   @db.VarChar(50) // 'ebook' or 'video'
+  description String?  @db.Text
+  created_at  DateTime @default(now()) @db.Timestamp(0)
+  updated_at  DateTime @updatedAt @db.Timestamp(0)
+
+  ebooks      ebooks[]
+  videos      videos[]
+}
+
+model ebooks {
+  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  title       String   @db.VarChar(255)
+  file_url    String   @db.Text
+  cover_url   String?  @db.Text
+  description String?  @db.Text
+  folder_id   BigInt   @db.UnsignedBigInt
+  created_at  DateTime @default(now()) @db.Timestamp(0)
+  updated_at  DateTime @updatedAt @db.Timestamp(0)
+
+  folder      content_folders @relation(fields: [folder_id], references: [id], onDelete: Cascade)
+
+  @@index([folder_id])
+}
+
+model videos {
+  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  title       String   @db.VarChar(255)
+  url         String   @db.Text
+  cover_url   String?  @db.Text
+  duration    Int?
+  description String?  @db.Text
+  folder_id   BigInt   @db.UnsignedBigInt
+  created_at  DateTime @default(now()) @db.Timestamp(0)
+  updated_at  DateTime @updatedAt @db.Timestamp(0)
+
+  folder      content_folders @relation(fields: [folder_id], references: [id], onDelete: Cascade)
+
+  @@index([folder_id])
+}
+
+model quiz_categories {
+  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  name        String   @db.VarChar(255)
+  description String?  @db.Text
+  created_at  DateTime @default(now()) @db.Timestamp(0)
+  updated_at  DateTime @updatedAt @db.Timestamp(0)
+
+  question_types question_types[]
+  weekly_quizzes weekly_quizzes[]
+}
+
+model question_types {
+  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  name        String   @db.VarChar(255)
+  category_id BigInt   @db.UnsignedBigInt
+  created_at  DateTime @default(now()) @db.Timestamp(0)
+  updated_at  DateTime @updatedAt @db.Timestamp(0)
+
+  category      quiz_categories @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  question_bank question_bank[]
+
+  @@index([category_id])
+}
+
+model question_bank {
+  id             BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  content        String   @db.LongText
+  options        String   @db.LongText // JSON array
+  correct_answer String   @db.Text
+  explanation    String?  @db.LongText
+  type_id        BigInt   @db.UnsignedBigInt
+  order          Int      @default(0)
+  created_at     DateTime @default(now()) @db.Timestamp(0)
+  updated_at     DateTime @updatedAt @db.Timestamp(0)
+
+  type question_types @relation(fields: [type_id], references: [id], onDelete: Cascade)
+  quiz_orders quiz_question_order[]
+
+  @@index([type_id])
+}
+
+model weekly_quizzes {
+  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  title       String   @db.VarChar(255)
+  category_id BigInt   @db.UnsignedBigInt
+  start_date  DateTime @db.Timestamp(0)
+  end_date    DateTime @db.Timestamp(0)
+  is_active   Boolean  @default(true)
+  config      String?  @db.Text
+  created_at  DateTime @default(now()) @db.Timestamp(0)
+  updated_at  DateTime @updatedAt @db.Timestamp(0)
+
+  category      quiz_categories      @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  quiz_attempts quiz_attempts[]
+  certificates  certificates[]
+  question_orders quiz_question_order[]
+
+  @@index([category_id])
+}
+
+model quiz_question_order {
+  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  quiz_id     BigInt   @db.UnsignedBigInt
+  question_id BigInt   @db.UnsignedBigInt
+  order       Int      @default(0)
+  created_at  DateTime @default(now()) @db.Timestamp(0)
+  updated_at  DateTime @updatedAt @db.Timestamp(0)
+
+  quiz     weekly_quizzes @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
+  question question_bank  @relation(fields: [question_id], references: [id], onDelete: Cascade)
+
+  @@unique([quiz_id, question_id])
+  @@index([quiz_id])
+  @@index([question_id])
+}
+
+model quiz_attempts {
+  id            BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  user_id       String   @db.VarChar(255)
+  quiz_id       BigInt   @db.UnsignedBigInt
+  score         Int
+  answers       String?  @db.LongText
+  started_at    DateTime @default(now()) @db.Timestamp(0)
+  finished_at   DateTime? @db.Timestamp(0)
+  
+  user          User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  quiz          weekly_quizzes @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@index([quiz_id])
+}
+
+model gamification_profile {
+  id           BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  user_id      String   @unique @db.VarChar(255)
+  total_points Int      @default(0)
+  level        Int      @default(1)
+  badges       String?  @db.Text
+  created_at   DateTime @default(now()) @db.Timestamp(0)
+  updated_at   DateTime @updatedAt @db.Timestamp(0)
+
+  user         User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model gamification_logs {
+  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  user_id     String   @db.VarChar(255)
+  action_type String   @db.VarChar(50) // 'quiz', 'video_watch', 'ebook_read', 'daily_login'
+  action_id   String?  @db.VarChar(255) // ID of the video/ebook/quiz
+  points      Int
+  created_at  DateTime @default(now()) @db.Timestamp(0)
+
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  @@index([user_id])
+}
+
+model certificates {
+  id              BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  user_id         String   @db.VarChar(255)
+  quiz_id         BigInt   @db.UnsignedBigInt
+  certificate_code String   @unique @db.VarChar(50)
+  file_url        String   @db.Text
+  issued_at       DateTime @default(now()) @db.Timestamp(0)
+
+  user            User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  quiz            weekly_quizzes @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
+  @@index([user_id])
 }

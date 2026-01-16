@@ -107,6 +107,30 @@ export const auth = betterAuth({
                 type: 'string',
                 defaultValue: 'user',
                 required: false,
+            },
+            gender: {
+                type: 'string',
+                required: false,
+            },
+            birthDate: {
+                type: 'date',
+                required: false,
+            },
+            birthPlace: {
+                type: 'string',
+                required: false,
+            },
+            address: {
+                type: 'string',
+                required: false,
+            },
+            phoneNumber: {
+                type: 'string',
+                required: false,
+            },
+            photo_url: {
+                type: 'string',
+                required: false,
             }
         }
     },

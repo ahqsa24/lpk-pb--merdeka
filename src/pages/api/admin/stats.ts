@@ -31,6 +31,10 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         const totalTestimonials = await prisma.cms_testimonials.count();
         const totalArticles = await prisma.cms_articles.count();
 
+        // Learning Content Statistics
+        const totalEbooks = await (prisma as any).ebooks.count();
+        const totalVideos = await (prisma as any).videos.count();
+
         return res.status(200).json({
             users: {
                 total: totalUsers,
@@ -45,6 +49,10 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
                 faq: totalFAQ,
                 testimonials: totalTestimonials,
                 articles: totalArticles
+            },
+            content: {
+                ebooks: totalEbooks,
+                videos: totalVideos
             }
         });
     } catch (error) {
