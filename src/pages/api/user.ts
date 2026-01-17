@@ -14,6 +14,12 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
                     name: true,
                     email: true,
                     role: true,
+                    gender: true,
+                    birthDate: true,
+                    birthPlace: true,
+                    address: true,
+                    phoneNumber: true,
+                    photo_url: true,
                 }
             });
 
@@ -30,9 +36,18 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     if (req.method === 'PUT') {
         try {
             const userId = req.user!.id;
-            const { name, email, password } = req.body;
+            const { name, email, password, gender, birthDate, birthPlace, address, phoneNumber, photo_url } = req.body;
 
-            const updateData: any = { name, email };
+            const updateData: any = {
+                name,
+                email,
+                gender,
+                birthDate: birthDate ? new Date(birthDate) : null,
+                birthPlace,
+                address,
+                phoneNumber,
+                photo_url
+            };
 
             // Check if email is already taken by another user
             if (email) {
@@ -61,7 +76,13 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
                     id: true,
                     name: true,
                     email: true,
-                    role: true
+                    role: true,
+                    gender: true,
+                    birthDate: true,
+                    birthPlace: true,
+                    address: true,
+                    phoneNumber: true,
+                    photo_url: true
                 }
             });
 

@@ -13,7 +13,9 @@ import {
     FaNewspaper,
     FaCog,
     FaChartLine,
-    FaArrowRight
+    FaArrowRight,
+    FaBook,
+    FaVideo
 } from 'react-icons/fa';
 
 interface StatsData {
@@ -30,6 +32,10 @@ interface StatsData {
         faq: number;
         testimonials: number;
         articles: number;
+    };
+    content?: {
+        ebooks: number;
+        videos: number;
     };
 }
 
@@ -79,10 +85,10 @@ export default function AdminDashboard() {
         { label: 'Admins', value: stats.users.admins, icon: <FaUserShield />, color: 'bg-purple-500' },
         { label: 'Active Sessions', value: stats.attendance.activeSessions, icon: <FaCalendarCheck />, color: 'bg-green-500' },
         { label: 'Attendance Records', value: stats.attendance.totalRecords, icon: <FaChartLine />, color: 'bg-indigo-500' },
-        { label: 'Gallery', value: stats.cms.gallery, icon: <FaImage />, color: 'bg-pink-500' },
-        { label: 'FAQ', value: stats.cms.faq, icon: <FaQuestionCircle />, color: 'bg-cyan-500' },
-        { label: 'Testimonials', value: stats.cms.testimonials, icon: <FaStar />, color: 'bg-yellow-500' },
+        { label: 'E-Books', value: stats.content?.ebooks || 0, icon: <FaBook />, color: 'bg-teal-500' },
+        { label: 'Videos', value: stats.content?.videos || 0, icon: <FaVideo />, color: 'bg-red-500' },
         { label: 'Articles', value: stats.cms.articles, icon: <FaNewspaper />, color: 'bg-gray-500' },
+        { label: 'Gallery', value: stats.cms.gallery, icon: <FaImage />, color: 'bg-pink-500' },
     ] : [];
 
     const quickActions = [
