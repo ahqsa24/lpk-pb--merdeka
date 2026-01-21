@@ -6,7 +6,7 @@ import { useSearch } from '@/context/SearchContext';
 import {
     FaHome, FaUsers, FaUserShield, FaCalendarCheck,
     FaBars, FaSignOutAlt, FaSearch,
-    FaList, FaImages, FaQuestionCircle, FaCog, FaStar, FaNewspaper, FaBook, FaMoneyBillWave, FaVideo, FaClipboardList,
+    FaLock, FaImages, FaQuestionCircle, FaCog, FaStar, FaNewspaper, FaBook, FaMoneyBillWave, FaVideo, FaClipboardList,
     FaChevronLeft, FaChevronRight, FaChevronDown
 } from 'react-icons/fa';
 import Image from 'next/image';
@@ -242,6 +242,13 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => 
                                     >
                                         <FaCog className="text-gray-400" />
                                         Edit Profile
+                                    </Link>
+                                    <Link
+                                        href="/admin/security"
+                                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"
+                                    >
+                                        <FaLock className="text-gray-400" />
+                                        Security
                                     </Link>
                                     <button
                                         onClick={handleLogout}

@@ -34,6 +34,8 @@ model User {
   gamification       gamification_profile?
   gamification_logs  gamification_logs[]
   certificates       certificates[]
+  twoFactor          TwoFactor?
+  twoFactorEnabled   Boolean   @default(false) @map("two_factor_enabled")
 
   @@map("users")
 }
@@ -331,4 +333,18 @@ model certificates {
   user            User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
   quiz            weekly_quizzes @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
   @@index([user_id])
+}
+
+model TwoFactor {
+  id          String   @id @default(cuid()) @db.VarChar(255)
+  userId      String   @unique @map("user_id") @db.VarChar(255)
+  secret      String   @db.VarChar(255)
+  backupCodes String?  @map("backup_codes") @db.Text
+  enabled     Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("two_factor")
 }

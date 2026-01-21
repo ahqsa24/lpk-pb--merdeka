@@ -1,5 +1,6 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { twoFactor } from 'better-auth/plugins';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -139,7 +140,16 @@ export const auth = betterAuth({
             clientId: process.env.GOOGLE_CLIENT_ID || '',
             clientSecret: process.env.GOOGLE_CLIENT_SECRET || ''
         }
-    }
+    },
+    plugins: [
+        twoFactor({
+            issuer: 'LPK PB Merdeka', // Name shown in authenticator app
+            totpOptions: {
+                period: 30, // 30 seconds validity
+                digits: 6,  // 6-digit code
+            }
+        })
+    ]
 });
 
 export type Session = typeof auth.$Infer.Session;

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaShieldAlt } from "react-icons/fa";
 import { signIn } from "@/lib/auth-client";
 import { Input } from "@/components/shared/atoms/Input";
 import { Label } from "@/components/shared/atoms/Label";
@@ -17,11 +17,77 @@ export default function SignIn() {
     const [loading, setLoading] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
     const [error, setError] = useState("");
+    const [step, setStep] = useState<'credentials' | '2fa'>('credentials');
+    const [twoFactorCode, setTwoFactorCode] = useState("");
 
     const handleSignIn = async (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
 
+        // If we are in 2FA step, verify code first
+        if (step === '2fa') {
+            handle2FASubmit(e);
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            // 1. Check if 2FA is enabled for this user
+            const checkRes = await fetch('/api/auth/check-2fa', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+
+            const checkData = await checkRes.json();
+
+            if (!checkRes.ok) {
+                throw new Error(checkData.message || "Login check failed");
+            }
+
+            // 2. If 2FA is required, move to step 2
+            if (checkData.require2FA) {
+                setStep('2fa');
+                setLoading(false);
+                return;
+            }
+
+            // 3. If 2FA is NOT required, proceed with login
+            performLogin();
+
+        } catch (err: any) {
+            setError(err.message || "An unexpected error occurred");
+            setLoading(false);
+        }
+    };
+
+    const handle2FASubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setError("");
+
+        try {
+            // Verify code with backend
+            const verifyRes = await fetch('/api/auth/verify-2fa-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, code: twoFactorCode })
+            });
+
+            if (!verifyRes.ok) {
+                throw new Error("Invalid verification code");
+            }
+
+            // If valid, proceed with login
+            performLogin();
+        } catch (err: any) {
+            setError(err.message);
+            setLoading(false);
+        }
+    };
+
+    const performLogin = async () => {
         await signIn.email(
             {
                 email,
@@ -36,7 +102,6 @@ export default function SignIn() {
                     setLoading(false);
                 },
                 onSuccess: async (ctx: any) => {
-                    // Check user role and redirect accordingly
                     const session = ctx.data;
                     if (session?.user?.role === 'superAdmin' || session?.user?.role === 'admin') {
                         router.push("/admin/dashboard");
@@ -45,7 +110,9 @@ export default function SignIn() {
                     }
                 },
                 onError: (ctx: any) => {
-                    setError(ctx.error.message || "Login failed. Please check your email and password.");
+                    setError(ctx.error.message || "Login failed. Please check your credentials.");
+                    setStep('credentials'); // Reset to step 1 on failure
+                    setLoading(false);
                 },
             }
         );
@@ -116,8 +183,12 @@ export default function SignIn() {
 
                     <div className="w-full max-w-[440px] space-y-8">
                         <div className="space-y-2 text-center lg:text-left">
-                            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Sign In</h1>
-                            <p className="text-gray-500 dark:text-gray-400">Please enter your account details to continue</p>
+                            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+                                {step === 'credentials' ? 'Sign In' : 'Two-Factor Authentication'}
+                            </h1>
+                            <p className="text-gray-500 dark:text-gray-400">
+                                {step === 'credentials' ? 'Please enter your account details to continue' : 'Enter the code from your authenticator app'}
+                            </p>
                         </div>
 
                         {error && (
@@ -130,69 +201,100 @@ export default function SignIn() {
                         )}
 
                         <form onSubmit={handleSignIn} className="space-y-6">
-                            <div className="space-y-5">
-                                <div className="space-y-2">
-                                    <Label htmlFor="email">Email</Label>
-                                    <div className="relative group">
-                                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-red-600">
-                                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" /></svg>
+                            {step === 'credentials' ? (
+                                <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="email">Email</Label>
+                                        <div className="relative group">
+                                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-red-600">
+                                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" /></svg>
+                                            </div>
+                                            <Input
+                                                id="email"
+                                                type="email"
+                                                placeholder="nama@email.com"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                required
+                                                className="pl-10 py-6 bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800 focus:border-red-500 focus:ring-red-500/20 rounded-xl transition-all"
+                                            />
                                         </div>
-                                        <Input
-                                            id="email"
-                                            type="email"
-                                            placeholder="nama@email.com"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            required
-                                            className="pl-10 py-6 bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800 focus:border-red-500 focus:ring-red-500/20 rounded-xl transition-all"
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <div className="flex items-center justify-between">
+                                            <Label htmlFor="password">Password</Label>
+                                            <Link
+                                                href="/auth/forgot-password"
+                                                className="text-sm font-medium text-red-600 hover:text-red-700 transition-colors"
+                                            >
+                                                Forgot password?
+                                            </Link>
+                                        </div>
+                                        <div className="relative group">
+                                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-red-600">
+                                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                                            </div>
+                                            <Input
+                                                id="password"
+                                                type={showPassword ? "text" : "password"}
+                                                placeholder="••••••••"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                required
+                                                className="pl-10 pr-12 py-6 bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800 focus:border-red-500 focus:ring-red-500/20 rounded-xl transition-all"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800"
+                                            >
+                                                {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-2">
+                                        <input
+                                            type="checkbox"
+                                            id="remember"
+                                            checked={rememberMe}
+                                            onChange={(e) => setRememberMe(e.target.checked)}
+                                            className="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500 focus:ring-offset-0 cursor-pointer"
                                         />
+                                        <Label htmlFor="remember" className="cursor-pointer text-gray-600 dark:text-gray-400 font-normal select-none">Remember me</Label>
                                     </div>
                                 </div>
-
-                                <div className="space-y-2">
-                                    <div className="flex items-center justify-between">
-                                        <Label htmlFor="password">Password</Label>
-                                        <Link
-                                            href="/auth/forgot-password"
-                                            className="text-sm font-medium text-red-600 hover:text-red-700 transition-colors"
-                                        >
-                                            Forgot password?
-                                        </Link>
-                                    </div>
-                                    <div className="relative group">
-                                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-red-600">
-                                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                            ) : (
+                                <div className="space-y-5 animate-in fade-in slide-in-from-right-4 duration-300">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="2fa-code">6-Digit Code</Label>
+                                        <div className="relative group">
+                                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-red-600">
+                                                <FaShieldAlt className="w-5 h-5" />
+                                            </div>
+                                            <Input
+                                                id="2fa-code"
+                                                type="text"
+                                                placeholder="000000"
+                                                value={twoFactorCode}
+                                                onChange={(e) => setTwoFactorCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                                required
+                                                autoFocus
+                                                maxLength={6}
+                                                className="pl-10 py-6 bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800 focus:border-red-500 focus:ring-red-500/20 rounded-xl transition-all text-center tracking-widest text-2xl font-mono"
+                                            />
                                         </div>
-                                        <Input
-                                            id="password"
-                                            type={showPassword ? "text" : "password"}
-                                            placeholder="••••••••"
-                                            value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            required
-                                            className="pl-10 pr-12 py-6 bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800 focus:border-red-500 focus:ring-red-500/20 rounded-xl transition-all"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800"
-                                        >
-                                            {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-                                        </button>
                                     </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setStep('credentials')}
+                                        className="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 block text-center"
+                                    >
+                                        &larr; Use another account
+                                    </button>
                                 </div>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    id="remember"
-                                    checked={rememberMe}
-                                    onChange={(e) => setRememberMe(e.target.checked)}
-                                    className="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500 focus:ring-offset-0 cursor-pointer"
-                                />
-                                <Label htmlFor="remember" className="cursor-pointer text-gray-600 dark:text-gray-400 font-normal select-none">Remember me</Label>
-                            </div>
+                            )}
 
                             <button
                                 type="submit"
@@ -205,9 +307,9 @@ export default function SignIn() {
                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                         </svg>
-                                        Processing...
+                                        {step === 'credentials' ? 'Processing...' : 'Verifying...'}
                                     </span>
-                                ) : "Sign In"}
+                                ) : (step === 'credentials' ? "Sign In" : "Verify Login")}
                             </button>
 
                             <div className="relative my-8">
