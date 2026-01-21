@@ -70,6 +70,53 @@ const apiDocs: ApiGroup[] = [
                 path: '/api/auth/sign-in/social/google',
                 description: 'Initiate Google OAuth login.',
                 body: { callbackURL: '/dashboard' }
+            },
+            // 2FA Auth Flow
+            {
+                method: 'POST',
+                path: '/api/auth/check-2fa',
+                description: 'Check if 2FA is required for the user before login.',
+                body: { email: 'user@example.com' },
+                response: { require2FA: true, role: 'admin' }
+            },
+            {
+                method: 'POST',
+                path: '/api/auth/verify-2fa-code',
+                description: 'Verify 2FA code during login flow.',
+                body: { email: 'user@example.com', code: '123456' },
+                response: { success: true, message: 'Code verified' }
+            }
+        ]
+    },
+    {
+        title: 'Security & 2FA',
+        description: 'Manage Two-Factor Authentication settings.',
+        icon: <FaUserShield />,
+        endpoints: [
+            {
+                method: 'GET',
+                path: '/api/user/2fa/status',
+                description: 'Check if 2FA is enabled for the authenticated user.',
+                response: { enabled: true }
+            },
+            {
+                method: 'POST',
+                path: '/api/user/2fa/generate',
+                description: 'Generate 2FA secret and QR code.',
+                response: { secret: 'BASE32SECRET', qrCode: 'data:image/png;base64,...', otpauth_url: 'otpauth://...' }
+            },
+            {
+                method: 'POST',
+                path: '/api/user/2fa/enable',
+                description: 'Verify code and enable 2FA for account.',
+                body: { code: '123456' },
+                response: { success: true, message: '2FA enabled successfully' }
+            },
+            {
+                method: 'POST',
+                path: '/api/user/2fa/disable',
+                description: 'Disable 2FA for account (requires authentication).',
+                response: { success: true, message: '2FA disabled successfully' }
             }
         ]
     },

@@ -293,6 +293,7 @@ export const ProfileForm = () => {
                                     value={email}
                                     className="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-zinc-700 rounded-lg bg-gray-50 dark:bg-zinc-800/50 cursor-not-allowed text-gray-500"
                                     disabled
+                                    autoComplete="username"
                                 />
                             </div>
                         </div>
@@ -392,6 +393,7 @@ export const ProfileForm = () => {
                                         value={currentPassword}
                                         onChange={(e) => setCurrentPassword(e.target.value)}
                                         className="w-full pl-10 pr-10 py-2 border border-gray-200 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-red-500 outline-none transition-all dark:bg-zinc-800 dark:text-white"
+                                        autoComplete="current-password"
                                     />
                                     <button type="button" onClick={() => setShowCurrentPassword(!showCurrentPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400">
                                         {showCurrentPassword ? <FaEyeSlash /> : <FaEye />}
@@ -409,6 +411,7 @@ export const ProfileForm = () => {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         className="w-full pl-10 pr-10 py-2 border border-gray-200 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-red-500 outline-none transition-all dark:bg-zinc-800 dark:text-white"
+                                        autoComplete="new-password"
                                     />
                                     <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400">
                                         {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -426,6 +429,7 @@ export const ProfileForm = () => {
                                         value={passwordConfirmation}
                                         onChange={(e) => setPasswordConfirmation(e.target.value)}
                                         className="w-full pl-10 pr-10 py-2 border border-gray-200 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-red-500 outline-none transition-all dark:bg-zinc-800 dark:text-white"
+                                        autoComplete="new-password"
                                     />
                                     <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400">
                                         {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}

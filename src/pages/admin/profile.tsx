@@ -138,6 +138,7 @@ const ProfilePage = () => {
                                         placeholder="Enter your email"
                                         disabled
                                         title="Email cannot be changed"
+                                        autoComplete="username"
                                     />
                                 </div>
                                 <p className="text-xs text-gray-400 mt-1">Email cannot be changed.</p>
@@ -158,6 +159,7 @@ const ProfilePage = () => {
                                                 onChange={(e) => setCurrentPassword(e.target.value)}
                                                 className="w-full pl-10 pr-10 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-red-500 outline-none transition-all"
                                                 placeholder="Enter current password"
+                                                autoComplete="current-password"
                                             />
                                         </div>
                                     </div>
@@ -174,6 +176,7 @@ const ProfilePage = () => {
                                                 onChange={(e) => setPassword(e.target.value)}
                                                 className="w-full pl-10 pr-10 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-red-500 outline-none transition-all"
                                                 placeholder="Leave blank to keep current"
+                                                autoComplete="new-password"
                                             />
                                             <button
                                                 type="button"
@@ -197,6 +200,7 @@ const ProfilePage = () => {
                                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                                 className="w-full pl-10 pr-10 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-red-500 outline-none transition-all"
                                                 placeholder="Confirm new password"
+                                                autoComplete="new-password"
                                             />
                                             <button
                                                 type="button"

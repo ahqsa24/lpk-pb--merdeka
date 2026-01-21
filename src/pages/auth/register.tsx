@@ -110,7 +110,7 @@ export default function SignUp() {
                             </div>
                         )}
 
-                        <form onSubmit={handleSignUp} className="space-y-5">
+                        <form onSubmit={handleSignUp} className="space-y-5" method="post" action="#">
                             <div className="space-y-2">
                                 <Label htmlFor="name">Full Name</Label>
                                 <div className="relative group">
@@ -120,6 +120,8 @@ export default function SignUp() {
                                     <Input
                                         id="name"
                                         type="text"
+                                        name="name"
+                                        autoComplete="name"
                                         placeholder="Full Name"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
@@ -138,6 +140,8 @@ export default function SignUp() {
                                     <Input
                                         id="email"
                                         type="email"
+                                        name="email"
+                                        autoComplete="username"
                                         placeholder="nama@email.com"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
@@ -157,6 +161,8 @@ export default function SignUp() {
                                         <Input
                                             id="password"
                                             type={showPassword ? "text" : "password"}
+                                            name="password"
+                                            autoComplete="new-password"
                                             placeholder="••••••••"
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
@@ -182,6 +188,8 @@ export default function SignUp() {
                                         <Input
                                             id="password_confirmation"
                                             type={showConfirmPassword ? "text" : "password"}
+                                            name="password_confirmation"
+                                            autoComplete="new-password"
                                             placeholder="••••••••"
                                             value={passwordConfirmation}
                                             onChange={(e) => setPasswordConfirmation(e.target.value)}

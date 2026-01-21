@@ -23,7 +23,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
             orderBy: { total_points: 'desc' },
             include: {
                 user: {
-                    select: { name: true, image: true }
+                    select: { name: true, image: true, photo_url: true }
                 }
             }
         });
@@ -32,7 +32,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         const ranked = leaderboard.map((entry: any, index: number) => ({
             rank: index + 1,
             name: entry.user.name,
-            image: entry.user.image,
+            image: entry.user.photo_url || entry.user.image,
             points: entry.total_points,
             level: entry.level
         }));
