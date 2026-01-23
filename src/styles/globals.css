@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Tailwind CSS v4 Dark Mode Configuration */
+/* This directive enables class-based dark mode by defining a custom variant */
+@variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

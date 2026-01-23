@@ -48,7 +48,7 @@ export const StatsGrid = () => {
   }
 
   return (
-    <section className="bg-red-600 overflow-hidden py-8">
+    <section className="bg-red-600 dark:bg-red-800 overflow-hidden py-8 transition-colors duration-300">
       <div className="flex whitespace-nowrap animate-scroll">
         {/* Set 1 */}
         <div className="flex gap-16 pr-16">

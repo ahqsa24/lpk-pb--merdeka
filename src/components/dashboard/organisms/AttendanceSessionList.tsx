@@ -115,7 +115,7 @@ export const AttendanceSessionList: React.FC = () => {
     );
 
     if (loading) {
-        return <div className="p-8 text-center text-gray-500 animate-pulse">Memuat jadwal absensi...</div>;
+        return <div className="p-8 text-center text-gray-500 dark:text-gray-400 animate-pulse">Memuat jadwal absensi...</div>;
     }
 
     return (
@@ -123,7 +123,7 @@ export const AttendanceSessionList: React.FC = () => {
             <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">Jadwal Absensi Hari Ini</h2>
 
             {message && (
-                <div className={`p-4 rounded-lg mb-4 flex items-center gap-2 ${message.type === 'success' ? 'bg-green-100 text-green-800 border-green-200' : 'bg-red-100 text-red-800 border-red-200'}`}>
+                <div className={`p-4 rounded-lg mb-4 flex items-center gap-2 ${message.type === 'success' ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border-green-200 dark:border-green-800' : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border-red-200 dark:border-red-800'}`}>
                     {message.type === 'success' ? <FaCheckCircle /> : <FaExclamationCircle />}
                     <span>{message.text}</span>
                 </div>
@@ -131,13 +131,13 @@ export const AttendanceSessionList: React.FC = () => {
 
             {filteredSessions.length === 0 ? (
                 <div className="bg-white dark:bg-zinc-900 border border-gray-100 dark:border-zinc-700 rounded-xl p-8 text-center">
-                    <div className="w-16 h-16 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <div className="w-16 h-16 bg-gray-100 dark:bg-zinc-800 text-gray-400 dark:text-gray-500 rounded-full flex items-center justify-center mx-auto mb-4">
                         <FaCalendarCheck size={24} />
                     </div>
                     <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                         {searchQuery ? 'Sesi tidak ditemukan' : 'Tidak ada sesi aktif'}
                     </h3>
-                    <p className="text-gray-500 mt-2">
+                    <p className="text-gray-500 dark:text-gray-400 mt-2">
                         {searchQuery ? `Tidak ada sesi absensi yang cocok dengan "${searchQuery}"` : 'Belum ada jadwal absensi yang tersedia saat ini.'}
                     </p>
                 </div>

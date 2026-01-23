@@ -228,8 +228,8 @@ export default function AdminsManagement() {
                 <title>Manage Admins | Admin</title>
             </Head>
 
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-                <div className="p-4 border-b border-gray-100 flex flex-col md:flex-row justify-between gap-4 items-center">
+            <div className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-100 dark:border-zinc-800 shadow-sm overflow-hidden">
+                <div className="p-4 border-b border-gray-100 dark:border-zinc-800 flex flex-col md:flex-row justify-between gap-4 items-center">
                     <div className="relative w-full md:w-64 hidden">
                         {/* Search input managed globally in AdminLayout */}
                     </div>
@@ -245,50 +245,50 @@ export default function AdminsManagement() {
 
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
-                        <thead className="bg-gray-50 border-b border-gray-200">
+                        <thead className="bg-gray-50 dark:bg-zinc-800 border-b border-gray-200 dark:border-zinc-700">
                             <tr>
-                                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Name</th>
-                                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Role</th>
-                                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Joined</th>
+                                <th className="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Name</th>
+                                <th className="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Role</th>
+                                <th className="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Joined</th>
                                 {isSuperAdmin && (
-                                    <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase text-right">Actions</th>
+                                    <th className="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase text-right">Actions</th>
                                 )}
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody className="divide-y divide-gray-100 dark:divide-zinc-800">
                             {loading ? (
                                 <tr>
-                                    <td colSpan={isSuperAdmin ? 5 : 4} className="px-6 py-4 text-center text-gray-500">Loading...</td>
+                                    <td colSpan={isSuperAdmin ? 5 : 4} className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">Loading...</td>
                                 </tr>
                             ) : filteredAdmins.length === 0 ? (
                                 <tr>
-                                    <td colSpan={isSuperAdmin ? 5 : 4} className="px-6 py-4 text-center text-gray-500">
+                                    <td colSpan={isSuperAdmin ? 5 : 4} className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                                         {searchQuery ? `No admins found matching "${searchQuery}"` : "No admins found."}
                                     </td>
                                 </tr>
                             ) : (
                                 filteredAdmins.map((admin) => (
-                                    <tr key={admin.id} className="hover:bg-gray-50 transition">
+                                    <tr key={admin.id} className="hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
-                                                    {admin.role === 'superAdmin' ? <FaCrown size={12} className="text-purple-600" /> : <FaUserShield size={12} />}
+                                                <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-zinc-700 flex items-center justify-center text-gray-500 dark:text-gray-300">
+                                                    {admin.role === 'superAdmin' ? <FaCrown size={12} className="text-purple-600 dark:text-purple-400" /> : <FaUserShield size={12} />}
                                                 </div>
                                                 <div>
-                                                    <div className="font-medium text-gray-900">{admin.name}</div>
-                                                    <div className="text-xs text-gray-500">{admin.email}</div>
+                                                    <div className="font-medium text-gray-900 dark:text-white">{admin.name}</div>
+                                                    <div className="text-xs text-gray-500 dark:text-gray-400">{admin.email}</div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${admin.role === 'superAdmin'
-                                                ? 'bg-purple-100 text-purple-700'
-                                                : 'bg-blue-100 text-blue-700'
+                                                ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300'
+                                                : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
                                                 }`}>
                                                 {admin.role === 'superAdmin' ? 'Super Admin' : 'Admin'}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-gray-500">
+                                        <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                                             {new Date(admin.created_at).toLocaleDateString()}
                                         </td>
                                         {isSuperAdmin && (
@@ -298,8 +298,8 @@ export default function AdminsManagement() {
                                                         onClick={() => handleEdit(admin)}
                                                         disabled={admin.role === 'superAdmin'}
                                                         className={`p-2 rounded-lg transition ${admin.role === 'superAdmin'
-                                                            ? 'text-gray-300 cursor-not-allowed'
-                                                            : 'hover:bg-gray-100 text-blue-600'
+                                                            ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                                                            : 'hover:bg-gray-100 dark:hover:bg-zinc-700 text-blue-600 dark:text-blue-400'
                                                             }`}
                                                         title={admin.role === 'superAdmin' ? 'SuperAdmin cannot be edited' : 'Edit'}
                                                     >
@@ -309,8 +309,8 @@ export default function AdminsManagement() {
                                                         onClick={() => handleDeleteClick(admin.id, admin.role)}
                                                         disabled={admin.role === 'superAdmin'}
                                                         className={`p-2 rounded-lg transition ${admin.role === 'superAdmin'
-                                                            ? 'text-gray-300 cursor-not-allowed'
-                                                            : 'hover:bg-gray-100 text-red-600'
+                                                            ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
+                                                            : 'hover:bg-gray-100 dark:hover:bg-zinc-700 text-red-600 dark:text-red-400'
                                                             }`}
                                                         title={admin.role === 'superAdmin' ? 'SuperAdmin cannot be deleted' : 'Delete'}
                                                     >
@@ -329,46 +329,46 @@ export default function AdminsManagement() {
 
             {/* Form Modal */}
             {isFormOpen && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-                            <h3 className="text-lg font-bold text-gray-800">
+                <div className="fixed inset-0 bg-black/50 dark:bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+                    <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200 border border-gray-100 dark:border-zinc-800">
+                        <div className="p-6 border-b border-gray-100 dark:border-zinc-800 flex justify-between items-center">
+                            <h3 className="text-lg font-bold text-gray-800 dark:text-white">
                                 {formMode === 'create' ? 'Add Admin' : 'Edit Admin'}
                             </h3>
-                            <button onClick={() => setIsFormOpen(false)} className="text-gray-400 hover:text-gray-600">&times;</button>
+                            <button onClick={() => setIsFormOpen(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">&times;</button>
                         </div>
                         <form onSubmit={handleSubmit} className="p-6 space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Name <span className="text-red-500">*</span></label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
                                     name="name"
                                     required
                                     value={formData.name}
                                     onChange={handleInputChange}
-                                    className={`w-full border rounded-lg px-3 py-2 focus:ring-2 outline-none ${errors.name ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-red-500'}`}
+                                    className={`w-full border rounded-lg px-3 py-2 focus:ring-2 outline-none dark:bg-zinc-800 dark:text-white ${errors.name ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-zinc-700 focus:ring-red-500'}`}
                                 />
                                 {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Email <span className="text-red-500">*</span></label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email <span className="text-red-500">*</span></label>
                                 <input
                                     type="email"
                                     name="email"
                                     required
                                     value={formData.email}
                                     onChange={handleInputChange}
-                                    className={`w-full border rounded-lg px-3 py-2 focus:ring-2 outline-none ${errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-red-500'}`}
+                                    className={`w-full border rounded-lg px-3 py-2 focus:ring-2 outline-none dark:bg-zinc-800 dark:text-white ${errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-zinc-700 focus:ring-red-500'}`}
                                 />
                                 {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
                             </div>
                             {isSuperAdmin && (
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Role</label>
                                     <select
                                         value={formData.role}
                                         onChange={e => setFormData({ ...formData, role: e.target.value })}
-                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none"
+                                        className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:bg-zinc-800 dark:text-white"
                                     >
                                         <option value="admin">Admin</option>
                                         <option value="superAdmin">Super Admin</option>
@@ -376,8 +376,8 @@ export default function AdminsManagement() {
                                 </div>
                             )}
                             {formMode === 'create' && (
-                                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                                    <p className="text-xs text-yellow-800">
+                                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3">
+                                    <p className="text-xs text-yellow-800 dark:text-yellow-300">
                                         Default password: <strong>admin123</strong>
                                         <br />
                                         Admin can change it after first login.
@@ -389,14 +389,14 @@ export default function AdminsManagement() {
                                 <button
                                     type="button"
                                     onClick={() => setIsFormOpen(false)}
-                                    className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg font-medium"
+                                    className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg font-medium"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={!isFormValid() || !hasChanges()}
-                                    className={`px-4 py-2 text-white rounded-lg font-medium transition ${!isFormValid() || !hasChanges() ? 'bg-gray-300 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700'}`}
+                                    className={`px-4 py-2 text-white rounded-lg font-medium transition ${!isFormValid() || !hasChanges() ? 'bg-gray-300 dark:bg-zinc-700 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700'}`}
                                 >
                                     {formMode === 'create' ? 'Create Admin' : 'Update Admin'}
                                 </button>

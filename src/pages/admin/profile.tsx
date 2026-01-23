@@ -87,56 +87,30 @@ const ProfilePage = () => {
             </Head>
 
             <div className="max-w-2xl mx-auto">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8">
+                <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-800 p-6 md:p-8">
                     <div className="flex items-center gap-4 mb-8">
-                        <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center font-bold text-2xl">
+                        <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-500 rounded-full flex items-center justify-center font-bold text-2xl">
                             {name.charAt(0).toUpperCase() || "A"}
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900">Edit Profile</h2>
-                            <p className="text-sm text-gray-500">Update your account information</p>
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Edit Profile</h2>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Update your account information</p>
                         </div>
                     </div>
 
                     {message && (
-                        <div className={`mb-6 p-4 rounded-lg text-sm ${message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+                        <div className={`mb-6 p-4 rounded-lg text-sm ${message.type === 'success' ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300'
                             }`}>
                             {message.text}
                         </div>
                     )}
 
-                    {(() => {
-                        const hasChanges = () => {
-                            if (!user) return false;
-                            const nameChanged = name !== user.name;
-                            const passwordChanged = password.length > 0;
-                            return nameChanged || passwordChanged;
-                        };
-
-                        const isFormValid = () => {
-                            if (!name.trim()) return false;
-                            if (password && password !== confirmPassword) return false;
-                            if (password && !currentPassword) return false;
-                            return true;
-                        };
-
-                        const canSubmit = hasChanges() && isFormValid() && !loading;
-
-                        return (
-                            <form onSubmit={handleSubmit} className="space-y-6">
-                                {/* ... form fields ... */}
-                                {/* Wrapping form content isn't ideal for search replace since it's large. 
-                                    I will just splice the button logic check in the button itself, 
-                                    or define the helper functions at the top level of the component.
-                                */}
-                            </form>
-                        );
-                    })() && null /* This block is just for comment, I will actually move logic up */}
+                    {/* Logic block removed for cleaner code */}
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <FaUser className="text-gray-400" />
@@ -145,7 +119,7 @@ const ProfilePage = () => {
                                         type="text"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-red-500 outline-none transition-all"
+                                        className="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-red-100 dark:focus:ring-red-900/40 focus:border-red-500 outline-none transition-all dark:bg-zinc-800 dark:text-white"
                                         placeholder="Enter your name"
                                         required
                                     />
@@ -153,7 +127,7 @@ const ProfilePage = () => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <FaEnvelope className="text-gray-400" />
@@ -162,7 +136,7 @@ const ProfilePage = () => {
                                         type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-red-500 outline-none transition-all bg-gray-50 cursor-not-allowed"
+                                        className="w-full pl-10 pr-4 py-2 border border-gray-200 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-red-100 dark:focus:ring-red-900/40 focus:border-red-500 outline-none transition-all bg-gray-50 dark:bg-zinc-800/50 dark:text-gray-400 cursor-not-allowed"
                                         placeholder="Enter your email"
                                         disabled
                                         title="Email cannot be changed"
@@ -172,11 +146,11 @@ const ProfilePage = () => {
                                 <p className="text-xs text-gray-400 mt-1">Email cannot be changed.</p>
                             </div>
 
-                            <div className="pt-4 border-t border-gray-100">
-                                <h3 className="text-sm font-semibold text-gray-900 mb-4">Change Password</h3>
+                            <div className="pt-4 border-t border-gray-100 dark:border-zinc-800">
+                                <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Change Password</h3>
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Current Password (Required to change password)</label>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Current Password (Required to change password)</label>
                                         <div className="relative">
                                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                                 <FaLock className="text-gray-400" />
@@ -185,14 +159,14 @@ const ProfilePage = () => {
                                                 type={showPassword ? "text" : "password"}
                                                 value={currentPassword}
                                                 onChange={(e) => setCurrentPassword(e.target.value)}
-                                                className="w-full pl-10 pr-10 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-red-500 outline-none transition-all"
+                                                className="w-full pl-10 pr-10 py-2 border border-gray-200 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-red-100 dark:focus:ring-red-900/40 focus:border-red-500 outline-none transition-all dark:bg-zinc-800 dark:text-white"
                                                 placeholder="Enter current password"
                                                 autoComplete="current-password"
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setShowPassword(!showPassword)}
-                                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none"
                                             >
                                                 {showPassword ? <FaEyeSlash /> : <FaEye />}
                                             </button>
@@ -200,7 +174,7 @@ const ProfilePage = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">New Password</label>
                                         <div className="relative">
                                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                                 <FaLock className="text-gray-400" />
@@ -209,14 +183,14 @@ const ProfilePage = () => {
                                                 type={showPassword ? "text" : "password"}
                                                 value={password}
                                                 onChange={(e) => setPassword(e.target.value)}
-                                                className="w-full pl-10 pr-10 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-red-500 outline-none transition-all"
+                                                className="w-full pl-10 pr-10 py-2 border border-gray-200 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-red-100 dark:focus:ring-red-900/40 focus:border-red-500 outline-none transition-all dark:bg-zinc-800 dark:text-white"
                                                 placeholder="Leave blank to keep current"
                                                 autoComplete="new-password"
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setShowPassword(!showPassword)}
-                                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none"
                                             >
                                                 {showPassword ? <FaEyeSlash /> : <FaEye />}
                                             </button>
@@ -224,7 +198,7 @@ const ProfilePage = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirm New Password</label>
                                         <div className="relative">
                                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                                 <FaLock className="text-gray-400" />
@@ -233,14 +207,14 @@ const ProfilePage = () => {
                                                 type={showConfirmPassword ? "text" : "password"}
                                                 value={confirmPassword}
                                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                                className="w-full pl-10 pr-10 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-red-100 focus:border-red-500 outline-none transition-all"
+                                                className="w-full pl-10 pr-10 py-2 border border-gray-200 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-red-100 dark:focus:ring-red-900/40 focus:border-red-500 outline-none transition-all dark:bg-zinc-800 dark:text-white"
                                                 placeholder="Confirm new password"
                                                 autoComplete="new-password"
                                             />
                                             <button
                                                 type="button"
                                                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none"
                                             >
                                                 {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
                                             </button>
@@ -254,7 +228,7 @@ const ProfilePage = () => {
                             <button
                                 type="submit"
                                 disabled={loading || (name === user?.name && !password) || !name.trim() || !!(password && password !== confirmPassword)}
-                                className="flex items-center gap-2 px-6 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:ring-4 focus:ring-red-100 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                                className="flex items-center gap-2 px-6 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:ring-4 focus:ring-red-100 dark:focus:ring-red-900/40 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                             >
                                 {loading ? (
                                     <>
@@ -266,7 +240,8 @@ const ProfilePage = () => {
                                         <FaSave />
                                         Save Changes
                                     </>
-                                )}
+                                )
+                                }
                             </button>
                         </div>
                     </form>

@@ -61,38 +61,38 @@ export const Toast: React.FC<ToastProps> = ({
             case 'success':
                 return {
                     icon: <FaCheckCircle className="text-2xl" />,
-                    bgColor: 'bg-gradient-to-r from-green-50 to-emerald-50',
-                    borderColor: 'border-green-300',
-                    iconColor: 'text-green-600',
-                    progressColor: 'bg-green-500',
-                    shadowColor: 'shadow-green-200/50'
+                    bgColor: 'bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/40 dark:to-emerald-900/40',
+                    borderColor: 'border-green-300 dark:border-green-800',
+                    iconColor: 'text-green-600 dark:text-green-400',
+                    progressColor: 'bg-green-500 dark:bg-green-600',
+                    shadowColor: 'shadow-green-200/50 dark:shadow-green-900/20'
                 };
             case 'error':
                 return {
                     icon: <FaExclamationCircle className="text-2xl" />,
-                    bgColor: 'bg-gradient-to-r from-red-50 to-rose-50',
-                    borderColor: 'border-red-300',
-                    iconColor: 'text-red-600',
-                    progressColor: 'bg-red-500',
-                    shadowColor: 'shadow-red-200/50'
+                    bgColor: 'bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-900/40 dark:to-rose-900/40',
+                    borderColor: 'border-red-300 dark:border-red-800',
+                    iconColor: 'text-red-600 dark:text-red-400',
+                    progressColor: 'bg-red-500 dark:bg-red-600',
+                    shadowColor: 'shadow-red-200/50 dark:shadow-red-900/20'
                 };
             case 'warning':
                 return {
                     icon: <FaExclamationTriangle className="text-2xl" />,
-                    bgColor: 'bg-gradient-to-r from-yellow-50 to-amber-50',
-                    borderColor: 'border-yellow-300',
-                    iconColor: 'text-yellow-600',
-                    progressColor: 'bg-yellow-500',
-                    shadowColor: 'shadow-yellow-200/50'
+                    bgColor: 'bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/40 dark:to-amber-900/40',
+                    borderColor: 'border-yellow-300 dark:border-yellow-800',
+                    iconColor: 'text-yellow-600 dark:text-yellow-400',
+                    progressColor: 'bg-yellow-500 dark:bg-yellow-600',
+                    shadowColor: 'shadow-yellow-200/50 dark:shadow-yellow-900/20'
                 };
             default:
                 return {
                     icon: <FaInfoCircle className="text-2xl" />,
-                    bgColor: 'bg-gradient-to-r from-blue-50 to-cyan-50',
-                    borderColor: 'border-blue-300',
-                    iconColor: 'text-blue-600',
-                    progressColor: 'bg-blue-500',
-                    shadowColor: 'shadow-blue-200/50'
+                    bgColor: 'bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/40 dark:to-cyan-900/40',
+                    borderColor: 'border-blue-300 dark:border-blue-800',
+                    iconColor: 'text-blue-600 dark:text-blue-400',
+                    progressColor: 'bg-blue-500 dark:bg-blue-600',
+                    shadowColor: 'shadow-blue-200/50 dark:shadow-blue-900/20'
                 };
         }
     };
@@ -102,8 +102,8 @@ export const Toast: React.FC<ToastProps> = ({
     return (
         <div
             className={`fixed top-4 right-4 z-[100] transition-all duration-300 ${isExiting
-                    ? 'opacity-0 translate-x-full scale-95'
-                    : 'opacity-100 translate-x-0 scale-100'
+                ? 'opacity-0 translate-x-full scale-95'
+                : 'opacity-100 translate-x-0 scale-100'
                 }`}
         >
             <div
@@ -125,7 +125,7 @@ export const Toast: React.FC<ToastProps> = ({
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-gray-800 leading-relaxed break-words">
+                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 leading-relaxed break-words">
                         {message}
                     </p>
                 </div>
@@ -133,7 +133,7 @@ export const Toast: React.FC<ToastProps> = ({
                 {/* Close Button */}
                 <button
                     onClick={handleClose}
-                    className="flex-shrink-0 text-gray-400 hover:text-gray-700 transition-colors p-1 hover:bg-white/50 rounded-lg"
+                    className="flex-shrink-0 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors p-1 hover:bg-white/50 dark:hover:bg-zinc-800/50 rounded-lg"
                     aria-label="Close notification"
                 >
                     <FaTimes className="text-sm" />

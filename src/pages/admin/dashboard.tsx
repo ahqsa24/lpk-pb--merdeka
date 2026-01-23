@@ -92,13 +92,13 @@ export default function AdminDashboard() {
     ] : [];
 
     const quickActions = [
-        { label: 'Manage Users', icon: <FaUsers />, path: '/admin/users', color: 'text-blue-600 bg-blue-50 hover:bg-blue-100' },
-        { label: 'Attendance', icon: <FaCalendarCheck />, path: '/admin/attendance-sessions', color: 'text-green-600 bg-green-50 hover:bg-green-100' },
-        { label: 'Gallery', icon: <FaImage />, path: '/admin/cms/gallery', color: 'text-pink-600 bg-pink-50 hover:bg-pink-100' },
-        { label: 'FAQ', icon: <FaQuestionCircle />, path: '/admin/cms/faq', color: 'text-cyan-600 bg-cyan-50 hover:bg-cyan-100' },
-        { label: 'Testimonials', icon: <FaStar />, path: '/admin/cms/testimonials', color: 'text-yellow-600 bg-yellow-50 hover:bg-yellow-100' },
-        { label: 'Articles', icon: <FaNewspaper />, path: '/admin/cms/articles', color: 'text-gray-600 bg-gray-50 hover:bg-gray-100' },
-        { label: 'Settings', icon: <FaCog />, path: '/admin/cms/settings', color: 'text-red-600 bg-red-50 hover:bg-red-100' },
+        { label: 'Manage Users', icon: <FaUsers />, path: '/admin/users', color: 'text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30' },
+        { label: 'Attendance', icon: <FaCalendarCheck />, path: '/admin/attendance-sessions', color: 'text-green-600 bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/30' },
+        { label: 'Gallery', icon: <FaImage />, path: '/admin/cms/gallery', color: 'text-pink-600 bg-pink-50 hover:bg-pink-100 dark:bg-pink-900/20 dark:text-pink-400 dark:hover:bg-pink-900/30' },
+        { label: 'FAQ', icon: <FaQuestionCircle />, path: '/admin/cms/faq', color: 'text-cyan-600 bg-cyan-50 hover:bg-cyan-100 dark:bg-cyan-900/20 dark:text-cyan-400 dark:hover:bg-cyan-900/30' },
+        { label: 'Testimonials', icon: <FaStar />, path: '/admin/cms/testimonials', color: 'text-yellow-600 bg-yellow-50 hover:bg-yellow-100 dark:bg-yellow-900/20 dark:text-yellow-400 dark:hover:bg-yellow-900/30' },
+        { label: 'Articles', icon: <FaNewspaper />, path: '/admin/cms/articles', color: 'text-gray-600 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700' },
+        { label: 'Settings', icon: <FaCog />, path: '/admin/cms/settings', color: 'text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30' },
     ];
 
     return (
@@ -108,27 +108,26 @@ export default function AdminDashboard() {
             </Head>
 
             <div className="space-y-6">
-                {/* Welcome Card */}
-                <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-                    <h2 className="text-2xl font-bold text-gray-800">Welcome back, {user?.name}!</h2>
-                    <p className="text-gray-500 mt-1">Here's your platform overview</p>
+                <div className="bg-white dark:bg-zinc-900 rounded-xl p-6 border border-gray-100 dark:border-zinc-800 shadow-sm">
+                    <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Welcome back, {user?.name}!</h2>
+                    <p className="text-gray-500 dark:text-gray-400 mt-1">Here's your platform overview</p>
                 </div>
 
                 {loading ? (
                     <div className="text-center py-12">
-                        <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-300 border-t-red-600"></div>
-                        <p className="text-gray-500 mt-4">Loading...</p>
+                        <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-300 dark:border-zinc-700 border-t-red-600"></div>
+                        <p className="text-gray-500 dark:text-gray-400 mt-4">Loading...</p>
                     </div>
                 ) : stats ? (
                     <>
                         {/* Stats Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             {statCards.map((stat, index) => (
-                                <div key={index} className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                                <div key={index} className="bg-white dark:bg-zinc-900 rounded-xl p-6 border border-gray-100 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all">
                                     <div className="flex items-center justify-between">
                                         <div>
-                                            <p className="text-gray-500 text-sm font-medium">{stat.label}</p>
-                                            <h3 className="text-3xl font-bold text-gray-800 mt-1">{stat.value}</h3>
+                                            <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">{stat.label}</p>
+                                            <h3 className="text-3xl font-bold text-gray-800 dark:text-white mt-1">{stat.value}</h3>
                                         </div>
                                         <div className={`w-12 h-12 rounded-lg ${stat.color} text-white flex items-center justify-center text-xl shadow-lg`}>
                                             {stat.icon}
@@ -139,19 +138,19 @@ export default function AdminDashboard() {
                         </div>
 
                         {/* Quick Actions */}
-                        <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-                            <h3 className="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
+                        <div className="bg-white dark:bg-zinc-900 rounded-xl p-6 border border-gray-100 dark:border-zinc-800 shadow-sm">
+                            <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Quick Actions</h3>
                             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
                                 {quickActions.map((action, index) => (
                                     <button
                                         key={index}
                                         onClick={() => router.push(action.path)}
-                                        className={`${action.color} rounded-lg p-4 transition-all flex flex-col items-center gap-2 group`}
+                                        className={`${action.color} dark:bg-opacity-10 dark:hover:bg-opacity-20 rounded-lg p-4 transition-all flex flex-col items-center gap-2 group`}
                                     >
                                         <div className="text-2xl">
                                             {action.icon}
                                         </div>
-                                        <span className="text-xs font-medium text-center">
+                                        <span className="text-xs font-medium text-center text-gray-700 dark:text-gray-300">
                                             {action.label}
                                         </span>
                                     </button>
@@ -162,56 +161,56 @@ export default function AdminDashboard() {
                         {/* System Info */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {/* System Status */}
-                            <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-                                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                            <div className="bg-white dark:bg-zinc-900 rounded-xl p-6 border border-gray-100 dark:border-zinc-800 shadow-sm">
+                                <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
                                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                                     System Status
                                 </h3>
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-sm text-gray-600">Database</span>
-                                        <span className="text-sm font-medium text-green-600">Connected</span>
+                                        <span className="text-sm text-gray-600 dark:text-gray-400">Database</span>
+                                        <span className="text-sm font-medium text-green-600 dark:text-green-400">Connected</span>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-sm text-gray-600">API Status</span>
-                                        <span className="text-sm font-medium text-green-600">Operational</span>
+                                        <span className="text-sm text-gray-600 dark:text-gray-400">API Status</span>
+                                        <span className="text-sm font-medium text-green-600 dark:text-green-400">Operational</span>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-sm text-gray-600">Last Updated</span>
-                                        <span className="text-sm font-medium text-gray-800">{new Date().toLocaleTimeString()}</span>
+                                        <span className="text-sm text-gray-600 dark:text-gray-400">Last Updated</span>
+                                        <span className="text-sm font-medium text-gray-800 dark:text-gray-200">{new Date().toLocaleTimeString()}</span>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Recent Activity Summary */}
-                            <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm">
-                                <h3 className="text-lg font-semibold text-gray-800 mb-4">Activity Summary</h3>
+                            <div className="bg-white dark:bg-zinc-900 rounded-xl p-6 border border-gray-100 dark:border-zinc-800 shadow-sm">
+                                <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Activity Summary</h3>
                                 <div className="space-y-3">
                                     <div className="flex items-start gap-3">
-                                        <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
+                                        <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
                                             <FaUsers className="text-sm" />
                                         </div>
                                         <div className="flex-1">
-                                            <p className="text-sm font-medium text-gray-800">{stats.users.total} Total Users</p>
-                                            <p className="text-xs text-gray-500">Registered in the system</p>
+                                            <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{stats.users.total} Total Users</p>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400">Registered in the system</p>
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-3">
-                                        <div className="w-8 h-8 rounded-lg bg-green-100 text-green-600 flex items-center justify-center flex-shrink-0">
+                                        <div className="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 flex items-center justify-center flex-shrink-0">
                                             <FaCalendarCheck className="text-sm" />
                                         </div>
                                         <div className="flex-1">
-                                            <p className="text-sm font-medium text-gray-800">{stats.attendance.activeSessions} Active Sessions</p>
-                                            <p className="text-xs text-gray-500">Currently running</p>
+                                            <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{stats.attendance.activeSessions} Active Sessions</p>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400">Currently running</p>
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-3">
-                                        <div className="w-8 h-8 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center flex-shrink-0">
+                                        <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 flex items-center justify-center flex-shrink-0">
                                             <FaNewspaper className="text-sm" />
                                         </div>
                                         <div className="flex-1">
-                                            <p className="text-sm font-medium text-gray-800">{stats.cms.articles} Articles</p>
-                                            <p className="text-xs text-gray-500">Published content</p>
+                                            <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{stats.cms.articles} Articles</p>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400">Published content</p>
                                         </div>
                                     </div>
                                 </div>

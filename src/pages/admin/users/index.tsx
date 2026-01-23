@@ -211,9 +211,9 @@ export default function UsersManagement() {
                 <title>Manage Users | Admin</title>
             </Head>
 
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-100 dark:border-zinc-800 shadow-sm overflow-hidden">
                 {/* Toolbar */}
-                <div className="p-4 border-b border-gray-100 flex flex-col md:flex-row justify-between gap-4 items-center">
+                <div className="p-4 border-b border-gray-100 dark:border-zinc-800 flex flex-col md:flex-row justify-between gap-4 items-center">
                     <div className="relative w-full md:w-64 hidden">
                         {/* Search input managed globally in AdminLayout */}
                     </div>
@@ -228,31 +228,31 @@ export default function UsersManagement() {
                 {/* Table */}
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
-                        <thead className="bg-gray-50 border-b border-gray-200">
+                        <thead className="bg-gray-50 dark:bg-zinc-800 border-b border-gray-200 dark:border-zinc-700">
                             <tr>
-                                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Name</th>
-                                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Role</th>
-                                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Joined</th>
-                                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase text-right">Actions</th>
+                                <th className="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Name</th>
+                                <th className="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Role</th>
+                                <th className="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Joined</th>
+                                <th className="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody className="divide-y divide-gray-100 dark:divide-zinc-800">
                             {loading ? (
                                 <tr>
-                                    <td colSpan={4} className="px-6 py-4 text-center text-gray-500">Loading users...</td>
+                                    <td colSpan={4} className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">Loading users...</td>
                                 </tr>
                             ) : filteredUsers.length === 0 ? (
                                 <tr>
-                                    <td colSpan={4} className="px-6 py-4 text-center text-gray-500">
+                                    <td colSpan={4} className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                                         {searchQuery ? `No users found matching "${searchQuery}"` : "No users found."}
                                     </td>
                                 </tr>
                             ) : (
                                 filteredUsers.map((user) => (
-                                    <tr key={user.id} className="hover:bg-gray-50 transition">
+                                    <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 overflow-hidden relative border border-gray-300">
+                                                <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-zinc-700 flex items-center justify-center text-gray-500 dark:text-gray-400 overflow-hidden relative border border-gray-300 dark:border-zinc-600">
                                                     {(user.photo_url || user.image) ? (
                                                         <img src={user.photo_url || user.image} alt={user.name} className="w-full h-full object-cover" />
                                                     ) : (
@@ -260,35 +260,35 @@ export default function UsersManagement() {
                                                     )}
                                                 </div>
                                                 <div>
-                                                    <div className="font-medium text-gray-900">{user.name}</div>
-                                                    <div className="text-xs text-gray-500">{user.email}</div>
+                                                    <div className="font-medium text-gray-900 dark:text-white">{user.name}</div>
+                                                    <div className="text-xs text-gray-500 dark:text-gray-400">{user.email}</div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${user.role === 'superAdmin'
-                                                ? 'bg-purple-100 text-purple-700'
+                                                ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300'
                                                 : user.role === 'admin'
-                                                    ? 'bg-blue-100 text-blue-700'
-                                                    : 'bg-green-100 text-green-700'
+                                                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
+                                                    : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
                                                 }`}>
                                                 {user.role === 'superAdmin' ? 'Super Admin' : user.role === 'admin' ? 'Admin' : 'User'}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-gray-500">
+                                        <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                                             {user.created_at ? new Date(user.created_at).toLocaleDateString() : '-'}
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex items-center justify-end gap-2">
                                                 <button
                                                     onClick={() => handleEdit(user)}
-                                                    className="p-2 hover:bg-gray-100 rounded-lg text-blue-600 transition"
+                                                    className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-700 rounded-lg text-blue-600 dark:text-blue-400 transition"
                                                 >
                                                     <FaEdit />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDeleteClick(user.id)}
-                                                    className="p-2 hover:bg-gray-100 rounded-lg text-red-600 transition"
+                                                    className="p-2 hover:bg-gray-100 dark:hover:bg-zinc-700 rounded-lg text-red-600 dark:text-red-400 transition"
                                                 >
                                                     <FaTrash />
                                                 </button>
@@ -304,42 +304,42 @@ export default function UsersManagement() {
 
             {/* Modal Form */}
             {isFormOpen && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-                            <h3 className="text-lg font-bold text-gray-800">
+                <div className="fixed inset-0 bg-black/50 dark:bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+                    <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200 border border-gray-100 dark:border-zinc-800">
+                        <div className="p-6 border-b border-gray-100 dark:border-zinc-800 flex justify-between items-center">
+                            <h3 className="text-lg font-bold text-gray-800 dark:text-white">
                                 {formMode === 'create' ? 'Create New User' : 'Edit User'}
                             </h3>
-                            <button onClick={() => setIsFormOpen(false)} className="text-gray-400 hover:text-gray-600">&times;</button>
+                            <button onClick={() => setIsFormOpen(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">&times;</button>
                         </div>
                         <form onSubmit={handleSubmit} className="p-6 space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name <span className="text-red-500">*</span></label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
                                     name="name"
                                     required
                                     value={formData.name}
                                     onChange={handleInputChange}
-                                    className={`w-full border rounded-lg px-3 py-2 focus:ring-2 outline-none ${errors.name ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-red-500'}`}
+                                    className={`w-full border rounded-lg px-3 py-2 focus:ring-2 outline-none dark:bg-zinc-800 dark:text-white ${errors.name ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-zinc-700 focus:ring-red-500'}`}
                                 />
                                 {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Email <span className="text-red-500">*</span></label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email <span className="text-red-500">*</span></label>
                                 <input
                                     type="email"
                                     name="email"
                                     required
                                     value={formData.email}
                                     onChange={handleInputChange}
-                                    className={`w-full border rounded-lg px-3 py-2 focus:ring-2 outline-none ${errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-red-500'}`}
+                                    className={`w-full border rounded-lg px-3 py-2 focus:ring-2 outline-none dark:bg-zinc-800 dark:text-white ${errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-zinc-700 focus:ring-red-500'}`}
                                 />
                                 {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Password {formMode === 'create' && <span className="text-red-500">*</span>} {formMode === 'edit' && <span className="text-gray-400 font-normal">(Leave blank to keep current)</span>}
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                    Password {formMode === 'create' && <span className="text-red-500">*</span>} {formMode === 'edit' && <span className="text-gray-400 dark:text-gray-500 font-normal">(Leave blank to keep current)</span>}
                                 </label>
                                 <input
                                     type="password"
@@ -347,16 +347,16 @@ export default function UsersManagement() {
                                     required={formMode === 'create'}
                                     value={formData.password}
                                     onChange={handleInputChange}
-                                    className={`w-full border rounded-lg px-3 py-2 focus:ring-2 outline-none ${errors.password ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-red-500'}`}
+                                    className={`w-full border rounded-lg px-3 py-2 focus:ring-2 outline-none dark:bg-zinc-800 dark:text-white ${errors.password ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-zinc-700 focus:ring-red-500'}`}
                                 />
                                 {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password}</p>}
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Role</label>
                                 <select
                                     value={formData.role}
                                     onChange={e => setFormData({ ...formData, role: e.target.value })}
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none"
+                                    className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:bg-zinc-800 dark:text-white"
                                 >
                                     <option value="user">User</option>
                                     <option value="admin">Admin</option>
@@ -366,14 +366,14 @@ export default function UsersManagement() {
                                 <button
                                     type="button"
                                     onClick={() => setIsFormOpen(false)}
-                                    className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg font-medium"
+                                    className="px-4 py-2 text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-zinc-800 rounded-lg font-medium"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={!isFormValid() || !hasChanges()}
-                                    className={`px-4 py-2 text-white rounded-lg font-medium transition ${!isFormValid() || !hasChanges() ? 'bg-gray-300 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700'}`}
+                                    className={`px-4 py-2 text-white rounded-lg font-medium transition ${!isFormValid() || !hasChanges() ? 'bg-gray-300 dark:bg-zinc-700 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700'}`}
                                 >
                                     {formMode === 'create' ? 'Create User' : 'Save Changes'}
                                 </button>

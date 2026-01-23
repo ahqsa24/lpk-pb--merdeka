@@ -181,9 +181,9 @@ export default function CMSGallery() {
                 <title>Manage Gallery | Admin</title>
             </Head>
 
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden mb-6">
-                <div className="p-4 border-b border-gray-100 flex justify-between items-center">
-                    <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+            <div className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-100 dark:border-zinc-800 shadow-sm overflow-hidden mb-6">
+                <div className="p-4 border-b border-gray-100 dark:border-zinc-800 flex justify-between items-center">
+                    <h2 className="text-lg font-semibold text-gray-800 dark:text-white flex items-center gap-2">
                         <FaImages className="text-red-500" /> Gallery Items
                     </h2>
                     <button
@@ -197,16 +197,16 @@ export default function CMSGallery() {
 
             {/* Grid Layout */}
             {loading ? (
-                <div className="text-center py-10 text-gray-500">Loading...</div>
+                <div className="text-center py-10 text-gray-500 dark:text-gray-400">Loading...</div>
             ) : filteredItems.length === 0 ? (
-                <div className="text-center py-10 text-gray-500 bg-white rounded-xl">
+                <div className="text-center py-10 text-gray-500 dark:text-gray-400 bg-white dark:bg-zinc-900 rounded-xl border border-gray-100 dark:border-zinc-800">
                     {searchQuery ? `No items found matching "${searchQuery}"` : "No images found."}
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {filteredItems.map((item) => (
-                        <div key={item.id} className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden group hover:shadow-md transition">
-                            <div className="aspect-video bg-gray-100 relative overflow-hidden">
+                        <div key={item.id} className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-100 dark:border-zinc-800 shadow-sm overflow-hidden group hover:shadow-md transition">
+                            <div className="aspect-video bg-gray-100 dark:bg-zinc-800 relative overflow-hidden">
                                 {item.type === 'video' ? (
                                     (() => {
                                         const getYouTubeId = (url: string) => {
@@ -233,8 +233,8 @@ export default function CMSGallery() {
                                     <img src={item.image_url} alt={item.title} className="w-full h-full object-cover" />
                                 )}
                                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-3 pointer-events-none group-hover:pointer-events-auto">
-                                    <button onClick={() => handleEdit(item)} className="p-2 bg-white text-blue-600 rounded-full hover:bg-gray-100"><FaEdit /></button>
-                                    <button onClick={() => handleDeleteClick(item.id)} className="p-2 bg-white text-red-600 rounded-full hover:bg-gray-100"><FaTrash /></button>
+                                    <button onClick={() => handleEdit(item)} className="p-2 bg-white dark:bg-zinc-800 text-blue-600 dark:text-blue-400 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-700"><FaEdit /></button>
+                                    <button onClick={() => handleDeleteClick(item.id)} className="p-2 bg-white dark:bg-zinc-800 text-red-600 dark:text-red-400 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-700"><FaTrash /></button>
                                 </div>
                                 <span className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded flex items-center gap-1">
                                     {item.type === 'video' ? <FaVideo size={10} /> : <FaImage size={10} />}
@@ -242,7 +242,7 @@ export default function CMSGallery() {
                                 </span>
                             </div>
                             <div className="p-3">
-                                <h3 className="font-medium text-gray-900 truncate">{item.title || 'Untitled'}</h3>
+                                <h3 className="font-medium text-gray-900 dark:text-white truncate">{item.title || 'Untitled'}</h3>
                             </div>
                         </div>
                     ))}
@@ -251,30 +251,30 @@ export default function CMSGallery() {
 
             {/* Modal Form */}
             {isFormOpen && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-                            <h3 className="text-lg font-bold text-gray-800">
+                <div className="fixed inset-0 bg-black/50 dark:bg-black/80 z-50 flex items-center justify-center p-4">
+                    <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200 border border-gray-100 dark:border-zinc-800">
+                        <div className="p-6 border-b border-gray-100 dark:border-zinc-800 flex justify-between items-center">
+                            <h3 className="text-lg font-bold text-gray-800 dark:text-white">
                                 {formMode === 'create' ? 'Add Media' : 'Edit Media'}
                             </h3>
-                            <button onClick={() => setIsFormOpen(false)} className="text-gray-400 hover:text-gray-600">&times;</button>
+                            <button onClick={() => setIsFormOpen(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">&times;</button>
                         </div>
                         <form onSubmit={handleSubmit} className="p-6 space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Title (Optional)</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title (Optional)</label>
                                 <input
                                     type="text"
                                     value={formData.title}
                                     onChange={e => setFormData({ ...formData, title: e.target.value })}
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none"
+                                    className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:bg-zinc-800 dark:text-white"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
                                 <select
                                     value={formData.type}
                                     onChange={e => setFormData({ ...formData, type: e.target.value })}
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none"
+                                    className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:bg-zinc-800 dark:text-white"
                                 >
                                     <option value="image">Image</option>
                                     <option value="image">Image</option>
@@ -282,24 +282,24 @@ export default function CMSGallery() {
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">{formData.type === 'video' ? 'Video URL' : 'Image URL'} <span className="text-red-500">*</span></label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{formData.type === 'video' ? 'Video URL' : 'Image URL'} <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
                                     name="image_url"
                                     required
                                     value={formData.image_url}
                                     onChange={handleInputChange}
-                                    className={`w-full border rounded-lg px-3 py-2 focus:ring-2 outline-none ${errors.image_url ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-red-500'}`}
+                                    className={`w-full border rounded-lg px-3 py-2 focus:ring-2 outline-none dark:bg-zinc-800 dark:text-white ${errors.image_url ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-zinc-700 focus:ring-red-500'}`}
                                     placeholder="https://..."
                                 />
                                 {errors.image_url && <p className="text-xs text-red-500 mt-1">{errors.image_url}</p>}
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
                                 <select
                                     value={formData.category}
                                     onChange={e => setFormData({ ...formData, category: e.target.value })}
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none"
+                                    className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-red-500 outline-none dark:bg-zinc-800 dark:text-white"
                                 >
                                     <option value="activity">Activity</option>
                                     <option value="facility">Facility</option>
@@ -311,14 +311,14 @@ export default function CMSGallery() {
                                 <button
                                     type="button"
                                     onClick={() => setIsFormOpen(false)}
-                                    className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg font-medium"
+                                    className="px-4 py-2 text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-zinc-800 rounded-lg font-medium"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={!isFormValid()}
-                                    className={`px-4 py-2 text-white rounded-lg font-medium transition ${!isFormValid() ? 'bg-gray-300 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700'}`}
+                                    className={`px-4 py-2 text-white rounded-lg font-medium transition ${!isFormValid() ? 'bg-gray-300 dark:bg-zinc-700 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700'}`}
                                 >
                                     Save
                                 </button>

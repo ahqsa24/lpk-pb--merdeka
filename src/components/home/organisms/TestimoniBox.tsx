@@ -19,8 +19,8 @@ export const TestimoniBox: React.FC<TestimoniProps> = ({
   rating = 5,
 }) => {
   return (
-    <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300 flex flex-col h-full relative group">
-      <div className="absolute top-6 right-8 text-red-100 group-hover:text-red-50 transition-colors">
+    <div className="bg-white dark:bg-zinc-900 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-zinc-800 hover:shadow-xl transition-all duration-300 flex flex-col h-full relative group">
+      <div className="absolute top-6 right-8 text-red-100 dark:text-red-900/30 group-hover:text-red-50 dark:group-hover:text-red-900/50 transition-colors">
         <FaQuoteLeft size={40} />
       </div>
 
@@ -36,8 +36,8 @@ export const TestimoniBox: React.FC<TestimoniProps> = ({
           </div>
         </div>
         <div>
-          <h4 className="font-bold text-gray-900 text-lg">{title}</h4>
-          <p className="text-sm text-red-500 font-medium">{description}</p>
+          <h4 className="font-bold text-gray-900 dark:text-white text-lg">{title}</h4>
+          <p className="text-sm text-red-500 dark:text-red-400 font-medium">{description}</p>
         </div>
       </div>
 
@@ -46,14 +46,14 @@ export const TestimoniBox: React.FC<TestimoniProps> = ({
         {[...Array(5)].map((_, i) => (
           <FaStar
             key={i}
-            className={i < rating ? 'text-yellow-400' : 'text-gray-300'}
+            className={i < rating ? 'text-yellow-400' : 'text-gray-300 dark:text-zinc-700'}
             size={16}
           />
         ))}
       </div>
 
       <div className="flex-grow">
-        <Paragraph className="text-gray-600 italic leading-relaxed relative z-10">
+        <Paragraph className="text-gray-600 dark:text-gray-300 italic leading-relaxed relative z-10">
           "{comment}"
         </Paragraph>
       </div>

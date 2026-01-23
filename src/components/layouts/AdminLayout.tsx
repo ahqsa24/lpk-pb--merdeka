@@ -2,12 +2,13 @@ import React, { ReactNode, useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import { useSearch } from '@/context/SearchContext';
 import {
     FaHome, FaUsers, FaUserShield, FaCalendarCheck,
     FaBars, FaSignOutAlt, FaSearch,
     FaLock, FaImages, FaQuestionCircle, FaCog, FaStar, FaNewspaper, FaBook, FaMoneyBillWave, FaVideo, FaClipboardList,
-    FaChevronLeft, FaChevronRight, FaChevronDown
+    FaChevronLeft, FaChevronRight, FaChevronDown, FaSun, FaMoon
 } from 'react-icons/fa';
 import Image from 'next/image';
 
@@ -19,6 +20,7 @@ interface AdminLayoutProps {
 export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => {
     const router = useRouter();
     const { user, logout } = useAuth();
+    const { theme, toggleTheme } = useTheme();
     const { searchQuery, setSearchQuery } = useSearch();
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -203,6 +205,13 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => 
                                 className="bg-transparent border-none text-sm focus:outline-none w-48 ml-2 text-gray-700 dark:text-gray-200 placeholder-gray-400"
                             />
                         </div>
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors text-gray-600 dark:text-gray-400"
+                            aria-label="Toggle Theme"
+                        >
+                            {theme === 'light' ? <FaMoon size={18} /> : <FaSun size={20} className="text-yellow-500" />}
+                        </button>
                         <div className="relative" ref={dropdownRef}>
                             <button
                                 onClick={() => setIsProfileOpen(!isProfileOpen)}

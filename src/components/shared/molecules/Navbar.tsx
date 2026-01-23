@@ -230,6 +230,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </div>
                 <NavBarButton label="Dashboard" variant="secondary" onClick={onDashboardClick} />
                 <button
+                  onClick={toggleTheme}
+                  className="w-full text-left py-3 text-white/90 font-medium flex items-center justify-between hover:text-white mt-1 border-t border-white/10 pt-4"
+                >
+                  <div className="flex items-center gap-2">
+                    {theme === 'light' ? <FaMoon /> : <FaSun />}
+                    <span>Mode Gelap</span>
+                  </div>
+                  <div className={`relative w-9 h-5 rounded-full transition-colors duration-200 ${theme === 'dark' ? 'bg-white' : 'bg-red-800'}`}>
+                    <div className={`absolute top-0.5 w-4 h-4 rounded-full shadow-sm transform transition-transform duration-200 ${theme === 'dark' ? 'translate-x-4.5 bg-red-600' : 'translate-x-0.5 bg-white'}`} />
+                  </div>
+                </button>
+                <button
                   onClick={onLogoutClick}
                   className="w-full text-left py-3 text-white/90 font-medium flex items-center gap-2 hover:text-white mt-1"
                 >

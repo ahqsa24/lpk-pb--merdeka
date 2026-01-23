@@ -4,12 +4,14 @@ import Head from "next/head";
 import { DashboardSidebar, ProfileForm, AttendanceSessionList, ArticleList, EbookList, VideoList, QuizList, Leaderboard, CertificateList, PointHistory, GamificationGuide, DashboardOverview } from "../components/dashboard/organisms";
 import { useAuth } from "@/context/AuthContext";
 import { useSearch } from '@/context/SearchContext';
-import { FaBars, FaCog, FaSignOutAlt, FaSearch, FaHome, FaExclamationTriangle, FaInfoCircle, FaTimes } from "react-icons/fa";
+import { FaBars, FaCog, FaSignOutAlt, FaSearch, FaHome, FaExclamationTriangle, FaInfoCircle, FaTimes, FaSun, FaMoon } from "react-icons/fa";
 import Link from "next/link";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function DashboardPage() {
     const router = useRouter();
     const { user, isAuthenticated, logout } = useAuth();
+    const { theme, toggleTheme } = useTheme();
     const { searchQuery, setSearchQuery } = useSearch();
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("overview");
@@ -232,6 +234,14 @@ export default function DashboardPage() {
                                     className="bg-transparent border-none text-sm focus:outline-none w-48 text-gray-900 dark:text-white"
                                 />
                             </div>
+
+                            <button
+                                onClick={toggleTheme}
+                                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors text-gray-600 dark:text-gray-400"
+                                aria-label="Toggle Theme"
+                            >
+                                {theme === 'light' ? <FaMoon size={18} /> : <FaSun size={20} className="text-yellow-500" />}
+                            </button>
 
                             <div className="relative" ref={dropdownRef}>
                                 <button

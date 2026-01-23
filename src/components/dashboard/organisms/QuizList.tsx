@@ -120,7 +120,7 @@ export const QuizList: React.FC = () => {
                                         </div>
                                         <Link
                                             href={`/dashboard/quiz/${quiz.id}`}
-                                            className="w-full block bg-white border border-red-200 hover:border-red-300 text-red-600 hover:bg-red-50 text-center font-medium py-2.5 rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2"
+                                            className="w-full block bg-white dark:bg-zinc-800 border border-red-200 dark:border-red-900/30 hover:border-red-300 dark:hover:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 text-center font-medium py-2.5 rounded-lg transition-colors shadow-sm flex items-center justify-center gap-2"
                                         >
                                             <FaArrowRight size={14} /> Ulangi Kuis
                                         </Link>

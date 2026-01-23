@@ -30,8 +30,8 @@ export const LeaderboardTable: React.FC<LeaderboardProps> = ({ data, startRank =
 
   return (
     <div className="space-y-6">
-      <section className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="flex flex-col">
+      <section className="bg-white dark:bg-zinc-900 rounded-3xl shadow-sm border border-gray-100 dark:border-zinc-800 overflow-hidden">
+        <div className="flex flex-col dark:divide-y dark:divide-zinc-800">
           {currentData.map((entry, index) => (
             <LeaderboardRow
               key={entry.id}
@@ -52,8 +52,8 @@ export const LeaderboardTable: React.FC<LeaderboardProps> = ({ data, startRank =
             disabled={currentPage === 1}
             onClick={() => handlePageChange(currentPage - 1)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${currentPage === 1
-              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-              : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 text-red-600 hover:border-red-200'
+              ? 'bg-gray-100 dark:bg-zinc-800 text-gray-400 dark:text-zinc-600 cursor-not-allowed'
+              : 'bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-zinc-800 text-red-600 hover:border-red-200'
               }`}
           >
             Previous
@@ -65,8 +65,8 @@ export const LeaderboardTable: React.FC<LeaderboardProps> = ({ data, startRank =
                 key={page}
                 onClick={() => handlePageChange(page)}
                 className={`w-10 h-10 rounded-lg text-sm font-bold flex items-center justify-center transition-all ${currentPage === page
-                  ? 'bg-red-600 text-white shadow-lg shadow-red-200 scale-105'
-                  : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                  ? 'bg-red-600 text-white shadow-lg shadow-red-200'
+                  : 'bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-zinc-800'
                   }`}
               >
                 {page}
@@ -78,8 +78,8 @@ export const LeaderboardTable: React.FC<LeaderboardProps> = ({ data, startRank =
             disabled={currentPage === totalPages}
             onClick={() => handlePageChange(currentPage + 1)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${currentPage === totalPages
-              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-              : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 text-red-600 hover:border-red-200'
+              ? 'bg-gray-100 dark:bg-zinc-800 text-gray-400 dark:text-zinc-600 cursor-not-allowed'
+              : 'bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-zinc-800 text-red-600 hover:border-red-200'
               }`}
           >
             Next

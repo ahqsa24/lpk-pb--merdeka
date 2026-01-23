@@ -38,7 +38,7 @@ export const TestimoniSection = () => {
       <div className="container mx-auto px-6 lg:px-12 xl:px-24">
         <div className="mb-12 text-center">
           <LineHeading title="Kata Alumni Kami" />
-          <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
+          <p className="mt-4 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             Dengar langsung dari mereka yang telah merasakan dampak positif dari program pelatihan kami.
           </p>
         </div>
@@ -47,7 +47,7 @@ export const TestimoniSection = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="animate-pulse">
-                <div className="bg-gray-200 h-48 rounded-2xl"></div>
+                <div className="bg-gray-200 dark:bg-zinc-800 h-48 rounded-2xl"></div>
               </div>
             ))}
           </div>
