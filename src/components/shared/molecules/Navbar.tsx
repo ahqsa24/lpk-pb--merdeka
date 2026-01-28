@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { NavBarButton } from "../atoms";
+import { NavBarButton, Avatar } from "../atoms";
 import { FaBars, FaTimes, FaSun, FaMoon, FaChevronDown, FaSignOutAlt, FaTachometerAlt } from "react-icons/fa"; // import icon hamburger
 import { useTheme } from "@/context/ThemeContext";
 
@@ -137,20 +137,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={toggleDropdown}
               >
                 {/* Avatar */}
-                {(!imageError && (user?.photo_url || user?.image || user?.avatar)) ? (
-                  <div className="w-8 h-8 rounded-full border border-white/30 overflow-hidden relative">
-                    <img
-                      src={user.photo_url || user.image || user.avatar}
-                      alt="Avatar"
-                      className="w-full h-full object-cover"
-                      onError={() => setImageError(true)}
-                    />
-                  </div>
-                ) : (
-                  <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-xs font-bold border border-white/30">
-                    {user?.name?.charAt(0).toUpperCase() || "U"}
-                  </div>
-                )}
+                <Avatar
+                  src={user?.photo_url || user?.image || user?.avatar}
+                  name={user?.name}
+                  size={32}
+                  className="border border-white/30"
+                />
                 <span className="text-sm font-medium max-w-[100px] truncate hidden lg:block">{user?.name || "User"}</span>
                 <FaChevronDown className={`text-xs transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
               </div>
@@ -227,13 +219,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             <>
               <div className="border-t border-red-500/50 dark:border-neutral-800 pt-4 mt-2">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold border border-white/30 overflow-hidden">
-                    {(user?.photo_url || user?.image || user?.avatar) ? (
-                      <img src={user.photo_url || user.image || user.avatar} alt="Avatar" className="w-full h-full object-cover" />
-                    ) : (
-                      (user?.name?.charAt(0).toUpperCase() || "U")
-                    )}
-                  </div>
+                  <Avatar
+                    src={user?.photo_url || user?.image || user?.avatar}
+                    name={user?.name}
+                    size={40}
+                    className="border border-white/30"
+                  />
                   <div>
                     <p className="font-semibold">{user?.name}</p>
                     <p className="text-xs opacity-80">{user?.email}</p>

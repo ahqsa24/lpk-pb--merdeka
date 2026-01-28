@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { AdminLayout } from '@/components/layouts/AdminLayout';
+import { Avatar } from '@/components/shared/atoms';
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaUser } from 'react-icons/fa';
 import { ConfirmationModal } from '@/components/shared/molecules/ConfirmationModal';
 import { Toast } from '@/components/shared/molecules/Toast';
@@ -250,13 +251,12 @@ export default function UsersManagement() {
                                     <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-zinc-700 flex items-center justify-center text-gray-500 dark:text-gray-400 overflow-hidden relative border border-gray-300 dark:border-zinc-600">
-                                                    {(user.photo_url || user.image) ? (
-                                                        <img src={user.photo_url || user.image} alt={user.name} className="w-full h-full object-cover" />
-                                                    ) : (
-                                                        <FaUser size={12} />
-                                                    )}
-                                                </div>
+                                                <Avatar
+                                                    src={user.photo_url || user.image}
+                                                    name={user.name}
+                                                    size={32}
+                                                    className="flex-shrink-0"
+                                                />
                                                 <div>
                                                     <div className="font-medium text-gray-900 dark:text-white">{user.name}</div>
                                                     <div className="text-xs text-gray-500 dark:text-gray-400">{user.email}</div>

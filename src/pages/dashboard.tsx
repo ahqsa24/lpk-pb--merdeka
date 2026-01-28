@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useSearch } from '@/context/SearchContext';
 import { FaBars, FaCog, FaSignOutAlt, FaSearch, FaHome, FaExclamationTriangle, FaInfoCircle, FaTimes, FaSun, FaMoon } from "react-icons/fa";
 import Link from "next/link";
+import { Avatar } from '@/components/shared/atoms';
 import { useTheme } from "@/context/ThemeContext";
 
 export default function DashboardPage() {
@@ -258,19 +259,13 @@ export default function DashboardPage() {
                                         <p className="text-sm font-semibold text-gray-900 dark:text-white">{userProfile?.name || user?.name}</p>
                                         <p className="text-xs text-gray-500 dark:text-gray-400">{user?.role || 'Peserta'}</p>
                                     </div>
-                                    <div className="w-9 h-9 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden border border-gray-200 dark:border-zinc-700 relative">
-                                        {(!imageError && (userProfile?.photo_url || userProfile?.image || user?.image)) ? (
-                                            <img
-                                                src={userProfile?.photo_url || userProfile?.image || user?.image}
-                                                alt="Profile"
-                                                className="w-full h-full object-cover"
-                                                onError={() => setImageError(true)}
-                                            />
-                                        ) : (
-                                            <div className="text-red-600 font-bold text-sm">
-                                                {(userProfile?.name || user?.name || 'U').charAt(0).toUpperCase()}
-                                            </div>
-                                        )}
+                                    <div className="w-9 h-9 rounded-full overflow-hidden border border-gray-200 dark:border-zinc-700 relative">
+                                        <Avatar
+                                            src={userProfile?.photo_url || userProfile?.image || user?.image}
+                                            name={userProfile?.name || user?.name}
+                                            size="100%"
+                                            className="w-full h-full"
+                                        />
                                     </div>
                                 </button>
 

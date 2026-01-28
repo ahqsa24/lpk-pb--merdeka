@@ -12,6 +12,7 @@ import {
     FaChevronLeft, FaChevronRight, FaChevronDown, FaSun, FaMoon, FaExclamationCircle
 } from 'react-icons/fa';
 import Image from 'next/image';
+import { Avatar } from '@/components/shared/atoms';
 
 interface AdminLayoutProps {
     children: ReactNode;
@@ -228,18 +229,12 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => 
                                     <p className="text-xs text-gray-500 dark:text-gray-400">{user?.role || 'Administrator'}</p>
                                 </div>
                                 <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-zinc-800 flex items-center justify-center overflow-hidden border border-gray-200 dark:border-zinc-700 relative">
-                                    {(!imageError && (userProfile?.photo_url || userProfile?.image || user?.image)) ? (
-                                        <img
-                                            src={userProfile?.photo_url || userProfile?.image || user?.image}
-                                            alt="Profile"
-                                            className="w-full h-full object-cover"
-                                            onError={() => setImageError(true)}
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-bold text-sm">
-                                            {(userProfile?.name || user?.name || 'A').charAt(0).toUpperCase()}
-                                        </div>
-                                    )}
+                                    <Avatar
+                                        src={userProfile?.photo_url || userProfile?.image || user?.image}
+                                        name={userProfile?.name || user?.name || 'Admin'}
+                                        size={36} // 9 * 4 = 36px
+                                        className="w-full h-full"
+                                    />
                                 </div>
                             </button>
 
