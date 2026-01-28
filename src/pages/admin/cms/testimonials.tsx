@@ -63,24 +63,24 @@ const SortableTestimonialItem = ({
         <div
             ref={setNodeRef}
             style={style}
-            className={`bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-xl p-4 flex items-start gap-4 transition-colors ${isDragging ? 'shadow-lg' : 'shadow-sm'}`}
+            className={`bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-xl p-3 md:p-4 flex items-start gap-3 md:gap-4 transition-colors ${isDragging ? 'shadow-lg' : 'shadow-sm'}`}
         >
-            {/* Drag Handle */}
+            {/* Drag Handle - Hidden on very small, visible on normally small */}
             <div
                 {...attributes}
                 {...listeners}
-                className="cursor-grab active:cursor-grabbing p-2 text-gray-400 hover:text-gray-600 mt-1"
+                className="cursor-grab active:cursor-grabbing p-2 text-gray-400 hover:text-gray-600 mt-1 touch-none"
             >
                 <FaGripVertical />
             </div>
 
             {/* Order Badge */}
-            <div className="w-8 h-8 bg-yellow-100 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">
+            <div className="hidden sm:flex w-8 h-8 bg-yellow-100 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 rounded-lg items-center justify-center font-bold text-sm flex-shrink-0">
                 {testimonial.order || '-'}
             </div>
 
             {/* Avatar */}
-            <div className="w-12 h-12 rounded-full bg-gray-200 dark:bg-zinc-800 flex items-center justify-center overflow-hidden flex-shrink-0">
+            <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-200 dark:bg-zinc-800 flex items-center justify-center overflow-hidden flex-shrink-0">
                 {testimonial.avatar_url ? (
                     <img src={testimonial.avatar_url} alt={testimonial.name} className="w-full h-full object-cover" />
                 ) : (
@@ -90,29 +90,33 @@ const SortableTestimonialItem = ({
 
             {/* Content */}
             <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-gray-900 dark:text-white">{testimonial.name}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-300 mt-1 line-clamp-2">{testimonial.content}</p>
-                <div className="flex items-center gap-1 mt-2">
-                    {[...Array(5)].map((_, i) => (
-                        <FaStar key={i} className={i < testimonial.rating ? 'text-yellow-400' : 'text-gray-300'} size={12} />
-                    ))}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 mb-1">
+                    <div>
+                        <h3 className="font-semibold text-gray-900 dark:text-white text-sm md:text-base">{testimonial.name}</h3>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{testimonial.role}</p>
+                    </div>
+                    <div className="flex items-center gap-0.5">
+                        {[...Array(5)].map((_, i) => (
+                            <FaStar key={i} className={i < testimonial.rating ? 'text-yellow-400' : 'text-gray-300'} size={10} />
+                        ))}
+                    </div>
                 </div>
+                <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 mt-1 line-clamp-2 leading-relaxed">{testimonial.content}</p>
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 flex-shrink-0">
                 <button
                     onClick={() => onEdit(testimonial)}
-                    className="p-2 hover:bg-gray-100 rounded-lg text-blue-600 transition"
+                    className="p-1.5 md:p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg text-blue-600 transition"
                 >
-                    <FaEdit />
+                    <FaEdit className="text-sm md:text-base" />
                 </button>
                 <button
                     onClick={() => onDelete(testimonial.id)}
-                    className="p-2 hover:bg-gray-100 rounded-lg text-red-600 transition"
+                    className="p-1.5 md:p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg text-red-600 transition"
                 >
-                    <FaTrash />
+                    <FaTrash className="text-sm md:text-base" />
                 </button>
             </div>
         </div>
@@ -410,7 +414,7 @@ export default function CMSTestimonials() {
                             <button onClick={() => setIsFormOpen(false)} className="text-gray-400 hover:text-gray-600">&times;</button>
                         </div>
                         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name <span className="text-red-500">*</span></label>
                                     <input

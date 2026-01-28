@@ -63,41 +63,41 @@ const SortableFAQItem = ({
         <div
             ref={setNodeRef}
             style={style}
-            className={`bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-xl p-4 flex items-start gap-4 transition-colors ${isDragging ? 'shadow-lg' : 'shadow-sm'}`}
+            className={`bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-xl p-3 md:p-4 flex items-start gap-3 md:gap-4 transition-colors ${isDragging ? 'shadow-lg' : 'shadow-sm'}`}
         >
             {/* Drag Handle */}
             <div
                 {...attributes}
                 {...listeners}
-                className="cursor-grab active:cursor-grabbing p-2 text-gray-400 hover:text-gray-600 mt-1"
+                className="cursor-grab active:cursor-grabbing p-2 text-gray-400 hover:text-gray-600 mt-0.5 touch-none"
             >
                 <FaGripVertical />
             </div>
 
             {/* Order Badge */}
-            <div className="w-8 h-8 bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-100 rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0">
+            <div className="hidden sm:flex w-8 h-8 bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-100 rounded-lg items-center justify-center font-bold text-sm flex-shrink-0">
                 {faq.order}
             </div>
 
             {/* Content */}
             <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-gray-900 dark:text-white mb-1">{faq.question}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">{faq.answer}</p>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-1 text-sm md:text-base line-clamp-2">{faq.question}</h3>
+                <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 line-clamp-2">{faq.answer}</p>
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 flex-shrink-0">
                 <button
                     onClick={() => onEdit(faq)}
-                    className="p-2 hover:bg-gray-100 rounded-lg text-blue-600 transition"
+                    className="p-1.5 md:p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg text-blue-600 transition"
                 >
-                    <FaEdit />
+                    <FaEdit className="text-sm md:text-base" />
                 </button>
                 <button
                     onClick={() => onDelete(faq.id)}
-                    className="p-2 hover:bg-gray-100 rounded-lg text-red-600 transition"
+                    className="p-1.5 md:p-2 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-lg text-red-600 transition"
                 >
-                    <FaTrash />
+                    <FaTrash className="text-sm md:text-base" />
                 </button>
             </div>
         </div>

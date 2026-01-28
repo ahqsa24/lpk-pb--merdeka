@@ -287,7 +287,8 @@ export default function FolderEbooks() {
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                    {/* Desktop Table */}
+                    <table className="hidden md:table w-full text-left">
                         <thead className="bg-gray-50 dark:bg-zinc-800/50 border-b border-gray-200 dark:border-zinc-700">
                             <tr>
                                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Cover</th>
@@ -358,6 +359,65 @@ export default function FolderEbooks() {
                             )}
                         </tbody>
                     </table>
+
+                    {/* Mobile Card List */}
+                    <div className="md:hidden space-y-4 p-4">
+                        {filteredEbooks.length === 0 ? (
+                            <div className="text-center text-gray-500 dark:text-gray-400 py-12">
+                                {searchQuery ? `No ebooks found matching "${searchQuery}"` : 'No ebooks found in this folder.'}
+                            </div>
+                        ) : (
+                            filteredEbooks.map((ebook) => (
+                                <div key={ebook.id} className="bg-white dark:bg-zinc-800 rounded-xl p-4 border border-gray-100 dark:border-zinc-700 shadow-sm flex gap-4">
+                                    <div className="w-20 h-28 bg-gray-200 dark:bg-zinc-700 rounded overflow-hidden flex items-center justify-center text-gray-400 relative flex-shrink-0">
+                                        <FaImage className="absolute" size={24} />
+                                        {ebook.cover_url && (
+                                            <img
+                                                src={ebook.cover_url}
+                                                alt={ebook.title}
+                                                className="w-full h-full object-cover relative z-10"
+                                                onError={(e) => {
+                                                    (e.target as HTMLImageElement).style.display = 'none';
+                                                }}
+                                            />
+                                        )}
+                                    </div>
+                                    <div className="flex-1 flex flex-col justify-between">
+                                        <div>
+                                            <h3 className="font-semibold text-gray-900 dark:text-white line-clamp-2 leading-tight mb-1">{ebook.title}</h3>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mb-2">{ebook.description}</p>
+                                            <div className="text-xs text-gray-400 dark:text-gray-500 mb-2">
+                                                Added: {new Date(ebook.created_at).toLocaleDateString()}
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center justify-between border-t border-gray-100 dark:border-zinc-700 pt-2 mt-auto">
+                                            <button
+                                                onClick={() => handlePreview(ebook.file_url)}
+                                                className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 text-xs font-medium"
+                                            >
+                                                <FaFilePdf /> Preview
+                                            </button>
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => handleEdit(ebook)}
+                                                    className="p-1.5 hover:bg-gray-100 dark:hover:bg-zinc-700 rounded text-blue-600 dark:text-blue-400 transition"
+                                                >
+                                                    <FaEdit size={14} />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeleteClick(ebook.id)}
+                                                    className="p-1.5 hover:bg-gray-100 dark:hover:bg-zinc-700 rounded text-red-600 dark:text-red-400 transition"
+                                                >
+                                                    <FaTrash size={14} />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
                 </div>
             </div>
 

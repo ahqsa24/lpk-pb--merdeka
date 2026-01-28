@@ -59,7 +59,8 @@ export default function AdminLeaderboard() {
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full">
+                    {/* Desktop Table */}
+                    <table className="hidden md:table w-full">
                         <thead className="bg-gray-50 dark:bg-zinc-800 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             <tr>
                                 <th className="px-6 py-4">Rank</th>
@@ -121,6 +122,47 @@ export default function AdminLeaderboard() {
                             )}
                         </tbody>
                     </table>
+
+                    {/* Mobile Card List */}
+                    <div className="md:hidden space-y-3 p-4">
+                        {loading ? (
+                            <div className="text-center text-gray-500 dark:text-gray-400">Loading...</div>
+                        ) : filteredData.length === 0 ? (
+                            <div className="text-center text-gray-500 dark:text-gray-400">No users found.</div>
+                        ) : (
+                            filteredData.map((entry) => (
+                                <div key={entry.user_id} className="bg-white dark:bg-zinc-800 rounded-xl p-4 border border-gray-100 dark:border-zinc-700 shadow-sm flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${entry.rank === 1 ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                                            entry.rank === 2 ? 'bg-gray-200 text-gray-600 dark:bg-zinc-700 dark:text-gray-300' :
+                                                entry.rank === 3 ? 'bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400' :
+                                                    'bg-gray-100 text-gray-500 dark:bg-zinc-800 dark:text-gray-400'
+                                            }`}>
+                                            {entry.rank}
+                                        </div>
+
+                                        <div className="flex items-center gap-3">
+                                            <Avatar src={entry.image || ''} alt={entry.name} size={40} />
+                                            <div>
+                                                <p className="font-semibold text-gray-900 dark:text-white truncate max-w-[120px]">{entry.name}</p>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-xs text-gray-500 dark:text-gray-400">Lvl {entry.level}</span>
+                                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 dark:bg-zinc-800 text-gray-600 dark:text-gray-300 uppercase">
+                                                        {entry.role}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="text-right">
+                                        <p className="font-bold text-gray-900 dark:text-white">{entry.points.toLocaleString()}</p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">XP</p>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
                 </div>
             </div>
         </AdminLayout>

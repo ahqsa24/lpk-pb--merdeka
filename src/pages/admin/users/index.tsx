@@ -213,10 +213,7 @@ export default function UsersManagement() {
 
             <div className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-100 dark:border-zinc-800 shadow-sm overflow-hidden">
                 {/* Toolbar */}
-                <div className="p-4 border-b border-gray-100 dark:border-zinc-800 flex flex-col md:flex-row justify-between gap-4 items-center">
-                    <div className="relative w-full md:w-64 hidden">
-                        {/* Search input managed globally in AdminLayout */}
-                    </div>
+                <div className="p-4 border-b border-gray-100 dark:border-zinc-800 flex justify-end items-center">
                     <button
                         onClick={handleCreate}
                         className="bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-red-700 transition"
@@ -227,7 +224,8 @@ export default function UsersManagement() {
 
                 {/* Table */}
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                    {/* Desktop Table */}
+                    <table className="hidden md:table w-full text-left">
                         <thead className="bg-gray-50 dark:bg-zinc-800 border-b border-gray-200 dark:border-zinc-700">
                             <tr>
                                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Name</th>
@@ -299,6 +297,62 @@ export default function UsersManagement() {
                             )}
                         </tbody>
                     </table>
+
+                    {/* Mobile Card List */}
+                    <div className="md:hidden space-y-4 p-4">
+                        {loading ? (
+                            <div className="text-center text-gray-500 dark:text-gray-400">Loading users...</div>
+                        ) : filteredUsers.length === 0 ? (
+                            <div className="text-center text-gray-500 dark:text-gray-400">No users found.</div>
+                        ) : (
+                            filteredUsers.map((user) => (
+                                <div key={user.id} className="bg-white dark:bg-zinc-800 rounded-xl p-4 border border-gray-100 dark:border-zinc-700 shadow-sm space-y-3">
+                                    <div className="flex justify-between items-start">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-zinc-700 flex items-center justify-center text-gray-500 dark:text-gray-400 overflow-hidden relative border border-gray-300 dark:border-zinc-600 flex-shrink-0">
+                                                {(user.photo_url || user.image) ? (
+                                                    <img src={user.photo_url || user.image} alt={user.name} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <FaUser size={16} />
+                                                )}
+                                            </div>
+                                            <div>
+                                                <h3 className="font-semibold text-gray-900 dark:text-white">{user.name}</h3>
+                                                <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[150px]">{user.email}</p>
+                                            </div>
+                                        </div>
+                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${user.role === 'superAdmin'
+                                            ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300'
+                                            : user.role === 'admin'
+                                                ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
+                                                : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
+                                            }`}>
+                                            {user.role === 'superAdmin' ? 'Super Admin' : user.role === 'admin' ? 'Admin' : 'User'}
+                                        </span>
+                                    </div>
+
+                                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                                        Joined: {user.created_at ? new Date(user.created_at).toLocaleDateString() : '-'}
+                                    </div>
+
+                                    <div className="flex justify-end gap-2 border-t border-gray-100 dark:border-zinc-700 pt-3">
+                                        <button
+                                            onClick={() => handleEdit(user)}
+                                            className="px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg text-sm font-medium flex items-center gap-2"
+                                        >
+                                            <FaEdit size={12} /> Edit
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteClick(user.id)}
+                                            className="px-3 py-1.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg text-sm font-medium flex items-center gap-2"
+                                        >
+                                            <FaTrash size={12} /> Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
                 </div>
             </div>
 

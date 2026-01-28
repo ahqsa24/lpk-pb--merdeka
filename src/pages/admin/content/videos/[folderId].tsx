@@ -300,7 +300,8 @@ export default function FolderVideos() {
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                    {/* Desktop Table View */}
+                    <table className="hidden md:table w-full text-left">
                         <thead className="bg-gray-50 dark:bg-zinc-800/50 border-b border-gray-200 dark:border-zinc-700">
                             <tr>
                                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Video</th>
@@ -377,6 +378,75 @@ export default function FolderVideos() {
                             )}
                         </tbody>
                     </table>
+
+                    {/* Mobile Card List View */}
+                    <div className="md:hidden space-y-4 p-4">
+                        {filteredVideos.length === 0 ? (
+                            <div className="text-center text-gray-500 dark:text-gray-400 py-12">
+                                {searchQuery ? `No videos found matching "${searchQuery}"` : 'No videos found in this folder.'}
+                            </div>
+                        ) : (
+                            filteredVideos.map((video) => (
+                                <div key={video.id} className="bg-white dark:bg-zinc-800 rounded-xl p-4 border border-gray-100 dark:border-zinc-700 shadow-sm">
+                                    <div className="flex gap-4 mb-3">
+                                        <div className="w-24 h-16 rounded bg-gray-200 dark:bg-zinc-700 overflow-hidden relative flex-shrink-0 group cursor-pointer" onClick={() => handlePreview(video.url)}>
+                                            <div className="absolute inset-0 flex items-center justify-center text-gray-400 z-0">
+                                                <FaVideo />
+                                            </div>
+                                            {video.cover_url && (
+                                                <img
+                                                    src={video.cover_url}
+                                                    alt={video.title}
+                                                    className="w-full h-full object-cover relative z-10"
+                                                    onError={(e) => {
+                                                        (e.target as HTMLImageElement).style.display = 'none';
+                                                    }}
+                                                />
+                                            )}
+                                            <div className="absolute inset-0 bg-black/30 flex items-center justify-center z-20 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <FaPlay className="text-white drop-shadow-md" size={16} />
+                                            </div>
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h3 className="font-semibold text-gray-900 dark:text-white line-clamp-2 leading-tight mb-1">{video.title}</h3>
+                                            <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                                                <span>{video.duration ? `${video.duration} min` : 'Unknown duration'}</span>
+                                                <span>•</span>
+                                                <span>{new Date(video.created_at).toLocaleDateString()}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <p className="text-xs text-gray-600 dark:text-gray-300 line-clamp-2 mb-3">
+                                        {video.description}
+                                    </p>
+
+                                    <div className="flex justify-between items-center border-t border-gray-100 dark:border-zinc-700 pt-3">
+                                        <button
+                                            onClick={() => handlePreview(video.url)}
+                                            className="text-blue-600 dark:text-blue-400 text-xs font-medium flex items-center gap-1.5"
+                                        >
+                                            <FaPlay size={10} /> Watch Preview
+                                        </button>
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => handleEdit(video)}
+                                                className="px-2 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded text-xs font-medium flex items-center gap-1"
+                                            >
+                                                <FaEdit size={10} /> Edit
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteClick(video.id)}
+                                                className="px-2 py-1 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded text-xs font-medium flex items-center gap-1"
+                                            >
+                                                <FaTrash size={10} /> Delete
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
                 </div>
             </div>
 

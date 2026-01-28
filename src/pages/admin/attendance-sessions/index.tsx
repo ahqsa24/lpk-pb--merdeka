@@ -266,10 +266,7 @@ export default function AttendanceSessionsManagement() {
             </Head>
 
             <div className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-100 dark:border-zinc-800 shadow-sm overflow-hidden">
-                <div className="p-4 border-b border-gray-100 dark:border-zinc-800 flex flex-col md:flex-row justify-between gap-4 items-center">
-                    <div className="relative w-full md:w-64 hidden">
-                        {/* Search input managed globally in AdminLayout */}
-                    </div>
+                <div className="p-4 border-b border-gray-100 dark:border-zinc-800 flex justify-end items-center">
                     <button
                         onClick={handleCreate}
                         className="bg-red-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-red-700 transition"
@@ -279,7 +276,8 @@ export default function AttendanceSessionsManagement() {
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                    {/* Desktop Table View */}
+                    <table className="hidden md:table w-full text-left">
                         <thead className="bg-gray-50 dark:bg-zinc-800 border-b border-gray-200 dark:border-zinc-700">
                             <tr>
                                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Title</th>
@@ -350,6 +348,59 @@ export default function AttendanceSessionsManagement() {
                             )}
                         </tbody>
                     </table>
+
+                    {/* Mobile Card List View */}
+                    <div className="md:hidden space-y-4 p-4">
+                        {loading ? (
+                            <div className="text-center text-gray-500 dark:text-gray-400">Loading sessions...</div>
+                        ) : filteredSessions.length === 0 ? (
+                            <div className="text-center text-gray-500 dark:text-gray-400">
+                                {searchQuery ? `No sessions found matching "${searchQuery}"` : "No sessions found."}
+                            </div>
+                        ) : (
+                            filteredSessions.map((session) => (
+                                <div key={session.id} className="bg-white dark:bg-zinc-800 rounded-xl p-4 border border-gray-100 dark:border-zinc-700 shadow-sm space-y-3">
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <button
+                                                onClick={() => router.push(`/admin/attendance-sessions/${session.id}`)}
+                                                className="font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-1 hover:text-red-600 dark:hover:text-red-400 transition"
+                                            >
+                                                {session.title}
+                                            </button>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(session.date).toLocaleDateString()}</p>
+                                        </div>
+                                        <button
+                                            onClick={() => toggleStatus(session)}
+                                            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${session.isActive ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'}`}
+                                        >
+                                            <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${session.isActive ? 'translate-x-5' : 'translate-x-1'}`} />
+                                        </button>
+                                    </div>
+
+                                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                                        <FaUsers className="text-gray-400" />
+                                        <span>{displayTime(session.start_time)} - {displayTime(session.end_time)}</span>
+                                    </div>
+
+                                    <div className="flex justify-end gap-2 border-t border-gray-100 dark:border-zinc-700 pt-3">
+                                        <button
+                                            onClick={() => handleEdit(session)}
+                                            className="px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg text-sm font-medium flex items-center gap-2"
+                                        >
+                                            <FaEdit size={12} /> Edit
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteClick(session.id)}
+                                            className="px-3 py-1.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg text-sm font-medium flex items-center gap-2"
+                                        >
+                                            <FaTrash size={12} /> Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
                 </div>
             </div>
 

@@ -64,7 +64,8 @@ export default function AdminCertificates() {
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full">
+                    {/* Desktop Table */}
+                    <table className="hidden md:table w-full">
                         <thead className="bg-gray-50 dark:bg-zinc-800 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             <tr>
                                 <th className="px-6 py-4">Code</th>
@@ -117,6 +118,47 @@ export default function AdminCertificates() {
                             )}
                         </tbody>
                     </table>
+
+                    {/* Mobile Card List */}
+                    <div className="md:hidden space-y-4 p-4">
+                        {loading ? (
+                            <div className="text-center text-gray-500 dark:text-gray-400">Loading...</div>
+                        ) : filteredData.length === 0 ? (
+                            <div className="text-center text-gray-500 dark:text-gray-400">No certificates found.</div>
+                        ) : (
+                            filteredData.map((cert) => (
+                                <div key={cert.id} className="bg-white dark:bg-zinc-800 rounded-xl p-4 border border-gray-100 dark:border-zinc-700 shadow-sm space-y-3">
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <h3 className="font-semibold text-gray-900 dark:text-white">{cert.user.name}</h3>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400">{cert.user.email}</p>
+                                        </div>
+                                        <span className="font-mono text-[10px] bg-gray-100 dark:bg-zinc-700 px-2 py-0.5 rounded text-gray-600 dark:text-gray-300">
+                                            {cert.certificate_code}
+                                        </span>
+                                    </div>
+
+                                    <div className="text-sm text-gray-700 dark:text-gray-300">
+                                        <span className="text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wide">Finished:</span> <br />
+                                        {cert.quiz.title}
+                                    </div>
+
+                                    <div className="flex justify-between items-center border-t border-gray-100 dark:border-zinc-700 pt-3">
+                                        <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
+                                            <FaCalendarAlt /> {formatDate(cert.issued_at)}
+                                        </div>
+                                        <Link
+                                            href={cert.file_url}
+                                            target="_blank"
+                                            className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors text-sm font-medium"
+                                        >
+                                            <FaDownload size={12} /> Download
+                                        </Link>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
                 </div>
             </div>
         </AdminLayout>

@@ -276,7 +276,8 @@ export default function CMSArticles() {
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                    {/* Desktop Table View */}
+                    <table className="hidden md:table w-full text-left">
                         <thead className="bg-gray-50 dark:bg-zinc-800 border-b border-gray-200 dark:border-zinc-700">
                             <tr>
                                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Title</th>
@@ -337,6 +338,51 @@ export default function CMSArticles() {
                             )}
                         </tbody>
                     </table>
+
+                    {/* Mobile Card List View */}
+                    <div className="md:hidden space-y-4 p-4">
+                        {loading ? (
+                            <div className="text-center text-gray-500 dark:text-gray-400">Loading articles...</div>
+                        ) : filteredArticles.length === 0 ? (
+                            <div className="text-center text-gray-500 dark:text-gray-400">
+                                {searchQuery ? `No articles found matching "${searchQuery}"` : 'No articles found.'}
+                            </div>
+                        ) : (
+                            filteredArticles.map((article) => (
+                                <div key={article.id} className="bg-white dark:bg-zinc-800 rounded-xl p-4 border border-gray-100 dark:border-zinc-700 shadow-sm space-y-3">
+                                    <div className="flex justify-between items-start">
+                                        <div className="flex-1 pr-4">
+                                            <h3 className="font-semibold text-gray-900 dark:text-white line-clamp-2">{article.title}</h3>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                By {article.author || 'Unknown'} • {new Date(article.created_at).toLocaleDateString()}
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={() => toggleStatus(article)}
+                                            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors flex-shrink-0 ${article.is_published ? 'bg-green-500' : 'bg-gray-300'}`}
+                                        >
+                                            <span className={`inline-block h-3 w-3 transform rounded-full bg-white transition-transform ${article.is_published ? 'translate-x-5' : 'translate-x-1'}`} />
+                                        </button>
+                                    </div>
+
+                                    <div className="flex justify-end gap-2 border-t border-gray-100 dark:border-zinc-700 pt-3">
+                                        <button
+                                            onClick={() => handleEdit(article)}
+                                            className="px-3 py-1.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg text-sm font-medium flex items-center gap-2"
+                                        >
+                                            <FaEdit size={12} /> Edit
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteClick(article.id)}
+                                            className="px-3 py-1.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg text-sm font-medium flex items-center gap-2"
+                                        >
+                                            <FaTrash size={12} /> Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
                 </div>
             </div>
 
