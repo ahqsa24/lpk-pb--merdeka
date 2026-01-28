@@ -18,13 +18,34 @@ export const Avatar: React.FC<AvatarProps> = ({
   className = "",
   textSize = "text-sm"
 }) => {
-  const [error, setError] = useState(false);
+  const [imageState, setImageState] = useState<'loading' | 'error' | 'success'>('loading');
 
   useEffect(() => {
-    setError(false);
+    if (!src) {
+      setImageState('error');
+      return;
+    }
+
+    setImageState('loading');
+    const img = new Image();
+    img.src = src;
+    img.referrerPolicy = "no-referrer"; // Important for Google images
+
+    img.onload = () => {
+      setImageState('success');
+    };
+
+    img.onerror = () => {
+      setImageState('error');
+    };
+
+    return () => {
+      img.onload = null;
+      img.onerror = null;
+    };
   }, [src]);
 
-  const showFallback = !src || error;
+  const showFallback = !src || imageState === 'error' || imageState === 'loading';
 
   const getInitials = (n: string) => {
     return n ? n.charAt(0).toUpperCase() : 'U';
@@ -40,7 +61,7 @@ export const Avatar: React.FC<AvatarProps> = ({
     >
       {showFallback ? (
         name ? (
-          <span className={`font-bold ${textSize}`}>
+          <span className={`font-bold ${textSize} select-none`}>
             {getInitials(name)}
           </span>
         ) : (
@@ -51,7 +72,6 @@ export const Avatar: React.FC<AvatarProps> = ({
           src={src || ""}
           alt={alt}
           className="w-full h-full object-cover"
-          onError={() => setError(true)}
           referrerPolicy="no-referrer"
         />
       )}
