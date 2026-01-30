@@ -96,7 +96,7 @@ export const LeaderboardTemplate = ({ data }: LeaderboardTemplateProps) => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
-        className="flex flex-col md:flex-row justify-center items-end gap-12 md:gap-10 mt-32 mb-32 max-w-6xl mx-auto"
+        className="flex flex-col md:flex-row justify-center items-end gap-8 md:gap-6 mt-20 mb-20 max-w-5xl mx-auto"
       >
         {visualPodium.map((style, index) => {
           const user = topThree.find((_, i) => i === style.rank - 1);
@@ -110,42 +110,42 @@ export const LeaderboardTemplate = ({ data }: LeaderboardTemplateProps) => {
               className={`flex flex-col items-center w-full md:w-1/3 transition-all duration-500 ${style.order}`}
             >
               {/* Profile Area */}
-              <div className="relative mb-24 z-30 transform transition-transform duration-500 group-hover:scale-110">
-                <div className="absolute -top-14 left-1/2 -translate-x-1/2 z-40">
+              <div className="relative mb-16 z-30 transform transition-transform duration-500 group-hover:scale-105">
+                <div className="absolute -top-10 left-1/2 -translate-x-1/2 z-40 scale-75 md:scale-100">
                   {style.icon}
                 </div>
 
-                <div className={`relative rounded-full p-2 bg-gradient-to-br ${style.color} shadow-2xl ${style.shadowColor} ring-8 ring-white dark:ring-zinc-900`}>
+                <div className={`relative rounded-full p-1.5 bg-gradient-to-br ${style.color} shadow-xl ${style.shadowColor} ring-4 ring-white dark:ring-zinc-900`}>
                   <Avatar
                     src={user.avatar || ''}
                     name={user.title}
-                    size={style.rank === 1 ? 160 : style.rank === 2 ? 130 : 120}
+                    size={style.rank === 1 ? 120 : style.rank === 2 ? 100 : 90}
                     className="border-2 border-white dark:border-zinc-800"
                   />
-                  <div className={`absolute -bottom-2 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-white dark:bg-zinc-800 flex items-center justify-center font-black text-3xl shadow-lg border-2 ${style.borderColor} ${style.rank === 1 ? 'text-yellow-600' : style.rank === 2 ? 'text-slate-500' : 'text-orange-600'}`}>
+                  <div className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-white dark:bg-zinc-800 flex items-center justify-center font-black text-xl shadow-lg border-2 ${style.borderColor} ${style.rank === 1 ? 'text-yellow-600' : style.rank === 2 ? 'text-slate-500' : 'text-orange-600'}`}>
                     {style.rank}
                   </div>
                 </div>
               </div>
 
               {/* Podium Card */}
-              <div className={`w-full group relative -mt-20 z-10`}>
-                <div className={`absolute inset-0 bg-gradient-to-b ${style.color} opacity-0 group-hover:opacity-10 transition-opacity rounded-[3.5rem] blur-3xl`} />
-                <div className={`relative w-full bg-white dark:bg-zinc-900/90 backdrop-blur-md rounded-[3.5rem] shadow-2xl border border-gray-100 dark:border-zinc-800 border-t-8 ${style.borderColor} flex flex-col items-center pt-32 pb-12 px-6 text-center transform-gpu transition-all duration-300`}>
-                  <h3 className={`font-black text-zinc-900 dark:text-white w-full ${style.rank === 1 ? 'text-3xl' : 'text-2xl'} mb-2 z-20`}>
+              <div className={`w-full group relative -mt-12 z-10`}>
+                <div className={`absolute inset-0 bg-gradient-to-b ${style.color} opacity-0 group-hover:opacity-10 transition-opacity rounded-[2.5rem] blur-2xl`} />
+                <div className={`relative w-full bg-white dark:bg-zinc-900/90 backdrop-blur-md rounded-[2.5rem] shadow-xl border border-gray-100 dark:border-zinc-800 border-t-8 ${style.borderColor} flex flex-col items-center pt-20 pb-8 px-6 text-center transform-gpu transition-all duration-300`}>
+                  <h3 className={`font-black text-zinc-900 dark:text-white w-full ${style.rank === 1 ? 'text-xl' : 'text-lg'} mb-1.5 z-20`}>
                     {user.title}
                   </h3>
-                  <div className="px-4 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800/50 mb-6">
-                    <p className="text-zinc-500 dark:text-zinc-400 text-xs font-bold uppercase tracking-widest">
+                  <div className="px-3 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800/50 mb-4">
+                    <p className="text-zinc-500 dark:text-zinc-400 text-[10px] font-bold uppercase tracking-widest">
                       {user.description}
                     </p>
                   </div>
 
                   <div className="flex flex-col items-center">
-                    <span className={`font-black tracking-tighter ${style.rank === 1 ? 'text-6xl text-yellow-600' : 'text-5xl text-zinc-600 dark:text-zinc-300'}`}>
+                    <span className={`font-black tracking-tighter ${style.rank === 1 ? 'text-4xl text-yellow-600' : 'text-3xl text-zinc-600 dark:text-zinc-300'}`}>
                       {user.score.toLocaleString()}
                     </span>
-                    <span className="text-[10px] font-black text-zinc-500 dark:text-zinc-400 uppercase tracking-[0.4em] mt-3">XP POINTS</span>
+                    <span className="text-[9px] font-black text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.3em] mt-2">XP POINTS</span>
                   </div>
                 </div>
               </div>
